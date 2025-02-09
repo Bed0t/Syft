@@ -11,7 +11,6 @@ const Contact = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
     console.log('Form submitted:', formData);
   };
 
@@ -23,33 +22,18 @@ const Contact = () => {
   };
 
   return (
-<<<<<<< HEAD
     <div className="min-h-screen bg-gray-50 py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">Get in touch</h1>
-=======
-    <div className="bg-gray-50 min-h-screen py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Get in touch
-          </h1>
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
           <p className="mt-4 text-lg text-gray-500">
             Have questions about Syft? We're here to help.
           </p>
         </div>
 
-<<<<<<< HEAD
         <div className="mt-16 grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Contact Form */}
           <div className="rounded-lg bg-white p-8 shadow-lg">
-=======
-        <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Contact Form */}
-          <div className="bg-white rounded-lg shadow-lg p-8">
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -112,11 +96,7 @@ const Contact = () => {
 
               <button
                 type="submit"
-<<<<<<< HEAD
                 className="w-full rounded-md bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700"
-=======
-                className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors"
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
               >
                 Send Message
               </button>
@@ -124,11 +104,7 @@ const Contact = () => {
           </div>
 
           {/* Contact Information */}
-<<<<<<< HEAD
           <div className="rounded-lg bg-white p-8 shadow-lg">
-=======
-          <div className="bg-white rounded-lg shadow-lg p-8">
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
             <h3 className="text-lg font-medium text-gray-900">Contact Information</h3>
             <div className="mt-6 space-y-6">
               <div className="flex items-center">
@@ -142,12 +118,8 @@ const Contact = () => {
               <div className="flex items-center">
                 <MapPin className="h-6 w-6 text-indigo-600" />
                 <span className="ml-3 text-gray-600">
-<<<<<<< HEAD
                   123 Innovation Street
                   <br />
-=======
-                  123 Innovation Street<br />
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                   San Francisco, CA 94105
                 </span>
               </div>
@@ -167,8 +139,4 @@ const Contact = () => {
   );
 };
 
-<<<<<<< HEAD
 export default Contact;
-=======
-export default Contact;
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f

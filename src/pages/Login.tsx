@@ -33,11 +33,7 @@ const Login = () => {
   };
 
   return (
-<<<<<<< HEAD
     <div className="flex min-h-screen flex-col justify-center bg-gray-50 py-12 sm:px-6 lg:px-8">
-=======
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <Brain className="h-12 w-12 text-indigo-600" />
@@ -54,21 +50,11 @@ const Login = () => {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-<<<<<<< HEAD
         <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
           {error && (
             <div className="mb-4 rounded-md bg-red-100 p-2 text-sm text-red-700">{error}</div>
           )}
 
-=======
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          {error && (
-            <div className="mb-4 p-2 text-sm text-red-700 bg-red-100 rounded-md">
-              {error}
-            </div>
-          )}
-          
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -83,11 +69,7 @@ const Login = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-<<<<<<< HEAD
                   className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
-=======
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                 />
               </div>
             </div>
@@ -105,11 +87,7 @@ const Login = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-<<<<<<< HEAD
                   className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
-=======
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                 />
               </div>
             </div>
@@ -120,11 +98,7 @@ const Login = () => {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-<<<<<<< HEAD
                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-=======
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                   Remember me
@@ -142,11 +116,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={loading}
-<<<<<<< HEAD
                 className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
-=======
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
               >
                 {loading ? 'Signing in...' : 'Sign in'}
               </button>
@@ -158,8 +128,4 @@ const Login = () => {
   );
 };
 
-<<<<<<< HEAD
 export default Login;
-=======
-export default Login;
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f

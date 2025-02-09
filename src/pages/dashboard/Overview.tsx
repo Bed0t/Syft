@@ -1,49 +1,19 @@
-<<<<<<< HEAD
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BarChart, Users, Clock, Target, ArrowUp, ArrowDown, Brain, Building } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { supabase } from '../../lib/supabase';
 
-const Overview = () => {
-  const [stats, setStats] = useState({
-    activeUsers: 0,
-    monthlyRevenue: 0,
-    newSignups: 0,
-    supportTickets: 0,
-  });
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchDashboardStats();
-  }, []);
-
-  const fetchDashboardStats = async () => {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) return;
-
-      // Get total applications
-      const { count: applications } = await supabase
-        .from('job_applications')
-        .select('*', { count: 'exact' })
-        .eq('user_id', user.id);
-
-      setStats({
-        activeUsers: applications || 0,
-        monthlyRevenue: 25000,
-        newSignups: 150,
-        supportTickets: 12,
-      });
-    } catch (error) {
-      console.error('Error fetching stats:', error);
-    } finally {
-      setLoading(false);
-    }
+interface OverviewProps {
+  stats: {
+    activeUsers: number;
+    monthlyRevenue: number;
+    newSignups: number;
+    supportTickets: number;
   };
+}
+
+const Overview: React.FC<OverviewProps> = ({ stats }) => {
+  const [loading, setLoading] = useState(true);
 
   return (
     <div className="py-6">
@@ -140,88 +110,10 @@ const Overview = () => {
               <div className="mb-1 text-2xl font-bold">{item.value}</div>
               <div className="text-sm text-gray-500">{item.title}</div>
               <div className="mt-1 text-xs text-gray-400">{item.period}</div>
-=======
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Briefcase, Users, Phone, UserCheck, TrendingUp, Clock } from 'lucide-react';
-import { motion } from 'framer-motion';
-
-const stats = [
-  { name: 'Active Jobs', value: '12', icon: Briefcase, color: 'bg-blue-500' },
-  { name: 'Total Candidates', value: '248', icon: Users, color: 'bg-green-500' },
-  { name: 'Scheduled Interviews', value: '18', icon: Phone, color: 'bg-yellow-500' },
-  { name: 'Hired Candidates', value: '32', icon: UserCheck, color: 'bg-purple-500' },
-];
-
-const recentActivity = [
-  {
-    candidate: 'Sarah Johnson',
-    position: 'Senior Frontend Developer',
-    status: 'Applied',
-    time: '2 hours ago',
-  },
-  {
-    candidate: 'Michael Chen',
-    position: 'Product Manager',
-    status: 'Interview Scheduled',
-    time: '4 hours ago',
-  },
-  {
-    candidate: 'Emma Davis',
-    position: 'UX Designer',
-    status: 'Hired',
-    time: '1 day ago',
-  },
-  {
-    candidate: 'James Wilson',
-    position: 'Backend Developer',
-    status: 'Assessment Completed',
-    time: '1 day ago',
-  },
-  {
-    candidate: 'Lisa Anderson',
-    position: 'Marketing Manager',
-    status: 'Second Interview',
-    time: '2 days ago',
-  },
-];
-
-const Overview = () => {
-  return (
-    <div className="py-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        <h1 className="text-2xl font-semibold text-gray-900">Dashboard Overview</h1>
-      </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        {/* Stats Grid */}
-        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={stat.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white overflow-hidden shadow rounded-lg"
-            >
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className={`flex-shrink-0 p-3 rounded-md ${stat.color}`}>
-                    <stat.icon className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">{stat.name}</dt>
-                      <dd className="text-lg font-semibold text-gray-900">{stat.value}</dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
             </motion.div>
           ))}
         </div>
 
-<<<<<<< HEAD
         {/* Charts Section */}
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Transactions Chart */}
@@ -286,73 +178,10 @@ const Overview = () => {
               <span>Jun</span>
             </div>
           </motion.div>
-=======
-        {/* Application Trends Chart */}
-        <div className="mt-8">
-          <div className="bg-white shadow rounded-lg p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-medium text-gray-900">Application Trends</h2>
-              <div className="flex items-center space-x-2">
-                <TrendingUp className="h-5 w-5 text-green-500" />
-                <span className="text-sm text-green-500">12% increase</span>
-              </div>
-            </div>
-            <div className="h-64 flex items-center justify-center text-gray-500">
-              [Application Trends Chart Placeholder]
-            </div>
-          </div>
-        </div>
-
-        {/* Recent Activity */}
-        <div className="mt-8">
-          <div className="bg-white shadow rounded-lg">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-medium text-gray-900">Recent Activity</h2>
-            </div>
-            <div className="divide-y divide-gray-200">
-              {recentActivity.map((activity, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="px-6 py-4"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0">
-                        <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                          {activity.candidate.charAt(0)}
-                        </div>
-                      </div>
-                      <div className="ml-4">
-                        <h3 className="text-sm font-medium text-gray-900">{activity.candidate}</h3>
-                        <p className="text-sm text-gray-500">{activity.position}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
-                        {activity.status}
-                      </span>
-                      <div className="ml-4 flex items-center text-sm text-gray-500">
-                        <Clock className="h-4 w-4 mr-1" />
-                        {activity.time}
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
         </div>
       </div>
     </div>
   );
 };
 
-<<<<<<< HEAD
 export default Overview;
-=======
-export default Overview;
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f

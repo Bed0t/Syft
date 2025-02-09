@@ -32,24 +32,16 @@ const metrics = [
   },
 ];
 
-const Analytics = () => {
+const Analytics: React.FC = () => {
   return (
     <div className="py-6">
-<<<<<<< HEAD
       <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-=======
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
         <h1 className="text-2xl font-semibold text-gray-900">Analytics</h1>
 
         {/* Key Metrics */}
         <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {metrics.map((metric) => (
-<<<<<<< HEAD
             <div key={metric.name} className="overflow-hidden rounded-lg bg-white shadow">
-=======
-            <div key={metric.name} className="bg-white overflow-hidden shadow rounded-lg">
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
               <div className="p-5">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
@@ -61,11 +53,7 @@ const Analytics = () => {
                   </div>
                   <div className="ml-5 w-0 flex-1">
                     <dl>
-<<<<<<< HEAD
                       <dt className="truncate text-sm font-medium text-gray-500">{metric.name}</dt>
-=======
-                      <dt className="text-sm font-medium text-gray-500 truncate">{metric.name}</dt>
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                       <dd className="flex items-baseline">
                         <div className="text-2xl font-semibold text-gray-900">{metric.value}</div>
                         <div
@@ -90,34 +78,20 @@ const Analytics = () => {
         {/* Charts Section */}
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Hiring Pipeline */}
-<<<<<<< HEAD
           <div className="rounded-lg bg-white p-6 shadow">
             <h2 className="text-lg font-medium text-gray-900">Hiring Pipeline</h2>
             <div className="mt-4">
               <div className="flex h-64 items-center justify-center text-gray-500">
-=======
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900">Hiring Pipeline</h2>
-            <div className="mt-4">
-              <div className="h-64 flex items-center justify-center text-gray-500">
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                 [Hiring Pipeline Chart Placeholder]
               </div>
             </div>
           </div>
 
           {/* Source Quality */}
-<<<<<<< HEAD
           <div className="rounded-lg bg-white p-6 shadow">
             <h2 className="text-lg font-medium text-gray-900">Source Quality</h2>
             <div className="mt-4">
               <div className="flex h-64 items-center justify-center text-gray-500">
-=======
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900">Source Quality</h2>
-            <div className="mt-4">
-              <div className="h-64 flex items-center justify-center text-gray-500">
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                 [Source Quality Chart Placeholder]
               </div>
             </div>
@@ -125,13 +99,8 @@ const Analytics = () => {
         </div>
 
         {/* Detailed Metrics */}
-<<<<<<< HEAD
         <div className="mt-8 rounded-lg bg-white shadow">
           <div className="border-b border-gray-200 px-6 py-4">
-=======
-        <div className="mt-8 bg-white shadow rounded-lg">
-          <div className="px-6 py-4 border-b border-gray-200">
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
             <h2 className="text-lg font-medium text-gray-900">Detailed Metrics</h2>
           </div>
           <div className="p-6">
@@ -150,13 +119,9 @@ const Analytics = () => {
               <div>
                 <div className="flex items-center">
                   <Clock className="h-6 w-6 text-gray-400" />
-<<<<<<< HEAD
                   <span className="ml-2 text-sm font-medium text-gray-500">
                     Interview Completion
                   </span>
-=======
-                  <span className="ml-2 text-sm font-medium text-gray-500">Interview Completion</span>
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                 </div>
                 <div className="mt-2">
                   <span className="text-3xl font-bold text-gray-900">89%</span>
@@ -193,8 +158,4 @@ const Analytics = () => {
   );
 };
 
-<<<<<<< HEAD
 export default Analytics;
-=======
-export default Analytics;
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f

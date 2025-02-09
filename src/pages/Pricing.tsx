@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -95,56 +94,10 @@ const tiers = [
     stripe_price_id: 'price_1QpKpUJzuhoe9LpB6skLhSY3',
     custom: true,
     annualOnly: true,
-=======
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Check } from 'lucide-react';
-
-const tiers = [
-  {
-    name: 'Starter',
-    price: 99,
-    description: 'Perfect for small businesses starting their hiring journey.',
-    features: [
-      'Up to 5 active job postings',
-      '50 AI-powered interviews per month',
-      'Basic analytics dashboard',
-      'Email support',
-      'Job board integrations',
-    ],
-  },
-  {
-    name: 'Professional',
-    price: 199,
-    description: 'Ideal for growing companies with regular hiring needs.',
-    features: [
-      'Up to 15 active job postings',
-      '200 AI-powered interviews per month',
-      'Advanced analytics and reporting',
-      'Priority email & phone support',
-      'Custom interview templates',
-      'API access',
-    ],
-  },
-  {
-    name: 'Enterprise',
-    price: 'Custom',
-    description: 'For large organizations with complex hiring requirements.',
-    features: [
-      'Unlimited job postings',
-      'Unlimited AI-powered interviews',
-      'Custom analytics and reporting',
-      '24/7 dedicated support',
-      'Custom integration options',
-      'Dedicated account manager',
-      'Custom AI model training',
-    ],
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
   },
 ];
 
 const Pricing = () => {
-<<<<<<< HEAD
   const [isAnnual, setIsAnnual] = useState(true);
   const navigate = useNavigate();
 
@@ -499,64 +452,10 @@ const Pricing = () => {
           >
             Contact Sales
           </Link>
-=======
-  return (
-    <div className="bg-gray-50 py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Simple, transparent pricing
-          </h2>
-          <p className="mt-4 text-xl text-gray-600">
-            Choose the plan that best fits your hiring needs
-          </p>
-        </div>
-
-        <div className="mt-16 grid gap-8 lg:grid-cols-3">
-          {tiers.map((tier, index) => (
-            <div
-              key={tier.name}
-              className="relative bg-white rounded-2xl shadow-lg overflow-hidden"
-            >
-              <div className="p-8">
-                <h3 className="text-2xl font-semibold text-gray-900">{tier.name}</h3>
-                <p className="mt-4 text-gray-500">{tier.description}</p>
-                <div className="mt-6">
-                  <p className="text-5xl font-extrabold text-gray-900">
-                    {typeof tier.price === 'number' ? `$${tier.price}` : tier.price}
-                  </p>
-                  <p className="mt-2 text-gray-500">{typeof tier.price === 'number' ? '/month' : ' pricing'}</p>
-                </div>
-
-                <ul className="mt-8 space-y-4">
-                  {tier.features.map((feature) => (
-                    <li key={feature} className="flex items-start">
-                      <Check className="h-5 w-5 text-green-500 shrink-0" />
-                      <span className="ml-3 text-gray-600">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="mt-8">
-                  <Link
-                    to="/login"
-                    className="block w-full bg-indigo-600 text-white text-center py-3 px-4 rounded-md hover:bg-indigo-700 transition-colors"
-                  >
-                    Get started
-                  </Link>
-                </div>
-              </div>
-            </div>
-          ))}
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
         </div>
       </div>
     </div>
   );
 };
 
-<<<<<<< HEAD
 export default Pricing;
-=======
-export default Pricing;
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
