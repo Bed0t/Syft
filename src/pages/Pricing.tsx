@@ -248,24 +248,21 @@ const Pricing = () => {
                         </span>
                       </div>
                     )}
-                    <div className="p-8 flex-1">
+                    <div className="flex-1 p-8">
                       <h3 className="text-xl font-semibold text-gray-900">{tier.name}</h3>
-                      <p className="mt-4 text-sm text-gray-500 h-12">{tier.description}</p>
+                      <p className="mt-4 h-12 text-sm text-gray-500">{tier.description}</p>
                       <p className="mt-8">
-                        <span className="text-4xl font-bold tracking-tight text-gray-900 blur-md select-none">
-                          ${Math.round(price).toLocaleString()}
-                        </span>
-                        <span className="text-base font-medium text-gray-500">
-                          /{tier.type === 'monthly' ? 'mo' : 'project'}
-                        </span>
+                        <div className={`${isPriceBlurred ? 'price-blur' : ''}`}>
+                          <span className="text-4xl font-bold tracking-tight text-gray-900">
+                            ${Math.round(price).toLocaleString()}
+                          </span>
+                          <span className="text-base font-medium text-gray-500">
+                            /{tier.type === 'monthly' ? 'mo' : 'project'}
+                          </span>
+                        </div>
                       </p>
-                      {tier.annual && isAnnual && (
-                        <p className="mt-2 text-sm text-green-600">
-                          Save ${tier.annual.savings.toLocaleString()} annually
-                        </p>
-                      )}
-
-                      <div className="mt-6 text-sm text-indigo-600 font-medium">
+                      
+                      <div className="mt-6 text-sm font-medium text-indigo-600">
                         ROI: {tier.roi}
                       </div>
 
