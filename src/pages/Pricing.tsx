@@ -262,7 +262,7 @@ const Pricing = () => {
                       <p className="mt-4 h-12 text-sm text-gray-500">{tier.description}</p>
                       <div className="mt-8">
                         <div style={isPriceBlurred ? blurStyle : {}}>
-                          <span className="text-4xl font-bold tracking-tight text-gray-900">
+                          <span className="text-4xl font-bold tracking-tight text-gray-900 blur-md select-none">
                             ${Math.round(price).toLocaleString()}
                           </span>
                           <span className="text-base font-medium text-gray-500">
