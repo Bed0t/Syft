@@ -99,6 +99,7 @@ const tiers = [
 
 const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(true);
+  const [isPriceBlurred, setIsPriceBlurred] = useState(false);
   const navigate = useNavigate();
 
   const handleGetStarted = (tier: any) => {
@@ -259,12 +260,14 @@ const Pricing = () => {
                       <h3 className="text-xl font-semibold text-gray-900">{tier.name}</h3>
                       <p className="mt-4 h-12 text-sm text-gray-500">{tier.description}</p>
                       <p className="mt-8">
-                        <span className="text-4xl font-bold tracking-tight text-gray-900">
-                          ${Math.round(price).toLocaleString()}
-                        </span>
-                        <span className="text-base font-medium text-gray-500">
-                          /{tier.type === 'monthly' ? 'mo' : 'project'}
-                        </span>
+                        <div className={`${isPriceBlurred ? 'price-blur' : ''}`}>
+                          <span className="text-4xl font-bold tracking-tight text-gray-900">
+                            ${Math.round(price).toLocaleString()}
+                          </span>
+                          <span className="text-base font-medium text-gray-500">
+                            /{tier.type === 'monthly' ? 'mo' : 'project'}
+                          </span>
+                        </div>
                       </p>
                       {tier.annual && isAnnual && (
                         <p className="mt-2 text-sm text-green-600">
@@ -316,7 +319,7 @@ const Pricing = () => {
         </div>
 
         {/* Cost Savings Breakdown */}
-        <div className="mt-16 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+        <div className={`mt-16 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm ${isPriceBlurred ? 'price-blur' : ''}`}>
           <h3 className="mb-6 text-lg font-semibold text-gray-900">
             Cost Savings Breakdown (Per Hire)
           </h3>
@@ -453,6 +456,15 @@ const Pricing = () => {
             Contact Sales
           </Link>
         </div>
+
+        {isAdmin && (
+          <button 
+            onClick={() => setIsPriceBlurred(!isPriceBlurred)}
+            className="absolute top-4 right-4 px-4 py-2 bg-purple-600 text-white rounded-md"
+          >
+            {isPriceBlurred ? 'Show Prices' : 'Hide Prices'}
+          </button>
+        )}
       </div>
     </div>
   );
