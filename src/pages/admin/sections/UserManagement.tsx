@@ -2,8 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../../lib/supabase';
 import { Search, Filter, MoreVertical } from 'lucide-react';
 
-const UserManagement = () => {
-  const [users, setUsers] = useState([]);
+interface User {
+  id: string;
+  email: string;
+  full_name?: string;
+  company_name?: string;
+  subscription_tier?: string;
+  subscription_status?: string;
+  created_at: string;
+}
+
+const UserManagement: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -27,11 +37,10 @@ const UserManagement = () => {
     }
   };
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (user.full_name && user.full_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (user.company_name && user.company_name.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredUsers = users.filter((user) =>
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.company_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -110,7 +119,7 @@ const UserManagement = () => {
                 </td>
               </tr>
             ) : (
-              filteredUsers.map((user: any) => (
+              filteredUsers.map((user: User) => (
                 <tr key={user.id}>
                   <td className="whitespace-nowrap px-6 py-4">
                     <div className="flex items-center">

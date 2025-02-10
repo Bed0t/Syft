@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
 import { Check, AlertCircle } from 'lucide-react';
 import { postJobToLinkedIn } from '../../lib/linkedin';
 import { supabase } from '../../lib/supabase';
-=======
-import { Check } from 'lucide-react';
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
 
 const steps = [
   { id: 'create', name: 'Create', description: 'Job title and basic info' },
@@ -15,7 +11,6 @@ const steps = [
   { id: 'share', name: 'Share', description: 'Get shareable link' },
 ];
 
-<<<<<<< HEAD
 interface JobBoard {
   id: string;
   name: string;
@@ -50,22 +45,40 @@ const seniorityLevels = [
   'MID_SENIOR',
   'DIRECTOR',
   'EXECUTIVE',
-=======
-const jobBoards = [
-  { id: 'linkedin', name: 'LinkedIn', logo: '🔗' },
-  { id: 'indeed', name: 'Indeed', logo: '💼' },
-  { id: 'glassdoor', name: 'Glassdoor', logo: '🚪' },
-  { id: 'stackoverflow', name: 'Stack Overflow', logo: '⚡' },
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
 ];
+
+interface FormData {
+  title: string;
+  department: string;
+  location: {
+    country: string;
+    city: string;
+  };
+  type: string;
+  seniorityLevel: string;
+  description: string;
+  requirements: string;
+  selectedBoards: string[];
+  salary: {
+    min: string;
+    max: string;
+    currency: string;
+  };
+  skills: string[];
+  benefits: string[];
+}
+
+interface NestedFormData {
+  location: { [key: string]: string };
+  salary: { [key: string]: string };
+}
 
 const CreateJob = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
-<<<<<<< HEAD
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     title: '',
     department: '',
     location: {
@@ -76,14 +89,14 @@ const CreateJob = () => {
     seniorityLevel: 'MID_SENIOR',
     description: '',
     requirements: '',
-    selectedBoards: [] as string[],
+    selectedBoards: [],
     salary: {
       min: '',
       max: '',
       currency: 'USD',
     },
-    skills: [] as string[],
-    benefits: [] as string[],
+    skills: [],
+    benefits: [],
   });
 
   const handleInputChange = (
@@ -96,7 +109,7 @@ const CreateJob = () => {
       setFormData((prev) => ({
         ...prev,
         [parent]: {
-          ...prev[parent as keyof typeof prev],
+          ...(prev[parent as keyof NestedFormData] as { [key: string]: string }),
           [child]: value,
         },
       }));
@@ -110,33 +123,10 @@ const CreateJob = () => {
       ...prev,
       selectedBoards: prev.selectedBoards.includes(boardId)
         ? prev.selectedBoards.filter((id) => id !== boardId)
-=======
-  const [formData, setFormData] = useState({
-    title: '',
-    department: '',
-    location: '',
-    type: 'full-time',
-    description: '',
-    requirements: '',
-    selectedBoards: [],
-  });
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleBoardToggle = (boardId: string) => {
-    setFormData(prev => ({
-      ...prev,
-      selectedBoards: prev.selectedBoards.includes(boardId)
-        ? prev.selectedBoards.filter(id => id !== boardId)
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
         : [...prev.selectedBoards, boardId],
     }));
   };
 
-<<<<<<< HEAD
   const handleSkillAdd = (skill: string) => {
     if (skill && !formData.skills.includes(skill)) {
       setFormData((prev) => ({
@@ -189,20 +179,10 @@ const CreateJob = () => {
       setCurrentStep((prev) => prev + 1);
     } else {
       handleSubmit();
-=======
-  const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(prev => prev + 1);
-    } else {
-      // Submit form
-      console.log('Form submitted:', formData);
-      navigate('/dashboard/jobs');
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
     }
   };
 
   const handleBack = () => {
-<<<<<<< HEAD
     setCurrentStep((prev) => prev - 1);
   };
 
@@ -212,7 +192,7 @@ const CreateJob = () => {
 
     try {
       // Create job in database
-      const { data: job, error: dbError } = await supabase
+      const { error: dbError } = await supabase
         .from('jobs')
         .insert({
           title: formData.title,
@@ -259,25 +239,17 @@ const CreateJob = () => {
     } finally {
       setLoading(false);
     }
-=======
-    setCurrentStep(prev => prev - 1);
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
   };
 
   return (
     <div className="py-6">
-<<<<<<< HEAD
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-=======
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
         <div className="mb-8">
           <h1 className="text-2xl font-semibold text-gray-900">Create New Job</h1>
         </div>
 
         {/* Progress Steps */}
         <nav aria-label="Progress">
-<<<<<<< HEAD
           <ol className="divide-y divide-gray-300 rounded-md border border-gray-300 md:flex md:divide-y-0">
             {steps.map((step, stepIdx) => (
               <li key={step.name} className="relative md:flex md:flex-1">
@@ -286,44 +258,24 @@ const CreateJob = () => {
                     <span className="flex items-center px-6 py-4 text-sm font-medium">
                       <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600">
                         <Check className="h-6 w-6 text-white" />
-=======
-          <ol className="border border-gray-300 rounded-md divide-y divide-gray-300 md:flex md:divide-y-0">
-            {steps.map((step, stepIdx) => (
-              <li key={step.name} className="relative md:flex-1 md:flex">
-                {stepIdx < currentStep ? (
-                  <div className="group flex items-center w-full">
-                    <span className="px-6 py-4 flex items-center text-sm font-medium">
-                      <span className="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-indigo-600 rounded-full">
-                        <Check className="w-6 h-6 text-white" />
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                       </span>
                       <span className="ml-4 text-sm font-medium text-gray-900">{step.name}</span>
                     </span>
                   </div>
                 ) : stepIdx === currentStep ? (
-<<<<<<< HEAD
                   <div
                     className="flex items-center px-6 py-4 text-sm font-medium"
                     aria-current="step"
                   >
                     <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-indigo-600">
-=======
-                  <div className="px-6 py-4 flex items-center text-sm font-medium" aria-current="step">
-                    <span className="flex-shrink-0 w-10 h-10 flex items-center justify-center border-2 border-indigo-600 rounded-full">
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                       <span className="text-indigo-600">{stepIdx + 1}</span>
                     </span>
                     <span className="ml-4 text-sm font-medium text-indigo-600">{step.name}</span>
                   </div>
                 ) : (
                   <div className="group flex items-center">
-<<<<<<< HEAD
                     <span className="flex items-center px-6 py-4 text-sm font-medium">
                       <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-gray-300">
-=======
-                    <span className="px-6 py-4 flex items-center text-sm font-medium">
-                      <span className="flex-shrink-0 w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-full">
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                         <span className="text-gray-500">{stepIdx + 1}</span>
                       </span>
                       <span className="ml-4 text-sm font-medium text-gray-500">{step.name}</span>
@@ -335,7 +287,6 @@ const CreateJob = () => {
           </ol>
         </nav>
 
-<<<<<<< HEAD
         {error && (
           <div className="mt-4 rounded-md bg-red-50 p-4">
             <div className="flex">
@@ -351,25 +302,16 @@ const CreateJob = () => {
 
         {/* Form Steps */}
         <div className="mt-8 rounded-lg bg-white p-6 shadow">
-=======
-        {/* Form Steps */}
-        <div className="mt-8 bg-white shadow rounded-lg p-6">
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
           {currentStep === 0 && (
             <div className="space-y-6">
               <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-<<<<<<< HEAD
                   Job Title*
-=======
-                  Job Title
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                 </label>
                 <input
                   type="text"
                   name="title"
                   id="title"
-<<<<<<< HEAD
                   required
                   value={formData.title}
                   onChange={handleInputChange}
@@ -380,26 +322,15 @@ const CreateJob = () => {
               <div>
                 <label htmlFor="department" className="block text-sm font-medium text-gray-700">
                   Department*
-=======
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
-              <div>
-                <label htmlFor="department" className="block text-sm font-medium text-gray-700">
-                  Department
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                 </label>
                 <input
                   type="text"
                   name="department"
                   id="department"
-<<<<<<< HEAD
                   required
                   value={formData.department}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
+                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 />
               </div>
 
@@ -441,26 +372,6 @@ const CreateJob = () => {
                 </div>
               </div>
 
-=======
-                  value={formData.department}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
-              <div>
-                <label htmlFor="location" className="block text-sm font-medium text-gray-700">
-                  Location
-                </label>
-                <input
-                  type="text"
-                  name="location"
-                  id="location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
               <div>
                 <label htmlFor="type" className="block text-sm font-medium text-gray-700">
                   Employment Type
@@ -470,7 +381,6 @@ const CreateJob = () => {
                   id="type"
                   value={formData.type}
                   onChange={handleInputChange}
-<<<<<<< HEAD
                   className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
                 >
                   {employmentTypes.map((type) => (
@@ -529,16 +439,6 @@ const CreateJob = () => {
                   />
                 </div>
               </div>
-=======
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                >
-                  <option value="full-time">Full Time</option>
-                  <option value="part-time">Part Time</option>
-                  <option value="contract">Contract</option>
-                  <option value="internship">Internship</option>
-                </select>
-              </div>
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
             </div>
           )}
 
@@ -546,17 +446,12 @@ const CreateJob = () => {
             <div className="space-y-6">
               <div>
                 <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-<<<<<<< HEAD
                   Job Description*
-=======
-                  Job Description
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                 </label>
                 <textarea
                   name="description"
                   id="description"
                   rows={6}
-<<<<<<< HEAD
                   required
                   value={formData.description}
                   onChange={handleInputChange}
@@ -568,22 +463,11 @@ const CreateJob = () => {
               <div>
                 <label htmlFor="requirements" className="block text-sm font-medium text-gray-700">
                   Requirements*
-=======
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
-              <div>
-                <label htmlFor="requirements" className="block text-sm font-medium text-gray-700">
-                  Requirements
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                 </label>
                 <textarea
                   name="requirements"
                   id="requirements"
                   rows={6}
-<<<<<<< HEAD
                   required
                   value={formData.requirements}
                   onChange={handleInputChange}
@@ -667,20 +551,12 @@ const CreateJob = () => {
                   />
                 </div>
               </div>
-=======
-                  value={formData.requirements}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
             </div>
           )}
 
           {currentStep === 2 && (
             <div className="space-y-6">
               <div>
-<<<<<<< HEAD
                 <label className="text-sm font-medium text-gray-700">Select Job Boards*</label>
                 <p className="mt-1 text-sm text-gray-500">
                   Choose where you want to advertise this position
@@ -701,24 +577,6 @@ const CreateJob = () => {
                         <span className="absolute inset-0" aria-hidden="true" />
                         <p className="text-sm font-medium text-gray-900">{board.name}</p>
                         {!board.enabled && <p className="text-xs text-gray-500">Coming soon</p>}
-=======
-                <label className="text-sm font-medium text-gray-700">Select Job Boards</label>
-                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  {jobBoards.map((board) => (
-                    <div
-                      key={board.id}
-                      className={`relative rounded-lg border p-4 flex items-center space-x-3 hover:border-gray-400 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500 ${
-                        formData.selectedBoards.includes(board.id)
-                          ? 'border-indigo-500'
-                          : 'border-gray-300'
-                      }`}
-                      onClick={() => handleBoardToggle(board.id)}
-                    >
-                      <div className="flex-shrink-0 text-2xl">{board.logo}</div>
-                      <div className="flex-1 min-w-0">
-                        <span className="absolute inset-0" aria-hidden="true" />
-                        <p className="text-sm font-medium text-gray-900">{board.name}</p>
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                       </div>
                       {formData.selectedBoards.includes(board.id) && (
                         <div className="flex-shrink-0 text-indigo-600">
@@ -735,7 +593,6 @@ const CreateJob = () => {
           {currentStep === 3 && (
             <div className="space-y-6">
               <div>
-<<<<<<< HEAD
                 <h3 className="text-lg font-medium text-gray-900">Review and Share</h3>
                 <div className="mt-6 border-t border-gray-200 pt-6">
                   <dl className="divide-y divide-gray-200">
@@ -776,41 +633,6 @@ const CreateJob = () => {
                       </dd>
                     </div>
                   </dl>
-=======
-                <h3 className="text-lg font-medium text-gray-900">Share Job Posting</h3>
-                <div className="mt-4">
-                  <div className="flex items-center space-x-3">
-                    <input
-                      type="text"
-                      readOnly
-                      value="https://syft.com/jobs/frontend-developer-123"
-                      className="flex-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-gray-50"
-                    />
-                    <button
-                      type="button"
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-                    >
-                      Copy Link
-                    </button>
-                  </div>
-                </div>
-                <div className="mt-6">
-                  <h4 className="text-sm font-medium text-gray-700">Share on Social Media</h4>
-                  <div className="mt-2 flex space-x-4">
-                    <button className="text-gray-400 hover:text-gray-500">
-                      <span className="sr-only">Share on LinkedIn</span>
-                      🔗
-                    </button>
-                    <button className="text-gray-400 hover:text-gray-500">
-                      <span className="sr-only">Share on Twitter</span>
-                      🐦
-                    </button>
-                    <button className="text-gray-400 hover:text-gray-500">
-                      <span className="sr-only">Share on Facebook</span>
-                      📘
-                    </button>
-                  </div>
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
                 </div>
               </div>
             </div>
@@ -822,7 +644,6 @@ const CreateJob = () => {
               type="button"
               onClick={handleBack}
               disabled={currentStep === 0}
-<<<<<<< HEAD
               className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Back
@@ -863,18 +684,6 @@ const CreateJob = () => {
               ) : (
                 'Next'
               )}
-=======
-              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Back
-            </button>
-            <button
-              type="button"
-              onClick={handleNext}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
-            >
-              {currentStep === steps.length - 1 ? 'Publish Job' : 'Next'}
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
             </button>
           </div>
         </div>
@@ -883,8 +692,4 @@ const CreateJob = () => {
   );
 };
 
-<<<<<<< HEAD
 export default CreateJob;
-=======
-export default CreateJob;
->>>>>>> 9e75d840f68ddec40b22b2b8171ed1f9fb1f7b6f
