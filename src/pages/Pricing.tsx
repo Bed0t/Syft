@@ -98,8 +98,11 @@ const tiers = [
 ];
 
 const Pricing = () => {
+  console.log('Pricing component rendering');
+
   const [isAnnual, setIsAnnual] = useState(true);
   const [isPriceBlurred, setIsPriceBlurred] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   const handleGetStarted = (tier: any) => {
@@ -141,6 +144,11 @@ const Pricing = () => {
         duration: 0.2,
       },
     },
+  };
+
+  const blurStyle = {
+    filter: 'blur(4px)',
+    userSelect: 'none' as 'none'
   };
 
   return (
@@ -260,7 +268,7 @@ const Pricing = () => {
                       <h3 className="text-xl font-semibold text-gray-900">{tier.name}</h3>
                       <p className="mt-4 h-12 text-sm text-gray-500">{tier.description}</p>
                       <p className="mt-8">
-                        <div className={`${isPriceBlurred ? 'price-blur' : ''}`}>
+                        <div style={isPriceBlurred ? blurStyle : {}}>
                           <span className="text-4xl font-bold tracking-tight text-gray-900">
                             ${Math.round(price).toLocaleString()}
                           </span>
