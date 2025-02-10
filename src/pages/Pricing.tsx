@@ -97,7 +97,11 @@ const tiers = [
 
 const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(true);
+  const [isPriceBlurred] = useState(false);
   const navigate = useNavigate();
+
+  // Add console log to debug
+  console.log('Pricing component rendering');
 
   const handleContactSales = (tier: any) => {
     // Redirect all users to contact page
