@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import {
   Brain,
@@ -17,10 +17,37 @@ import Billing from './dashboard/Billing';
 import Settings from './dashboard/Settings';
 import CreateJob from './dashboard/CreateJob';
 import JobDetails from './dashboard/JobDetails';
+import { supabase } from '../lib/supabase';
 
 const Dashboard = () => {
   const location = useLocation();
-  
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        setLoading(false);
+      } catch (e) {
+        console.error('Dashboard error:', e);
+        setError(e as Error);
+        setLoading(false);
+      }
+    };
+
+    checkSession();
+  }, []);
+
+  if (loading) {
+    return <div className="flex h-screen items-center justify-center">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="flex h-screen items-center justify-center text-red-600">Error: {error.message}</div>;
+  }
+
   const navigation = [
     { name: 'Overview', icon: LayoutDashboard, path: '' },
     { name: 'Jobs', icon: Briefcase, path: 'jobs' },
@@ -71,7 +98,7 @@ const Dashboard = () => {
       {/* Main content */}
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
         <main className="flex-1 relative overflow-y-auto focus:outline-none">
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<div>Loading page...</div>}>
             <Routes>
               <Route index element={<Overview />} />
               <Route path="jobs" element={<Jobs />} />
