@@ -102,19 +102,8 @@ const Pricing = () => {
   const navigate = useNavigate();
 
   const handleGetStarted = (tier: any) => {
-    const planData = {
-      name: tier.name,
-      price: isAnnual && tier.annual ? tier.annual.price / 12 : tier.price,
-      interval: isAnnual ? 'year' : tier.type,
-      features: tier.features,
-      stripe_price_id: isAnnual && tier.annual ? tier.annual.stripe_price_id : tier.stripe_price_id
-    };
-    
-    if (tier.custom) {
-      navigate('/contact');
-    } else {
-      navigate('/signup', { state: { selectedPlan: planData } });
-    }
+    // Redirect all users to contact page
+    navigate('/contact');
   };
 
   const filteredTiers = tiers.filter(tier => 
