@@ -101,7 +101,7 @@ const Pricing = () => {
   const [isAnnual, setIsAnnual] = useState(true);
   const navigate = useNavigate();
 
-  const handleGetStarted = (tier: any) => {
+  const handleContactSales = (tier: any) => {
     // Redirect all users to contact page
     navigate('/contact');
   };
@@ -283,14 +283,14 @@ const Pricing = () => {
 
                     <div className="p-8 pt-0">
                       <button
-                        onClick={() => handleGetStarted(tier)}
+                        onClick={() => handleContactSales(tier)}
                         className={`block w-full text-center py-3 px-4 rounded-xl font-medium transition-colors ${
                           isScale
                             ? 'bg-indigo-600 text-white hover:bg-indigo-700'
                             : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                         }`}
                       >
-                        {tier.custom ? 'Contact Sales' : 'Get Started'}
+                        {tier.custom ? 'Contact Sales' : 'Contact Sales'}
                       </button>
                       {tier.note && (
                         <p className="mt-4 text-xs text-center text-gray-500">{tier.note}</p>
