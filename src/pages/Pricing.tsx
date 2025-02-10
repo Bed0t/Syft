@@ -30,7 +30,6 @@ const tiers = [
     description: 'Replace a full-time internal recruiter ($85,000/year)',
     features: [
       'Up to 5 active job postings',
-      '75 AI-powered interviews per job',
       'Potential savings of $40,000+ annually',
       'Reduce hiring time by 80%',
       'Automated screening and ranking',
@@ -54,7 +53,6 @@ const tiers = [
     description: 'Replace entire recruitment team ($250,000+/year)',
     features: [
       'Up to 15 active job postings',
-      '200 AI-powered interviews per job',
       'Potential savings of $150,000+ annually',
       'Eliminate recruitment agency fees',
       'Full automation of screening process',
@@ -271,11 +269,18 @@ const Pricing = () => {
                         ROI: {tier.roi}
                       </div>
 
-                      <ul className="mt-8 space-y-4">
+                      <ul className="mt-8 space-y-2 min-h-[400px]">
                         {paddedFeatures.map((feature, index) => (
-                          <li key={index} className={`flex items-start ${!feature ? 'invisible' : ''}`}>
-                            <Check className={`h-5 w-5 shrink-0 ${isScale ? 'text-indigo-600' : 'text-gray-400'}`} />
-                            <span className="ml-3 text-sm text-gray-600">{feature || 'placeholder'}</span>
+                          <li
+                            key={index}
+                            className={`flex items-start ${!feature ? 'invisible' : ''} h-10`}
+                          >
+                            <Check
+                              className={`h-5 w-5 shrink-0 mt-0.5 ${isScale ? 'text-indigo-600' : 'text-gray-400'}`}
+                            />
+                            <span className="ml-3 text-sm text-gray-600 leading-tight">
+                              {feature || 'placeholder'}
+                            </span>
                           </li>
                         ))}
                       </ul>
