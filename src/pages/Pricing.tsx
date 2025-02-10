@@ -17,11 +17,11 @@ const tiers = [
       'Reduce time-to-hire by 75%',
       'Basic analytics dashboard',
       'Email support',
-      'Job board distribution',
+      'Job board distribution'
     ],
     roi: '$1,700+ savings per hire',
     note: 'Perfect for: Single role hiring',
-    stripe_price_id: 'price_1QpKV8Jzuhoe9LpBcqmxkjve',
+    stripe_price_id: 'price_1QpKV8Jzuhoe9LpBcqmxkjve'
   },
   {
     name: 'Growth',
@@ -36,7 +36,7 @@ const tiers = [
       'Automated screening and ranking',
       'Advanced analytics dashboard',
       'Priority support',
-      'Custom interview templates',
+      'Custom interview templates'
     ],
     roi: '$7,000+ monthly savings compared to internal team',
     note: 'Perfect for: Companies hiring 5-10 roles monthly',
@@ -44,8 +44,8 @@ const tiers = [
     annual: {
       price: 33504,
       savings: 8376,
-      stripe_price_id: 'price_1QpKoTJzuhoe9LpBYQRZOXFK',
-    },
+      stripe_price_id: 'price_1QpKoTJzuhoe9LpBYQRZOXFK'
+    }
   },
   {
     name: 'Scale',
@@ -60,7 +60,7 @@ const tiers = [
       'Full automation of screening process',
       'Custom analytics & reporting',
       'Dedicated success manager',
-      'Custom integration options',
+      'Custom integration options'
     ],
     roi: '$15,000+ monthly savings vs. traditional methods',
     note: 'Perfect for: High-volume hiring (10-20 roles monthly)',
@@ -68,8 +68,8 @@ const tiers = [
     annual: {
       price: 57504,
       savings: 14376,
-      stripe_price_id: 'price_1QpKpUJzuhoe9LpB6skLhSY3',
-    },
+      stripe_price_id: 'price_1QpKpUJzuhoe9LpB6skLhSY3'
+    }
   },
   {
     name: 'Enterprise',
@@ -87,22 +87,18 @@ const tiers = [
       'White-label options',
       'API access',
       'Dedicated support team',
-      'Custom development',
+      'Custom development'
     ],
     roi: '$50,000+ monthly savings for large-scale hiring',
     note: 'Perfect for: Large organizations (20+ roles monthly)',
     stripe_price_id: 'price_1QpKpUJzuhoe9LpB6skLhSY3',
     custom: true,
-    annualOnly: true,
-  },
+    annualOnly: true
+  }
 ];
 
 const Pricing = () => {
-  console.log('Pricing component rendering');
-
   const [isAnnual, setIsAnnual] = useState(true);
-  const [isPriceBlurred, setIsPriceBlurred] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
   const handleGetStarted = (tier: any) => {
@@ -111,9 +107,9 @@ const Pricing = () => {
       price: isAnnual && tier.annual ? tier.annual.price / 12 : tier.price,
       interval: isAnnual ? 'year' : tier.type,
       features: tier.features,
-      stripe_price_id: isAnnual && tier.annual ? tier.annual.stripe_price_id : tier.stripe_price_id,
+      stripe_price_id: isAnnual && tier.annual ? tier.annual.stripe_price_id : tier.stripe_price_id
     };
-
+    
     if (tier.custom) {
       navigate('/contact');
     } else {
@@ -121,9 +117,11 @@ const Pricing = () => {
     }
   };
 
-  const filteredTiers = tiers.filter((tier) => isAnnual || (!isAnnual && !tier.annualOnly));
+  const filteredTiers = tiers.filter(tier => 
+    isAnnual || (!isAnnual && !tier.annualOnly)
+  );
 
-  const maxFeatures = Math.max(...filteredTiers.map((tier) => tier.features.length));
+  const maxFeatures = Math.max(...filteredTiers.map(tier => tier.features.length));
 
   const cardVariants = {
     enter: (index: number) => ({
@@ -132,30 +130,25 @@ const Pricing = () => {
       transition: {
         duration: 0.3,
         delay: index * 0.1,
-        type: 'spring',
+        type: "spring",
         stiffness: 300,
-        damping: 25,
-      },
+        damping: 25
+      }
     }),
     exit: {
       x: 50,
       opacity: 0,
       transition: {
-        duration: 0.2,
-      },
-    },
-  };
-
-  const blurStyle = {
-    filter: 'blur(4px)',
-    userSelect: 'none' as 'none'
+        duration: 0.2
+      }
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header */}
-        <div className="mx-auto max-w-3xl text-center">
+        <div className="text-center max-w-3xl mx-auto">
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
             Save Up to 70% on Traditional Recruitment Costs
           </h1>
@@ -165,34 +158,34 @@ const Pricing = () => {
         </div>
 
         {/* Traditional Costs Comparison */}
-        <div className="mt-12 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-          <h3 className="mb-6 text-lg font-semibold text-gray-900">
+        <div className="mt-12 bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
             Traditional Recruitment Costs in Australia
           </h3>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="flex items-start">
-              <DollarSign className="mt-1 h-6 w-6 text-indigo-600" />
+              <DollarSign className="h-6 w-6 text-indigo-600 mt-1" />
               <div className="ml-3">
                 <p className="font-medium">Internal Recruitment</p>
                 <p className="text-gray-600">~$4,700 per hire</p>
               </div>
             </div>
             <div className="flex items-start">
-              <Users className="mt-1 h-6 w-6 text-indigo-600" />
+              <Users className="h-6 w-6 text-indigo-600 mt-1" />
               <div className="ml-3">
                 <p className="font-medium">External Recruitment</p>
                 <p className="text-gray-600">15-25% of annual salary</p>
               </div>
             </div>
             <div className="flex items-start">
-              <Clock className="mt-1 h-6 w-6 text-indigo-600" />
+              <Clock className="h-6 w-6 text-indigo-600 mt-1" />
               <div className="ml-3">
                 <p className="font-medium">Average Time-to-Hire</p>
                 <p className="text-gray-600">40+ days</p>
               </div>
             </div>
             <div className="flex items-start">
-              <Calculator className="mt-1 h-6 w-6 text-indigo-600" />
+              <Calculator className="h-6 w-6 text-indigo-600 mt-1" />
               <div className="ml-3">
                 <p className="font-medium">HR Personnel Costs</p>
                 <p className="text-gray-600">$40-60+/hour</p>
@@ -203,12 +196,12 @@ const Pricing = () => {
 
         {/* Billing Toggle */}
         <div className="mt-12 flex justify-center">
-          <div className="relative flex items-center rounded-full bg-gray-100 p-1">
+          <div className="relative flex items-center p-1 bg-gray-100 rounded-full">
             <button
               onClick={() => setIsAnnual(false)}
               className={`${
                 !isAnnual ? 'bg-white shadow-sm' : ''
-              } relative rounded-full px-4 py-2 text-sm font-medium transition-all duration-200`}
+              } relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200`}
             >
               Monthly billing
             </button>
@@ -216,10 +209,10 @@ const Pricing = () => {
               onClick={() => setIsAnnual(true)}
               className={`${
                 isAnnual ? 'bg-white shadow-sm' : ''
-              } relative rounded-full px-4 py-2 text-sm font-medium transition-all duration-200`}
+              } relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200`}
             >
               Annual billing
-              <span className="absolute -right-2 -top-2 rounded-full bg-green-500 px-2 py-0.5 text-xs font-semibold text-white">
+              <span className="absolute -top-2 -right-2 px-2 py-0.5 text-xs font-semibold text-white bg-green-500 rounded-full">
                 Save 20%
               </span>
             </button>
@@ -232,18 +225,22 @@ const Pricing = () => {
             <motion.div
               key={isAnnual ? 'annual' : 'monthly'}
               className={`grid grid-cols-1 gap-8 ${
-                isAnnual ? 'lg:grid-cols-4' : 'mx-auto max-w-5xl lg:grid-cols-3'
+                isAnnual 
+                  ? 'lg:grid-cols-4' 
+                  : 'lg:grid-cols-3 max-w-5xl mx-auto'
               }`}
               initial="exit"
               animate="enter"
               exit="exit"
             >
               {filteredTiers.map((tier, index) => {
-                const price = isAnnual && tier.annual ? tier.annual.price / 12 : tier.price;
+                const price = isAnnual && tier.annual
+                  ? tier.annual.price / 12
+                  : tier.price;
 
                 const paddedFeatures = [
                   ...tier.features,
-                  ...Array(maxFeatures - tier.features.length).fill(''),
+                  ...Array(maxFeatures - tier.features.length).fill('')
                 ];
 
                 const isScale = tier.name === 'Scale';
@@ -253,29 +250,27 @@ const Pricing = () => {
                     key={tier.name}
                     custom={index}
                     variants={cardVariants}
-                    className={`relative flex flex-col rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:border-indigo-600 hover:shadow-lg ${
+                    className={`relative bg-white border border-gray-200 rounded-2xl shadow-sm hover:border-indigo-600 hover:shadow-lg transition-all duration-200 flex flex-col ${
                       isScale ? 'border-indigo-600 shadow-md' : ''
                     }`}
                   >
                     {isScale && (
-                      <div className="absolute inset-x-0 -top-5 flex justify-center">
+                      <div className="absolute -top-5 inset-x-0 flex justify-center">
                         <span className="inline-flex rounded-full bg-indigo-600 px-4 py-1 text-sm font-semibold text-white">
                           Most Popular
                         </span>
                       </div>
                     )}
-                    <div className="flex-1 p-8">
+                    <div className="p-8 flex-1">
                       <h3 className="text-xl font-semibold text-gray-900">{tier.name}</h3>
-                      <p className="mt-4 h-12 text-sm text-gray-500">{tier.description}</p>
+                      <p className="mt-4 text-sm text-gray-500 h-12">{tier.description}</p>
                       <p className="mt-8">
-                        <div style={isPriceBlurred ? blurStyle : {}}>
-                          <span className="text-4xl font-bold tracking-tight text-gray-900">
-                            ${Math.round(price).toLocaleString()}
-                          </span>
-                          <span className="text-base font-medium text-gray-500">
-                            /{tier.type === 'monthly' ? 'mo' : 'project'}
-                          </span>
-                        </div>
+                        <span className="text-4xl font-bold tracking-tight text-gray-900 blur-md select-none">
+                          ${Math.round(price).toLocaleString()}
+                        </span>
+                        <span className="text-base font-medium text-gray-500">
+                          /{tier.type === 'monthly' ? 'mo' : 'project'}
+                        </span>
                       </p>
                       {tier.annual && isAnnual && (
                         <p className="mt-2 text-sm text-green-600">
@@ -283,22 +278,15 @@ const Pricing = () => {
                         </p>
                       )}
 
-                      <div className="mt-6 text-sm font-medium text-indigo-600">
+                      <div className="mt-6 text-sm text-indigo-600 font-medium">
                         ROI: {tier.roi}
                       </div>
 
                       <ul className="mt-8 space-y-4">
                         {paddedFeatures.map((feature, index) => (
-                          <li
-                            key={index}
-                            className={`flex items-start ${!feature ? 'invisible' : ''}`}
-                          >
-                            <Check
-                              className={`h-5 w-5 shrink-0 ${isScale ? 'text-indigo-600' : 'text-gray-400'}`}
-                            />
-                            <span className="ml-3 text-sm text-gray-600">
-                              {feature || 'placeholder'}
-                            </span>
+                          <li key={index} className={`flex items-start ${!feature ? 'invisible' : ''}`}>
+                            <Check className={`h-5 w-5 shrink-0 ${isScale ? 'text-indigo-600' : 'text-gray-400'}`} />
+                            <span className="ml-3 text-sm text-gray-600">{feature || 'placeholder'}</span>
                           </li>
                         ))}
                       </ul>
@@ -307,7 +295,7 @@ const Pricing = () => {
                     <div className="p-8 pt-0">
                       <button
                         onClick={() => handleGetStarted(tier)}
-                        className={`block w-full rounded-xl px-4 py-3 text-center font-medium transition-colors ${
+                        className={`block w-full text-center py-3 px-4 rounded-xl font-medium transition-colors ${
                           isScale
                             ? 'bg-indigo-600 text-white hover:bg-indigo-700'
                             : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
@@ -316,7 +304,7 @@ const Pricing = () => {
                         {tier.custom ? 'Contact Sales' : 'Get Started'}
                       </button>
                       {tier.note && (
-                        <p className="mt-4 text-center text-xs text-gray-500">{tier.note}</p>
+                        <p className="mt-4 text-xs text-center text-gray-500">{tier.note}</p>
                       )}
                     </div>
                   </motion.div>
@@ -327,13 +315,13 @@ const Pricing = () => {
         </div>
 
         {/* Cost Savings Breakdown */}
-        <div className={`mt-16 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm ${isPriceBlurred ? 'price-blur' : ''}`}>
-          <h3 className="mb-6 text-lg font-semibold text-gray-900">
+        <div className="mt-16 bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
             Cost Savings Breakdown (Per Hire)
           </h3>
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h4 className="mb-4 font-medium text-gray-900">Traditional Costs:</h4>
+              <h4 className="font-medium text-gray-900 mb-4">Traditional Costs:</h4>
               <ul className="space-y-2">
                 <li className="flex justify-between">
                   <span className="text-gray-600">Internal Recruitment:</span>
@@ -351,18 +339,18 @@ const Pricing = () => {
                   <span className="text-gray-600">Screening Time (15 hours @ $60/hr):</span>
                   <span className="font-medium">$900</span>
                 </li>
-                <li className="mt-2 flex justify-between border-t pt-2">
+                <li className="flex justify-between border-t pt-2 mt-2">
                   <span className="font-medium">Total Traditional Cost:</span>
                   <span className="font-medium">$7,300/hire</span>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="mb-4 font-medium text-gray-900">Syft Cost:</h4>
+              <h4 className="font-medium text-gray-900 mb-4">Syft Cost:</h4>
               <ul className="space-y-2">
                 <li className="flex justify-between">
                   <span className="text-gray-600">Essential Hire ($149.50/interview):</span>
-                  <span className="font-medium">$2,990</span>
+                  <span className="font-medium blur-md select-none">$2,990</span>
                 </li>
                 <li className="flex justify-between">
                   <span className="text-gray-600">Automated Screening:</span>
@@ -376,13 +364,13 @@ const Pricing = () => {
                   <span className="text-gray-600">Time-to-Hire:</span>
                   <span className="font-medium">5-7 days</span>
                 </li>
-                <li className="mt-2 flex justify-between border-t pt-2">
+                <li className="flex justify-between border-t pt-2 mt-2">
                   <span className="font-medium">Total Syft Cost:</span>
-                  <span className="font-medium">$2,990/hire</span>
+                  <span className="font-medium blur-md select-none">$2,990/hire</span>
                 </li>
-                <li className="flex justify-between font-medium text-green-600">
+                <li className="flex justify-between text-green-600 font-medium">
                   <span>Total Savings:</span>
-                  <span>$4,310/hire (59% reduction)</span>
+                  <span className="blur-md select-none">$4,310/hire (59% reduction)</span>
                 </li>
               </ul>
             </div>
@@ -390,9 +378,9 @@ const Pricing = () => {
         </div>
 
         {/* Additional Value */}
-        <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h3 className="mb-4 text-lg font-medium text-gray-900">Additional Value</h3>
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Additional Value</h3>
             <ul className="space-y-3">
               {[
                 'Cut to the chase, Reduce bias in hiring!',
@@ -401,7 +389,7 @@ const Pricing = () => {
                 'Precise data-driven decisions',
                 'Scalable process',
                 'Compliance documentation',
-                '24/7 operation',
+                '24/7 operation'
               ].map((value, index) => (
                 <li key={index} className="flex items-center">
                   <Check className="h-5 w-5 text-indigo-600" />
@@ -411,15 +399,15 @@ const Pricing = () => {
             </ul>
           </div>
 
-          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h3 className="mb-4 text-lg font-medium text-gray-900">Annual Commitment Benefits</h3>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Annual Commitment Benefits</h3>
             <ul className="space-y-3">
               {[
                 '20% discount on all plans',
                 'Additional AI interviews',
                 'Premium support',
                 'Custom integrations',
-                'ROI reporting',
+                'ROI reporting'
               ].map((benefit, index) => (
                 <li key={index} className="flex items-center">
                   <Check className="h-5 w-5 text-indigo-600" />
@@ -429,15 +417,15 @@ const Pricing = () => {
             </ul>
           </div>
 
-          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-            <h3 className="mb-4 text-lg font-medium text-gray-900">Enterprise Value Adds</h3>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Enterprise Value Adds</h3>
             <ul className="space-y-3">
               {[
                 'Custom AI model training',
                 'White-label options',
                 'API access',
                 'Dedicated support',
-                'Custom development',
+                'Custom development'
               ].map((value, index) => (
                 <li key={index} className="flex items-center">
                   <Check className="h-5 w-5 text-indigo-600" />
@@ -453,26 +441,17 @@ const Pricing = () => {
           <h3 className="text-2xl font-semibold text-gray-900">
             Ready to transform your hiring process?
           </h3>
-          <p className="mx-auto mt-4 max-w-2xl text-gray-600">
-            Contact us for custom ROI calculation, volume pricing, multi-year agreements, or
-            integration planning.
+          <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
+            Contact us for custom ROI calculation, volume pricing,
+            multi-year agreements, or integration planning.
           </p>
           <Link
             to="/contact"
-            className="mt-8 inline-flex items-center rounded-xl border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white transition-colors hover:bg-indigo-700"
+            className="mt-8 inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
           >
             Contact Sales
           </Link>
         </div>
-
-        {isAdmin && (
-          <button 
-            onClick={() => setIsPriceBlurred(!isPriceBlurred)}
-            className="absolute top-4 right-4 px-4 py-2 bg-purple-600 text-white rounded-md"
-          >
-            {isPriceBlurred ? 'Show Prices' : 'Hide Prices'}
-          </button>
-        )}
       </div>
     </div>
   );
