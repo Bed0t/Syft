@@ -1,5 +1,5 @@
-import React from 'react';
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import React, { Suspense } from 'react';
+import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import {
   Brain,
   LayoutDashboard,
@@ -71,16 +71,19 @@ const Dashboard = () => {
       {/* Main content */}
       <div className="flex flex-col w-0 flex-1 overflow-hidden">
         <main className="flex-1 relative overflow-y-auto focus:outline-none">
-          <Routes>
-            <Route path="/" element={<Overview />} />
-            <Route path="/jobs" element={<Jobs />} />
-            <Route path="/jobs/create" element={<CreateJob />} />
-            <Route path="/jobs/:id" element={<JobDetails />} />
-            <Route path="/candidates" element={<Candidates />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/billing" element={<Billing />} />
-            <Route path="/settings" element={<Settings />} />
-          </Routes>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              <Route index element={<Overview />} />
+              <Route path="jobs" element={<Jobs />} />
+              <Route path="jobs/create" element={<CreateJob />} />
+              <Route path="jobs/:id" element={<JobDetails />} />
+              <Route path="candidates" element={<Candidates />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route path="billing" element={<Billing />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </Suspense>
         </main>
       </div>
     </div>
