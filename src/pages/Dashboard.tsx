@@ -9,15 +9,17 @@ import {
   CreditCard,
   Settings as SettingsIcon,
 } from 'lucide-react';
-import Overview from './dashboard/Overview';
-import Jobs from './dashboard/Jobs';
-import Candidates from './dashboard/Candidates';
-import Analytics from './dashboard/Analytics';
-import Billing from './dashboard/Billing';
-import Settings from './dashboard/Settings';
-import CreateJob from './dashboard/CreateJob';
-import JobDetails from './dashboard/JobDetails';
 import { supabase } from '../lib/supabase';
+
+// Lazy load components to improve initial load time
+const Overview = React.lazy(() => import('./dashboard/Overview'));
+const Jobs = React.lazy(() => import('./dashboard/Jobs'));
+const Candidates = React.lazy(() => import('./dashboard/Candidates'));
+const Analytics = React.lazy(() => import('./dashboard/Analytics'));
+const Billing = React.lazy(() => import('./dashboard/Billing'));
+const Settings = React.lazy(() => import('./dashboard/Settings'));
+const CreateJob = React.lazy(() => import('./dashboard/CreateJob'));
+const JobDetails = React.lazy(() => import('./dashboard/JobDetails'));
 
 const Dashboard = () => {
   const location = useLocation();
@@ -29,6 +31,9 @@ const Dashboard = () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) throw error;
+        if (!session) {
+          throw new Error('No active session');
+        }
         setLoading(false);
       } catch (e) {
         console.error('Dashboard error:', e);
@@ -38,14 +43,29 @@ const Dashboard = () => {
     };
 
     checkSession();
+
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        window.location.href = '/login';
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   if (loading) {
-    return <div className="flex h-screen items-center justify-center">Loading...</div>;
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent"></div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="flex h-screen items-center justify-center text-red-600">Error: {error.message}</div>;
+    return <Navigate to="/login" replace state={{ error: error.message }} />;
   }
 
   const navigation = [
@@ -96,9 +116,15 @@ const Dashboard = () => {
       </div>
 
       {/* Main content */}
-      <div className="flex flex-col w-0 flex-1 overflow-hidden">
-        <main className="flex-1 relative overflow-y-auto focus:outline-none">
-          <Suspense fallback={<div>Loading page...</div>}>
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <main className="relative flex-1 overflow-y-auto focus:outline-none">
+          <Suspense 
+            fallback={
+              <div className="flex h-full items-center justify-center">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent"></div>
+              </div>
+            }
+          >
             <Routes>
               <Route index element={<Overview />} />
               <Route path="jobs" element={<Jobs />} />
