@@ -126,7 +126,7 @@ const Contact = () => {
                   placeholder="John Doe"
                 />
               </div>
-              
+
               {/* ... other form fields with same styling ... */}
               
               <button
@@ -135,8 +135,8 @@ const Contact = () => {
               >
                 Send Message
               </button>
-            </form>
-          </div>
+          </form>
+        </div>
 
           {/* Info Section */}
           <div className="lg:pl-8">
