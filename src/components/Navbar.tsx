@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, Brain, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
@@ -12,7 +12,11 @@ const Navbar = () => {
         <div className="flex h-16 justify-between">
           <div className="flex">
             <Link to="/" className="flex flex-shrink-0 items-center">
-              <Brain className="h-8 w-8 text-indigo-600" />
+              <img 
+                src="/logo.png" 
+                alt="Syft Logo" 
+                className="h-8 w-auto"
+              />
               <span className="ml-2 text-2xl font-bold text-gray-900">Syft</span>
             </Link>
           </div>

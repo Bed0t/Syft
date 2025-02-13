@@ -62,13 +62,18 @@ const Home = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="relative"
             >
-              <div className="relative rounded-2xl overflow-hidden">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="/hero-image.jpg" // Replace with your actual image
-                  alt="AI Recruitment"
+                  src="/images/hero-recruitment.jpg" // Update this path to your actual image
+                  alt="AI Recruitment Platform"
                   className="w-full h-[600px] object-cover"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1f37]/80 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-[#1a1f37]/20" />
               </div>
+              
+              {/* Blue glow effect */}
+              <div className="absolute -inset-4 bg-blue-500/20 blur-3xl rounded-full -z-10" />
             </motion.div>
           </div>
         </div>
@@ -78,7 +83,7 @@ const Home = () => {
       <div className="py-24 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">The Recruitment Industry is Broken. Let’s Fix It</h2>
+            <h2 className="text-3xl font-bold text-gray-900">Recruitment is Broken.  Let's Fix It</h2>
             <p className="mt-4 text-xl text-gray-600">
               Technology is revolutionising how we hire. Are you ready to leave outdated practices behind?
             </p>

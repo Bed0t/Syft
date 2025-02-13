@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Brain, Twitter, Linkedin, Mail } from 'lucide-react';
+import { Twitter, Linkedin, Mail } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -9,7 +9,11 @@ const Footer = () => {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="space-y-4">
             <div className="flex items-center">
-              <Brain className="h-8 w-8 text-indigo-600" />
+              <img 
+                src="/logo.png" 
+                alt="Syft Logo" 
+                className="h-8 w-auto"
+              />
               <span className="ml-2 text-2xl font-bold text-gray-900">Syft</span>
             </div>
             <p className="text-gray-600">Revolutionizing recruitment with AI-powered solutions.</p>
