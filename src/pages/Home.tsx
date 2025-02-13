@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Brain, ArrowRight, Check, Star, Users, Briefcase, Globe } from 'lucide-react';
+import { Brain, ArrowRight, Users, BarChart2, Globe2, UserCheck } from 'lucide-react';
 
 const Home = () => {
   return (
-    <div className="bg-white">
+    <div>
       {/* Hero Section */}
-      <div className="relative min-h-screen flex items-center">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 to-white z-0" />
+      <div className="relative min-h-screen flex items-center bg-[#1a1f37]">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a1f37] to-[#2a1f67] z-0" />
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -18,48 +18,40 @@ const Home = () => {
               transition={{ duration: 0.6 }}
               className="max-w-2xl"
             >
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight">
-                Hire Smarter with
-                <span className="text-indigo-600 block mt-2">AI-Powered Recruitment</span>
+              <h1 className="text-5xl sm:text-6xl font-bold text-white leading-tight">
+                Revolutionize Your
+                <span className="text-[#4361ee] block mt-2">Hiring Process</span>
               </h1>
-              <p className="mt-6 text-xl text-gray-600 leading-relaxed">
-                Transform your hiring process with AI-driven candidate screening, automated interviews, and data-driven decisions. Save time, reduce costs, and find the perfect fit.
+              <p className="mt-6 text-xl text-gray-300 leading-relaxed">
+                Transform recruitment with AI-powered candidate screening, automated interviews, and data-driven decisions. Cut costs by 60% and hire 3x faster.
               </p>
               <div className="mt-10 flex flex-col sm:flex-row gap-4">
                 <Link
                   to="/contact"
-                  className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-indigo-600 rounded-full hover:bg-indigo-700 transition-colors group"
+                  className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-[#4361ee] rounded-lg hover:bg-[#3651d4] transition-colors"
                 >
-                  Get started
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  Get Started
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
                 <Link
                   to="/pricing"
-                  className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-indigo-600 bg-indigo-50 rounded-full hover:bg-indigo-100 transition-colors"
+                  className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
                 >
-                  View Plans
+                  View Pricing
                 </Link>
               </div>
-              <div className="mt-10 flex items-center gap-6">
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4].map((i) => (
-                    <img
-                      key={i}
-                      className="w-10 h-10 rounded-full border-2 border-white"
-                      src={`https://randomuser.me/api/portraits/men/${i}.jpg`}
-                      alt="User"
-                    />
-                  ))}
+              <div className="mt-12 grid grid-cols-3 gap-8">
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-white">75%</div>
+                  <div className="mt-1 text-gray-400">Time Saved</div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                    ))}
-                  </div>
-                  <span className="text-gray-600">
-                    <span className="font-semibold">4.9/5</span> from 2,000+ reviews
-                  </span>
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-white">60%</div>
+                  <div className="mt-1 text-gray-400">Cost Reduction</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-4xl font-bold text-white">3x</div>
+                  <div className="mt-1 text-gray-400">Better Hires</div>
                 </div>
               </div>
             </motion.div>
@@ -70,13 +62,12 @@ const Home = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="relative"
             >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+              <div className="relative rounded-2xl overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80"
+                  src="/hero-image.jpg" // Replace with your actual image
                   alt="AI Recruitment"
                   className="w-full h-[600px] object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/50 to-transparent" />
               </div>
             </motion.div>
           </div>
@@ -86,52 +77,44 @@ const Home = () => {
       {/* Features Section */}
       <div className="py-24 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-4xl font-bold text-gray-900"
-            >
-              Everything you need to hire better
-            </motion.h2>
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900">The Future of Recruitment</h2>
             <p className="mt-4 text-xl text-gray-600">
-              Our AI-powered platform streamlines your entire recruitment process
+              Our AI-powered platform streamlines every aspect of your hiring process
             </p>
           </div>
 
-          <div className="mt-20 grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+          <div className="mt-20 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
                 icon: Brain,
                 title: "AI-Powered Screening",
-                description: "Automatically screen and rank candidates based on skills and experience"
+                description: "Automatically evaluate candidates based on skills, experience, and cultural fit"
+              },
+              {
+                icon: UserCheck,
+                title: "Smart Interviews",
+                description: "Conduct AI interviews that adapt in real-time to candidate responses"
               },
               {
                 icon: Users,
-                title: "Smart Interviews",
-                description: "Conduct AI interviews that adapt to candidate responses"
+                title: "Bias Elimination",
+                description: "Ensure fair hiring decisions with AI-driven objective assessments"
               },
               {
-                icon: Globe,
+                icon: Globe2,
                 title: "Global Talent Pool",
-                description: "Access top talent from anywhere in the world"
+                description: "Access and evaluate top talent from anywhere in the world"
               },
               {
-                icon: Briefcase,
-                title: "Job Board Integration",
-                description: "Post to multiple job boards with one click"
+                icon: BarChart2,
+                title: "Analytics Dashboard",
+                description: "Track hiring metrics and optimize your recruitment process"
               },
               {
-                icon: Star,
-                title: "Skills Assessment",
-                description: "Evaluate technical and soft skills objectively"
-              },
-              {
-                icon: Check,
-                title: "Bias Reduction",
-                description: "Make fair hiring decisions with AI-driven insights"
+                icon: Users,
+                title: "Team Collaboration",
+                description: "Streamline hiring decisions with built-in collaboration tools"
               }
             ].map((feature, index) => (
               <motion.div
@@ -140,36 +123,56 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="relative group"
+                className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow"
               >
-                <div className="absolute -inset-4 rounded-xl bg-gradient-to-r from-indigo-50 to-indigo-100 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative">
-                  <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center">
-                    <feature.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="mt-6 text-xl font-semibold text-gray-900">
-                    {feature.title}
-                  </h3>
-                  <p className="mt-2 text-gray-600">
-                    {feature.description}
-                  </p>
+                <div className="w-12 h-12 rounded-lg bg-[#4361ee]/10 flex items-center justify-center">
+                  <feature.icon className="w-6 h-6 text-[#4361ee]" />
                 </div>
+                <h3 className="mt-4 text-xl font-semibold text-gray-900">
+                  {feature.title}
+                </h3>
+                <p className="mt-2 text-gray-600">
+                  {feature.description}
+                </p>
               </motion.div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Stats Section */}
-      <div className="bg-indigo-50 py-24">
+      {/* How It Works */}
+      <div className="py-24 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900">How It Works</h2>
+            <p className="mt-4 text-xl text-gray-600">
+              Four simple steps to transform your hiring process
+            </p>
+          </div>
+
+          <div className="mt-20 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { number: "75%", label: "Time Saved" },
-              { number: "60%", label: "Cost Reduction" },
-              { number: "3x", label: "Better Hires" },
-              { number: "24/7", label: "AI Availability" }
-            ].map((stat, index) => (
+              {
+                number: "01",
+                title: "Post Your Job",
+                description: "Create and distribute your job posting across multiple platforms with one click"
+              },
+              {
+                number: "02",
+                title: "Smart Interviews",
+                description: "Automated AI interviews assess technical and soft skills"
+              },
+              {
+                number: "03",
+                title: "AI Screening",
+                description: "Our AI system will rank candidates based on your requirements"
+              },
+              {
+                number: "04",
+                title: "Make the Hire",
+                description: "Review top candidates and make data-driven hiring decisions"
+              }
+            ].map((step, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -178,12 +181,9 @@ const Home = () => {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="text-5xl font-bold text-indigo-600">
-                  {stat.number}
-                </div>
-                <div className="mt-2 text-lg text-gray-600">
-                  {stat.label}
-                </div>
+                <div className="text-4xl font-bold text-[#4361ee]/30">{step.number}</div>
+                <h3 className="mt-4 text-xl font-semibold text-gray-900">{step.title}</h3>
+                <p className="mt-2 text-gray-600">{step.description}</p>
               </motion.div>
             ))}
           </div>
@@ -191,30 +191,28 @@ const Home = () => {
       </div>
 
       {/* CTA Section */}
-      <div className="relative py-24 bg-white">
+      <div className="py-24 bg-[#1a1f37]">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative z-10 bg-indigo-600 rounded-3xl px-8 py-16 md:p-16 overflow-hidden">
-            <div className="absolute inset-0">
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-indigo-800" />
-              <div className="absolute inset-0 bg-grid-white/10 bg-grid" />
-            </div>
-            
-            <div className="relative z-10 max-w-2xl">
-              <h2 className="text-3xl md:text-4xl font-bold text-white">
-                Ready to transform your hiring process?
-              </h2>
-              <p className="mt-4 text-lg text-indigo-100">
-                Join thousands of companies already using Syft to revolutionize their recruitment.
-                Get started today.
-              </p>
-              <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-indigo-600 bg-white rounded-full hover:bg-indigo-50 transition-colors"
-                >
-                  Let's talk!
-                </Link>
-              </div>
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="text-3xl font-bold text-white">
+              Ready to transform your hiring process?
+            </h2>
+            <p className="mt-4 text-xl text-gray-300">
+              Join thousands of companies already using Syft to revolutionize their recruitment. Get started today and see the difference AI-powered hiring can make.
+            </p>
+            <div className="mt-10 flex justify-center gap-4">
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-[#4361ee] rounded-lg hover:bg-[#3651d4] transition-colors"
+              >
+                Get Started
+              </Link>
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                Talk to Sales
+              </Link>
             </div>
           </div>
         </div>
