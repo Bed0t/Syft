@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import logo from '../assets/images/3.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +14,7 @@ const Navbar = () => {
           <div className="flex">
             <Link to="/" className="flex flex-shrink-0 items-center">
               <img 
-                src="/logo.png" 
+                src={logo}
                 alt="Syft Logo" 
                 className="h-8 w-auto"
               />
