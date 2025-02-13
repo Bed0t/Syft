@@ -19,11 +19,11 @@ const Home = () => {
               className="max-w-2xl"
             >
               <h1 className="text-5xl sm:text-6xl font-bold text-white leading-tight">
-                Revolutionize Your
+                Revolutionise Your
                 <span className="text-[#4361ee] block mt-2">Hiring Process</span>
               </h1>
               <p className="mt-6 text-xl text-gray-300 leading-relaxed">
-                Transform recruitment with AI-powered candidate screening, automated interviews, and data-driven decisions. Cut costs by 60% and hire 3x faster.
+                Transform recruitment with AI-powered candidate screening, automated interviews, and data-driven decisions. Cut costs by upto 70% and hire 3x faster.
               </p>
               <div className="mt-10 flex flex-col sm:flex-row gap-4">
                 <Link
@@ -78,9 +78,9 @@ const Home = () => {
       <div className="py-24 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">The Future of Recruitment</h2>
+            <h2 className="text-3xl font-bold text-gray-900">The Recruitment Industry is Broken. Let’s Fix It</h2>
             <p className="mt-4 text-xl text-gray-600">
-              Our AI-powered platform streamlines every aspect of your hiring process
+              Technology is revolutionising how we hire. Are you ready to leave outdated practices behind?
             </p>
           </div>
 
@@ -88,33 +88,33 @@ const Home = () => {
             {[
               {
                 icon: Brain,
-                title: "AI-Powered Screening",
-                description: "Automatically evaluate candidates based on skills, experience, and cultural fit"
+                title: "Smarter Decisions",
+                description: "Our Algorithm analyzes real-time data to evaluate candidates based on skills, experience, and cultural fits"
               },
               {
                 icon: UserCheck,
-                title: "Smart Interviews",
-                description: "Conduct AI interviews that adapt in real-time to candidate responses"
+                title: "Skills over Keywords",
+                description: "Focus on what candidates can do, not just the buzz words on their resumes"
               },
               {
                 icon: Users,
                 title: "Bias Elimination",
-                description: "Ensure fair hiring decisions with AI-driven objective assessments"
+                description: "Never miss out on top talent, we'll let you know when a good hire is in front of you"
               },
               {
                 icon: Globe2,
-                title: "Global Talent Pool",
-                description: "Access and evaluate top talent from anywhere in the world"
+                title: "Dilute that hiring team",
+                description: "Stop paying for a team of assistants to do a job that can be done by an algorithm"
               },
               {
                 icon: BarChart2,
-                title: "Analytics Dashboard",
-                description: "Track hiring metrics and optimize your recruitment process"
+                title: "Time & Cost Savings",
+                description: "Automate repetitive tasks and say goodbye to agencies prioritise their % cut over your long-term success"
               },
               {
                 icon: Users,
-                title: "Team Collaboration",
-                description: "Streamline hiring decisions with built-in collaboration tools"
+                title: "Make fact-based decisions",
+                description: "Stop hiring based on gut feelings, let the data and facts guide your decisions"
               }
             ].map((feature, index) => (
               <motion.div
@@ -144,7 +144,7 @@ const Home = () => {
       <div className="py-24 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">How It Works</h2>
+            <h2 className="text-3xl font-bold text-gray-900">Want to Know How This Works?</h2>
             <p className="mt-4 text-xl text-gray-600">
               Four simple steps to transform your hiring process
             </p>
@@ -160,12 +160,12 @@ const Home = () => {
               {
                 number: "02",
                 title: "Smart Interviews",
-                description: "Automated AI interviews assess technical and soft skills"
+                description: "We analyze the call with the candidate assess technical and soft skills, that may have been missed in the resume"
               },
               {
                 number: "03",
                 title: "AI Screening",
-                description: "Our AI system will rank candidates based on your requirements"
+                description: "Our algorithm will rank candidates based on your requirements"
               },
               {
                 number: "04",
@@ -195,10 +195,10 @@ const Home = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold text-white">
-              Ready to transform your hiring process?
+              Now, are you ready to transform your hiring process?
             </h2>
             <p className="mt-4 text-xl text-gray-300">
-              Join thousands of companies already using Syft to revolutionize their recruitment. Get started today and see the difference AI-powered hiring can make.
+              Join hundreds of others already using Syft to revolutionise their recruitment. Get started today and see the difference our solution can make to your business, and your pockets.
             </p>
             <div className="mt-10 flex justify-center gap-4">
               <Link
