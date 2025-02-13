@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Twitter, Linkedin, Mail } from 'lucide-react';
-import logo from '../assets/images/3.png';
 
 const Footer = () => {
   return (
@@ -11,7 +10,7 @@ const Footer = () => {
           <div className="space-y-4">
             <div className="flex items-center">
               <img 
-                src={logo}
+                src="/images/logo.png"
                 alt="Syft Logo" 
                 className="h-8 w-auto"
               />

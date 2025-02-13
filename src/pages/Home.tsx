@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Brain, ArrowRight, Users, BarChart2, Globe2, UserCheck } from 'lucide-react';
-import heroImage from '../assets/images/hero-recruitment.jpg';
 
 const Home = () => {
   return (
@@ -65,7 +64,7 @@ const Home = () => {
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src={heroImage}
+                  src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=80"
                   alt="AI Recruitment Platform"
                   className="w-full h-[600px] object-cover"
                 />
