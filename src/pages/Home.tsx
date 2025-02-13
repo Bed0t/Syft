@@ -19,11 +19,11 @@ const Home = () => {
               className="max-w-2xl"
             >
               <h1 className="text-5xl sm:text-6xl font-bold text-white leading-tight">
-                Revolutionise Your
+                Revolutionize Your
                 <span className="text-[#4361ee] block mt-2">Hiring Process</span>
               </h1>
               <p className="mt-6 text-xl text-gray-300 leading-relaxed">
-                Transform recruitment with streamlined candidate screening, automated interviews, and data-driven decisions. Cut costs by upto 70% and hire 3x faster.
+                Transform recruitment with AI-powered candidate screening, automated interviews, and data-driven decisions. Cut costs by 60% and hire 3x faster.
               </p>
               <div className="mt-10 flex flex-col sm:flex-row gap-4">
                 <Link
@@ -62,13 +62,12 @@ const Home = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="relative"
             >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+              <div className="relative rounded-2xl overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80"
-                  alt="AI Recruitment Platform"
+                  src="/hero-image.jpg" // Replace with your actual image
+                  alt="AI Recruitment"
                   className="w-full h-[600px] object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1f37]/50 to-transparent" />
               </div>
             </motion.div>
           </div>
