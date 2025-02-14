@@ -17,7 +17,7 @@ import { AuthProvider, useAuth } from './context/auth';
 
 // Protected Route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth();
+  const { user, loading, isAdmin } = useAuth();
 
   if (loading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
@@ -25,6 +25,11 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   if (!user) {
     return <Navigate to="/login" replace />;
+  }
+
+  // Redirect admin users to admin dashboard
+  if (isAdmin) {
+    return <Navigate to="/admin/dashboard" replace />;
   }
 
   return <>{children}</>;
@@ -52,7 +57,13 @@ const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
           .gte('expires_at', new Date().toISOString())
           .single();
 
-        setSessionValid(!error && !!data);
+        if (error || !data) {
+          // If session is invalid, sign out
+          await supabase.auth.signOut();
+          setSessionValid(false);
+        } else {
+          setSessionValid(true);
+        }
       } catch {
         setSessionValid(false);
       } finally {
@@ -67,7 +78,12 @@ const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
-  if (!isAdmin || !sessionValid) {
+  // Redirect non-admin users to regular dashboard
+  if (!isAdmin) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  if (!sessionValid) {
     return <Navigate to="/admin/login" replace />;
   }
 

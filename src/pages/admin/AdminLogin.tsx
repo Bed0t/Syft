@@ -20,9 +20,8 @@ interface FormData {
 const AdminLogin: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAdmin } = useAuth();
+  const { user, isAdmin } = useAuth();
   const state = location.state as LocationState;
-  const returnUrl = state?.returnUrl || '/admin/dashboard';
 
   const [formData, setFormData] = useState<FormData>({
     email: '',
@@ -31,12 +30,16 @@ const AdminLogin: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Redirect to admin dashboard if already authenticated as admin
+  // Redirect based on user type
   useEffect(() => {
-    if (isAdmin) {
-      navigate('/admin/dashboard');
+    if (user) {
+      if (isAdmin) {
+        navigate('/admin/dashboard', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
     }
-  }, [isAdmin, navigate]);
+  }, [user, isAdmin, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +47,9 @@ const AdminLogin: React.FC = () => {
     setLoading(true);
 
     try {
+      // Sign out any existing session first
+      await supabase.auth.signOut();
+
       const { data: { user }, error: signInError } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
@@ -66,7 +72,7 @@ const AdminLogin: React.FC = () => {
       // Create admin session
       await createAdminSession(user.id);
 
-      // The auth context will handle the admin status update and redirect
+      // Auth context will handle the redirect
     } catch (err) {
       const errorMessage = err instanceof AuthError 
         ? err.message 
@@ -74,9 +80,7 @@ const AdminLogin: React.FC = () => {
       setError(errorMessage);
       
       // If there was an error, sign out to clean up the auth state
-      if (err instanceof Error && err.message.includes('Unauthorized')) {
-        await supabase.auth.signOut();
-      }
+      await supabase.auth.signOut();
     } finally {
       setLoading(false);
     }
