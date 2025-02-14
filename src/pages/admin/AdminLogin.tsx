@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Shield } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { AuthError } from '@supabase/supabase-js';
+import { createAdminSession } from '../../lib/admin/auth';
 
 interface LocationState {
   from?: Location;
@@ -53,12 +54,21 @@ const AdminLogin: React.FC = () => {
         throw new Error('Unauthorized access - Admin privileges required');
       }
 
-      navigate(returnUrl);
+      // Create admin session
+      await createAdminSession(user.id);
+
+      // Navigate to admin dashboard
+      navigate('/admin/dashboard');
     } catch (err) {
       const errorMessage = err instanceof AuthError 
         ? err.message 
         : 'Failed to sign in';
       setError(errorMessage);
+      
+      // If there was an error, sign out to clean up the auth state
+      if (err instanceof Error && err.message.includes('Unauthorized')) {
+        await supabase.auth.signOut();
+      }
     } finally {
       setLoading(false);
     }

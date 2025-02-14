@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
 import Navbar from './components/Navbar';
@@ -32,40 +32,55 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 // Protected Admin Route component
 const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth();
-  const [isAdmin, setIsAdmin] = React.useState(false);
-  const [adminLoading, setAdminLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const checkAdminStatus = async () => {
       try {
-        if (!user) {
-          setAdminLoading(false);
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) throw sessionError;
+
+        if (!session?.user) {
+          setLoading(false);
           return;
         }
 
-        const { data: adminData, error: adminError } = await supabase
-          .from('admin_users')
-          .select('id')
-          .eq('id', user.id)
-          .single();
-          
-        if (adminError) throw adminError;
-        setIsAdmin(!!adminData);
+        // Check both admin status and valid session
+        const [adminData, hasValidSession] = await Promise.all([
+          supabase
+            .from('admin_users')
+            .select('id')
+            .eq('id', session.user.id)
+            .single(),
+          supabase
+            .from('admin_sessions')
+            .select('id')
+            .eq('user_id', session.user.id)
+            .gte('expires_at', new Date().toISOString())
+            .single()
+        ]);
+
+        if (adminData.error || !adminData.data || !hasValidSession.data) {
+          // If not an admin or no valid session, sign out
+          await supabase.auth.signOut();
+          throw new Error('Unauthorized access or expired session');
+        }
+
+        setIsAdmin(true);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        setError(err instanceof Error ? err.message : 'Authentication failed');
+        setIsAdmin(false);
       } finally {
-        setAdminLoading(false);
+        setLoading(false);
       }
     };
 
-    if (!loading) {
-      checkAdminStatus();
-    }
-  }, [user, loading]);
+    checkAdminStatus();
+  }, []);
 
-  if (loading || adminLoading) {
+  if (loading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
