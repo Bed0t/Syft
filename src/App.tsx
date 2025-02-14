@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Pricing from './pages/Pricing';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import ThankYou from './pages/ThankYou';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import AdminLogin from './pages/admin/AdminLogin';
@@ -142,6 +143,7 @@ function App() {
           <Route path="/pricing" element={<Layout><Pricing /></Layout>} />
           <Route path="/about" element={<Layout><About /></Layout>} />
           <Route path="/contact" element={<Layout><Contact /></Layout>} />
+          <Route path="/thank-you" element={<Layout><ThankYou /></Layout>} />
           
           <Route
             path="/dashboard/*"
