@@ -32,63 +32,42 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 // Protected Admin Route component
 const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { user, loading, isAdmin } = useAuth();
+  const [sessionValid, setSessionValid] = useState(true);
+  const [sessionLoading, setSessionLoading] = useState(true);
 
   useEffect(() => {
-    const checkAdminStatus = async () => {
+    const checkAdminSession = async () => {
+      if (!user || !isAdmin) {
+        setSessionValid(false);
+        setSessionLoading(false);
+        return;
+      }
+
       try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) throw sessionError;
+        const { data, error } = await supabase
+          .from('admin_sessions')
+          .select('id')
+          .eq('user_id', user.id)
+          .gte('expires_at', new Date().toISOString())
+          .single();
 
-        if (!session?.user) {
-          setLoading(false);
-          return;
-        }
-
-        // Check both admin status and valid session
-        const [adminData, hasValidSession] = await Promise.all([
-          supabase
-            .from('admin_users')
-            .select('id')
-            .eq('id', session.user.id)
-            .single(),
-          supabase
-            .from('admin_sessions')
-            .select('id')
-            .eq('user_id', session.user.id)
-            .gte('expires_at', new Date().toISOString())
-            .single()
-        ]);
-
-        if (adminData.error || !adminData.data || !hasValidSession.data) {
-          // If not an admin or no valid session, sign out
-          await supabase.auth.signOut();
-          throw new Error('Unauthorized access or expired session');
-        }
-
-        setIsAdmin(true);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Authentication failed');
-        setIsAdmin(false);
+        setSessionValid(!error && !!data);
+      } catch {
+        setSessionValid(false);
       } finally {
-        setLoading(false);
+        setSessionLoading(false);
       }
     };
 
-    checkAdminStatus();
-  }, []);
+    checkAdminSession();
+  }, [user, isAdmin]);
 
-  if (loading) {
+  if (loading || sessionLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
-  if (error) {
-    return <div className="flex items-center justify-center min-h-screen text-red-500">{error}</div>;
-  }
-
-  if (!isAdmin) {
+  if (!isAdmin || !sessionValid) {
     return <Navigate to="/admin/login" replace />;
   }
 

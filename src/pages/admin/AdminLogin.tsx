@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Shield } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { AuthError } from '@supabase/supabase-js';
 import { createAdminSession } from '../../lib/admin/auth';
+import { useAuth } from '../../context/auth';
 
 interface LocationState {
   from?: Location;
@@ -19,6 +20,7 @@ interface FormData {
 const AdminLogin: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isAdmin } = useAuth();
   const state = location.state as LocationState;
   const returnUrl = state?.returnUrl || '/admin/dashboard';
 
@@ -28,6 +30,13 @@ const AdminLogin: React.FC = () => {
   });
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+
+  // Redirect to admin dashboard if already authenticated as admin
+  useEffect(() => {
+    if (isAdmin) {
+      navigate('/admin/dashboard');
+    }
+  }, [isAdmin, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,8 +66,7 @@ const AdminLogin: React.FC = () => {
       // Create admin session
       await createAdminSession(user.id);
 
-      // Navigate to admin dashboard
-      navigate('/admin/dashboard');
+      // The auth context will handle the admin status update and redirect
     } catch (err) {
       const errorMessage = err instanceof AuthError 
         ? err.message 
