@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import {
   Brain,
@@ -9,7 +9,7 @@ import {
   CreditCard,
   Settings as SettingsIcon,
 } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { useAuth } from '../context/auth'; // We'll create this file next
 
 // Lazy load components to improve initial load time
 const Overview = React.lazy(() => import('./dashboard/Overview'));
@@ -21,61 +21,32 @@ const Settings = React.lazy(() => import('./dashboard/Settings'));
 const CreateJob = React.lazy(() => import('./dashboard/CreateJob'));
 const JobDetails = React.lazy(() => import('./dashboard/JobDetails'));
 
+const LoadingSpinner = () => (
+  <div className="flex h-screen items-center justify-center">
+    <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent"></div>
+  </div>
+);
+
+const navigation = [
+  { name: 'Overview', icon: LayoutDashboard, path: '' },
+  { name: 'Jobs', icon: Briefcase, path: 'jobs' },
+  { name: 'Candidates', icon: Users, path: 'candidates' },
+  { name: 'Analytics', icon: BarChart, path: 'analytics' },
+  { name: 'Billing', icon: CreditCard, path: 'billing' },
+  { name: 'Settings', icon: SettingsIcon, path: 'settings' },
+];
+
 const Dashboard = () => {
   const location = useLocation();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) throw error;
-        if (!session) {
-          throw new Error('No active session');
-        }
-        setLoading(false);
-      } catch (e) {
-        console.error('Dashboard error:', e);
-        setError(e as Error);
-        setLoading(false);
-      }
-    };
-
-    checkSession();
-
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
-        window.location.href = '/login';
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+  const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent"></div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
-  if (error) {
-    return <Navigate to="/login" replace state={{ error: error.message }} />;
+  if (!user) {
+    return <Navigate to="/login" replace />;
   }
-
-  const navigation = [
-    { name: 'Overview', icon: LayoutDashboard, path: '' },
-    { name: 'Jobs', icon: Briefcase, path: 'jobs' },
-    { name: 'Candidates', icon: Users, path: 'candidates' },
-    { name: 'Analytics', icon: BarChart, path: 'analytics' },
-    { name: 'Billing', icon: CreditCard, path: 'billing' },
-    { name: 'Settings', icon: SettingsIcon, path: 'settings' },
-  ];
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -118,13 +89,7 @@ const Dashboard = () => {
       {/* Main content */}
       <div className="flex flex-1 flex-col overflow-hidden">
         <main className="relative flex-1 overflow-y-auto focus:outline-none">
-          <Suspense 
-            fallback={
-              <div className="flex h-full items-center justify-center">
-                <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent"></div>
-              </div>
-            }
-          >
+          <Suspense fallback={<LoadingSpinner />}>
             <Routes>
               <Route index element={<Overview />} />
               <Route path="jobs" element={<Jobs />} />
