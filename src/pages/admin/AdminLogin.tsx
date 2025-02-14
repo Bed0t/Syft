@@ -32,12 +32,8 @@ const AdminLogin: React.FC = () => {
 
   // Redirect based on user type
   useEffect(() => {
-    if (user) {
-      if (isAdmin) {
-        navigate('/admin/dashboard', { replace: true });
-      } else {
-        navigate('/dashboard', { replace: true });
-      }
+    if (user && isAdmin) {
+      navigate('/admin/dashboard', { replace: true });
     }
   }, [user, isAdmin, navigate]);
 
@@ -47,36 +43,65 @@ const AdminLogin: React.FC = () => {
     setLoading(true);
 
     try {
+      console.log('Starting admin login process...');
+      
       // Sign out any existing session first
       await supabase.auth.signOut();
+      console.log('Signed out existing session');
 
-      const { data: { user }, error: signInError } = await supabase.auth.signInWithPassword({
+      const { data: { user: authUser }, error: signInError } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       });
 
-      if (signInError) throw signInError;
-      if (!user) throw new Error('No user returned after login');
+      if (signInError) {
+        console.error('Sign in error:', signInError);
+        throw signInError;
+      }
+      
+      if (!authUser) {
+        console.error('No user returned after login');
+        throw new Error('No user returned after login');
+      }
+
+      console.log('User authenticated successfully:', authUser.id);
 
       // Verify admin status
       const { data: adminData, error: adminError } = await supabase
         .from('admin_users')
-        .select('id')
-        .eq('id', user.id)
+        .select('*')
+        .eq('id', authUser.id)
         .single();
 
-      if (adminError || !adminData) {
+      console.log('Admin check result:', { adminData, adminError });
+
+      if (adminError) {
+        console.error('Admin verification error:', adminError);
+        throw new Error(`Admin verification failed: ${adminError.message}`);
+      }
+
+      if (!adminData) {
+        console.error('User is not an admin');
         throw new Error('Unauthorized access - Admin privileges required');
       }
 
       // Create admin session
-      await createAdminSession(user.id);
+      console.log('Creating admin session...');
+      const session = await createAdminSession(authUser.id);
+      console.log('Admin session created:', session);
 
-      // Auth context will handle the redirect
+      // Force refresh the auth context
+      const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) {
+        console.error('Session refresh error:', sessionError);
+      }
+      console.log('Session refreshed:', currentSession);
+
     } catch (err) {
+      console.error('Login error:', err);
       const errorMessage = err instanceof AuthError 
         ? err.message 
-        : 'Failed to sign in';
+        : err instanceof Error ? err.message : 'Failed to sign in';
       setError(errorMessage);
       
       // If there was an error, sign out to clean up the auth state
