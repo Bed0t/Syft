@@ -70,7 +70,7 @@ const Contact = () => {
 
     } catch (err: any) {
       console.error('Error submitting form:', err);
-      setError('Failed to submit form. Please try again or contact us directly.');
+      setError(err?.message || err?.error_description || 'Failed to submit form. Please try again or contact us directly.');
     } finally {
       setIsSubmitting(false);
     }

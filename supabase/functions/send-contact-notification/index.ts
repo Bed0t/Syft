@@ -13,11 +13,22 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Request method:', req.method)
+    console.log('Request headers:', Object.fromEntries(req.headers.entries()))
+    
     const body = await req.json()
-    console.log('Received request body:', body)
+    console.log('Raw request body:', JSON.stringify(body, null, 2))
     
     // Handle both wrapped and unwrapped formData
     const formData = body.formData || body
+    console.log('Processed form data:', JSON.stringify(formData, null, 2))
+
+    // Log environment variables (without showing actual values)
+    console.log('Environment variables present:', {
+      TITAN_EMAIL_USERNAME: !!Deno.env.get('TITAN_EMAIL_USERNAME'),
+      TITAN_EMAIL_PASSWORD: !!Deno.env.get('TITAN_EMAIL_PASSWORD')
+    })
+
     const {
       firstName,
       lastName,
@@ -29,8 +40,6 @@ serve(async (req) => {
       message,
       preferredContact
     } = formData
-
-    console.log('Parsed form data:', formData)
 
     const client = new SmtpClient()
 
@@ -122,7 +131,8 @@ The Syft Team
     return new Response(
       JSON.stringify({ 
         error: error.message,
-        details: error.stack
+        details: error.stack,
+        type: error.constructor.name
       }),
       { 
         status: 500, 
