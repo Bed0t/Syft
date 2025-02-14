@@ -9,7 +9,7 @@ import {
   CreditCard,
   Settings as SettingsIcon,
 } from 'lucide-react';
-import { useAuth } from '../context/auth'; // We'll create this file next
+import { useAuth } from '../context/auth';
 
 // Lazy load components to improve initial load time
 const Overview = React.lazy(() => import('./dashboard/Overview'));
@@ -40,12 +40,9 @@ const Dashboard = () => {
   const location = useLocation();
   const { user, loading } = useAuth();
 
+  // We don't need to check for user here since ProtectedRoute already does that
   if (loading) {
     return <LoadingSpinner />;
-  }
-
-  if (!user) {
-    return <Navigate to="/login" replace />;
   }
 
   return (

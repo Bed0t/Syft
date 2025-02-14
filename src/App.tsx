@@ -1,6 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -14,43 +13,14 @@ import Dashboard from './pages/Dashboard';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import SignupFlow from './components/SignupFlow';
-import { User } from '@supabase/supabase-js';
-import { AuthProvider } from './context/auth';
+import { AuthProvider, useAuth } from './context/auth';
 
 // Protected Route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const getSession = async () => {
-      try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) throw sessionError;
-        setUser(session?.user ?? null);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getSession();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
+  const { user, loading } = useAuth();
 
   if (loading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
-  }
-
-  if (error) {
-    return <div className="flex items-center justify-center min-h-screen text-red-500">{error}</div>;
   }
 
   if (!user) {
@@ -62,18 +32,16 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 // Protected Admin Route component
 const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { user, loading } = useAuth();
+  const [isAdmin, setIsAdmin] = React.useState(false);
+  const [adminLoading, setAdminLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const checkAdminStatus = async () => {
       try {
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
-        if (userError) throw userError;
-
         if (!user) {
-          setLoading(false);
+          setAdminLoading(false);
           return;
         }
 
@@ -88,14 +56,16 @@ const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
-        setLoading(false);
+        setAdminLoading(false);
       }
     };
 
-    checkAdminStatus();
-  }, []);
+    if (!loading) {
+      checkAdminStatus();
+    }
+  }, [user, loading]);
 
-  if (loading) {
+  if (loading || adminLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
