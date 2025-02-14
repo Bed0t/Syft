@@ -55,11 +55,7 @@ const Contact = () => {
 
       // Send email notification using Edge Function
       const { error: emailError } = await supabase.functions.invoke('send-contact-notification', {
-        body: {
-          to: 'contact@usesyft.com',
-          subject: `New Contact Form Submission - ${formData.company}`,
-          formData
-        }
+        body: formData
       });
 
       if (emailError) throw emailError;
