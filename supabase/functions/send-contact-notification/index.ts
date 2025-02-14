@@ -23,11 +23,26 @@ serve(async (req) => {
     const formData = body.formData || body
     console.log('Processed form data:', JSON.stringify(formData, null, 2))
 
+    // Validate required fields
+    const requiredFields = ['firstName', 'lastName', 'email', 'company', 'message']
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        throw new Error(`Missing required field: ${field}`)
+      }
+    }
+
     // Log environment variables (without showing actual values)
+    const username = Deno.env.get('TITAN_EMAIL_USERNAME')
+    const password = Deno.env.get('TITAN_EMAIL_PASSWORD')
+    
     console.log('Environment variables present:', {
-      TITAN_EMAIL_USERNAME: !!Deno.env.get('TITAN_EMAIL_USERNAME'),
-      TITAN_EMAIL_PASSWORD: !!Deno.env.get('TITAN_EMAIL_PASSWORD')
+      TITAN_EMAIL_USERNAME: !!username,
+      TITAN_EMAIL_PASSWORD: !!password
     })
+
+    if (!username || !password) {
+      throw new Error('Missing email configuration')
+    }
 
     const {
       firstName,
@@ -44,13 +59,15 @@ serve(async (req) => {
     const client = new SmtpClient()
 
     try {
-      // Configure Titan SMTP
+      // Configure Titan SMTP with correct settings from Titan documentation
       console.log('Connecting to SMTP server...')
       await client.connectTLS({
         hostname: "smtp.titan.email",
-        port: 587,
-        username: Deno.env.get('TITAN_EMAIL_USERNAME'),
-        password: Deno.env.get('TITAN_EMAIL_PASSWORD')
+        port: 465,  // Correct port from Titan documentation
+        username: username,
+        password: password,
+        tls: true,
+        secure: true  // Required for port 465 SSL/TLS
       })
       console.log('Connected to SMTP server successfully')
 
@@ -58,9 +75,9 @@ serve(async (req) => {
 
       // Send notification to company email
       console.log('Sending notification email...')
-      await client.send({
-        from: Deno.env.get('TITAN_EMAIL_USERNAME'),
-        to: Deno.env.get('TITAN_EMAIL_USERNAME'),
+      const notificationResult = await client.send({
+        from: username,
+        to: username,
         subject: `New Contact Form Submission - ${company}`,
         content: `
 New Contact Form Submission
@@ -69,26 +86,26 @@ Contact Information:
 ------------------
 Name: ${fullName}
 Email: ${email}
-Phone: ${phone}
+Phone: ${phone || 'Not provided'}
 Preferred Contact Method: ${preferredContact}
 
 Company Details:
 --------------
 Company: ${company}
-Job Title: ${jobTitle}
-Selected Plan: ${selectedPlan}
+Job Title: ${jobTitle || 'Not provided'}
+Selected Plan: ${selectedPlan || 'Not specified'}
 
 Message:
 --------
 ${message}
         `,
       })
-      console.log('Notification email sent successfully')
+      console.log('Notification email sent successfully:', notificationResult)
 
       // Send confirmation to user
       console.log('Sending confirmation email...')
-      await client.send({
-        from: Deno.env.get('TITAN_EMAIL_USERNAME'),
+      const confirmationResult = await client.send({
+        from: username,
         to: email,
         subject: "Thank you for contacting Syft",
         content: `
@@ -98,7 +115,7 @@ Thank you for reaching out to Syft. We've received your message and our team wil
 
 Here's a summary of your submission:
 - Company: ${company}
-- Selected Plan: ${selectedPlan}
+- Selected Plan: ${selectedPlan || 'Not specified'}
 - Preferred Contact Method: ${preferredContact}
 
 We appreciate your interest in Syft and look forward to discussing how we can help you.
@@ -107,7 +124,7 @@ Best regards,
 The Syft Team
         `,
       })
-      console.log('Confirmation email sent successfully')
+      console.log('Confirmation email sent successfully:', confirmationResult)
 
       await client.close()
       console.log('SMTP connection closed')
