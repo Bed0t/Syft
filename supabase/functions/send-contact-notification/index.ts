@@ -1,5 +1,5 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { SmtpClient } from 'https://deno.land/x/smtp/mod.ts'
+import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -56,26 +56,28 @@ serve(async (req) => {
       preferredContact
     } = formData
 
-    const client = new SmtpClient()
+    console.log('Creating SMTP client...')
+    const client = new SMTPClient({
+      connection: {
+        hostname: "smtp.titan.email",
+        port: 465,
+        tls: true,
+        auth: {
+          username: username,
+          password: password,
+        },
+      },
+      debug: {
+        log: true,
+      },
+    });
 
     try {
-      // Configure Titan SMTP with correct settings from Titan documentation
-      console.log('Connecting to SMTP server...')
-      await client.connectTLS({
-        hostname: "smtp.titan.email",
-        port: 465,  // Correct port from Titan documentation
-        username: username,
-        password: password,
-        tls: true,
-        secure: true  // Required for port 465 SSL/TLS
-      })
-      console.log('Connected to SMTP server successfully')
-
       const fullName = `${firstName} ${lastName}`
 
       // Send notification to company email
-      console.log('Sending notification email...')
-      const notificationResult = await client.send({
+      console.log('Preparing notification email...')
+      const notificationEmail = {
         from: username,
         to: username,
         subject: `New Contact Form Submission - ${company}`,
@@ -99,12 +101,14 @@ Message:
 --------
 ${message}
         `,
-      })
-      console.log('Notification email sent successfully:', notificationResult)
+      };
+      console.log('Sending notification email...')
+      await client.send(notificationEmail);
+      console.log('Notification email sent successfully')
 
       // Send confirmation to user
-      console.log('Sending confirmation email...')
-      const confirmationResult = await client.send({
+      console.log('Preparing confirmation email...')
+      const confirmationEmail = {
         from: username,
         to: email,
         subject: "Thank you for contacting Syft",
@@ -123,9 +127,12 @@ We appreciate your interest in Syft and look forward to discussing how we can he
 Best regards,
 The Syft Team
         `,
-      })
-      console.log('Confirmation email sent successfully:', confirmationResult)
+      };
+      console.log('Sending confirmation email...')
+      await client.send(confirmationEmail);
+      console.log('Confirmation email sent successfully')
 
+      console.log('Closing SMTP connection...')
       await client.close()
       console.log('SMTP connection closed')
 
@@ -134,22 +141,35 @@ The Syft Team
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     } catch (smtpError) {
-      console.error('SMTP Error:', smtpError)
-      throw new Error(`SMTP Error: ${smtpError.message}`)
+      console.error('SMTP Error:', {
+        message: smtpError.message,
+        stack: smtpError.stack,
+        name: smtpError.name,
+        cause: smtpError.cause
+      })
+      throw new Error(`SMTP Error: ${smtpError.message}${smtpError.cause ? ` (Cause: ${smtpError.cause})` : ''}`)
     } finally {
       try {
+        console.log('Ensuring SMTP connection is closed...')
         await client.close()
+        console.log('SMTP connection closed in finally block')
       } catch (closeError) {
         console.error('Error closing SMTP connection:', closeError)
       }
     }
   } catch (error) {
-    console.error('Function Error:', error)
+    console.error('Function Error:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+      cause: error.cause
+    })
     return new Response(
       JSON.stringify({ 
         error: error.message,
         details: error.stack,
-        type: error.constructor.name
+        type: error.constructor.name,
+        cause: error.cause
       }),
       { 
         status: 500, 
