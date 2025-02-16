@@ -32,7 +32,7 @@ const Navbar = () => {
           <div className="flex">
             <Link to="/" className="flex flex-shrink-0 items-center">
               <img 
-                src="@transparent white syft.png"
+                src="/src/assets/images/transparent white syft.png"
                 alt="Syft Logo" 
                 className="h-8 w-auto"
               />

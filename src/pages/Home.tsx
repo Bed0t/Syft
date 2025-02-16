@@ -12,7 +12,7 @@ const Home = () => {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <div className="relative min-h-[90vh] bg-[#1a1f37]">
+      <div className="relative min-h-[90vh]">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1f37] to-[#2a1f67] z-0" />
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-32">
