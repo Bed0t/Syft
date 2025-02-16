@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Home Page -->
+  <url>
+    <loc>https://usesyft.com/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en-au" href="https://usesyft.com.au/"/>
+  </url>
+  
+  <!-- Pricing Page -->
+  <url>
+    <loc>https://usesyft.com/pricing</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en-au" href="https://usesyft.com.au/pricing"/>
+  </url>
+  
+  <!-- Contact Page -->
+  <url>
+    <loc>https://usesyft.com/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en-au" href="https://usesyft.com.au/contact"/>
+  </url>
+  
+  <!-- Dashboard Page -->
+  <url>
+    <loc>https://usesyft.com/dashboard</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en-au" href="https://usesyft.com.au/dashboard"/>
+  </url>
+
+  <!-- Australian Domain URLs -->
+  <url>
+    <loc>https://usesyft.com.au/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usesyft.com/"/>
+  </url>
+  
+  <url>
+    <loc>https://usesyft.com.au/pricing</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usesyft.com/pricing"/>
+  </url>
+  
+  <url>
+    <loc>https://usesyft.com.au/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usesyft.com/contact"/>
+  </url>
+  
+  <url>
+    <loc>https://usesyft.com.au/dashboard</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://usesyft.com/dashboard"/>
+  </url>
+</urlset> 

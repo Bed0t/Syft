@@ -3,6 +3,24 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Brain, Users, BarChart2, Globe2, UserCheck, Rocket, DollarSign, Target } from 'lucide-react';
 
+interface HoverContent {
+  why?: string[];
+  impact?: string[];
+  breakdown?: string[];
+  howWeCut?: string[];
+  result?: string;
+  smarter?: string[];
+  results?: string[];
+}
+
+interface StatCard {
+  icon: React.ElementType;
+  stat: string;
+  title: string;
+  description: string;
+  hoverContent: HoverContent;
+}
+
 const Home = () => {
   return (
     <div className="bg-[#1a1f37]">
@@ -163,7 +181,7 @@ const Home = () => {
                         <>
                           <h3 className="text-xl font-semibold mb-4">⏳ Why It's Faster:</h3>
                           <ul className="space-y-2 mb-6">
-                            {item.hoverContent.why.map((point, i) => (
+                            {item.hoverContent.why?.map((point, i) => (
                               <li key={i} className="flex items-start">
                                 <span className="mr-2">•</span>
                                 <span>{point}</span>
@@ -172,7 +190,7 @@ const Home = () => {
                           </ul>
                           <h3 className="text-xl font-semibold mb-4">📊 Impact:</h3>
                           <ul className="space-y-2">
-                            {item.hoverContent.impact.map((point, i) => (
+                            {item.hoverContent.impact?.map((point, i) => (
                               <li key={i} className="flex items-start">
                                 <span className="mr-2">•</span>
                                 <span>{point}</span>
@@ -186,7 +204,7 @@ const Home = () => {
                         <>
                           <h3 className="text-xl font-semibold mb-4">💡 Cost Breakdown:</h3>
                           <ul className="space-y-2 mb-6">
-                            {item.hoverContent.breakdown.map((point, i) => (
+                            {item.hoverContent.breakdown?.map((point, i) => (
                               <li key={i} className="flex items-start">
                                 <span className="mr-2">•</span>
                                 <span>{point}</span>
@@ -195,7 +213,7 @@ const Home = () => {
                           </ul>
                           <h3 className="text-xl font-semibold mb-4">🔻 How We Cut Costs:</h3>
                           <ul className="space-y-2 mb-6">
-                            {item.hoverContent.howWeCut.map((point, i) => (
+                            {item.hoverContent.howWeCut?.map((point, i) => (
                               <li key={i} className="flex items-start">
                                 <span className="mr-2">•</span>
                                 <span>{point}</span>
@@ -211,7 +229,7 @@ const Home = () => {
                         <>
                           <h3 className="text-xl font-semibold mb-4">🧠 Smarter Hiring:</h3>
                           <ul className="space-y-2 mb-6">
-                            {item.hoverContent.smarter.map((point, i) => (
+                            {item.hoverContent.smarter?.map((point, i) => (
                               <li key={i} className="flex items-start">
                                 <span className="mr-2">•</span>
                                 <span>{point}</span>
@@ -220,7 +238,7 @@ const Home = () => {
                           </ul>
                           <h3 className="text-xl font-semibold mb-4">📈 Results:</h3>
                           <ul className="space-y-2">
-                            {item.hoverContent.results.map((point, i) => (
+                            {item.hoverContent.results?.map((point, i) => (
                               <li key={i} className="flex items-start">
                                 <span className="mr-2">•</span>
                                 <span>{point}</span>

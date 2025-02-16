@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Sitemap locations
+Sitemap: https://usesyft.com/sitemap.xml
+Sitemap: https://usesyft.com.au/sitemap.xml
+
+# Prevent access to admin areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /.env
+Disallow: /.env.*
+Disallow: /supabase/
+
+# Allow crawling of important pages
+Allow: /
+Allow: /pricing
+Allow: /contact
+Allow: /dashboard 
