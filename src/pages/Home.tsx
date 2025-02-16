@@ -5,12 +5,12 @@ import { ArrowRight, Brain, Users, BarChart2, Globe2, UserCheck, Rocket, DollarS
 
 const Home = () => {
   return (
-    <div className="pt-15 bg-[#1a1f37]">
+    <div className="bg-[#1a1f37]">
       {/* Hero Section */}
-      <div className="relative h-screen">
+      <div className="relative h-screen pt-20">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1f37] to-[#2a1f67]" />
         
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-32">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-12">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
