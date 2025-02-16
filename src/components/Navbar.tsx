@@ -23,34 +23,19 @@ const Navbar = () => {
       animate={{ opacity: 1, y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         hasScrolled 
-          ? 'bg-[#1a1f37]/80 backdrop-blur-lg border-b border-white/10' 
-          : 'bg-transparent'
+          ? 'bg-[#1a1f37]/80 backdrop-blur-lg' 
+          : ''
       }`}
-      style={{ 
-        transform: 'translate3d(0, 0, 0)',
-        transformStyle: 'preserve-3d'
-      }}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 justify-between items-center">
           <div className="flex">
             <Link to="/" className="flex flex-shrink-0 items-center">
-              <motion.img 
-                src="/src/assets/images/syft.png"
+              <img 
+                src="@transparent white syft.png"
                 alt="Syft Logo" 
                 className="h-8 w-auto"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
               />
-              <motion.span 
-                className="ml-3 text-2xl font-bold text-white"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                Syft
-              </motion.span>
             </Link>
           </div>
 
@@ -107,7 +92,7 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="sm:hidden bg-[#1a1f37]/95 backdrop-blur-lg border-t border-white/10"
+            className="sm:hidden bg-[#1a1f37] border-t border-white/10"
           >
             <div className="space-y-1 px-2 pb-3 pt-2">
               <Link

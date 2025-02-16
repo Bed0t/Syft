@@ -12,7 +12,7 @@ const Home = () => {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <div className="relative min-h-screen bg-[#1a1f37] pb-48">
+      <div className="relative min-h-[90vh] bg-[#1a1f37]">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1f37] to-[#2a1f67] z-0" />
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-32">
@@ -35,14 +35,14 @@ const Home = () => {
                   to="/contact"
                   className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-[#4361ee] rounded-lg hover:bg-[#3651d4] transition-colors"
                 >
-                  🔥 Get Started
+                  <span>🔥 Get Started</span>
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
                 <Link
                   to="/pricing"
                   className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
                 >
-                  📈 View Pricing
+                  <span>📈 View Pricing</span>
                 </Link>
               </div>
             </motion.div>
@@ -51,16 +51,14 @@ const Home = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative"
+              className="relative lg:block hidden"
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="/src/assets/images/hero.png"
+                  src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=80"
                   alt="AI Recruitment Platform"
-                  className="w-full h-[600px] object-cover"
+                  className="w-full h-auto object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1a1f37]/80 via-transparent to-transparent" />
-                <div className="absolute inset-0 bg-[#1a1f37]/20" />
               </div>
               
               {/* Blue glow effect */}
@@ -71,7 +69,7 @@ const Home = () => {
       </div>
 
       {/* Stats Section */}
-      <div className="relative -mt-32 z-10">
+      <div className="relative -mt-20 z-10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             {[
