@@ -23,7 +23,7 @@ const Navbar = () => {
       animate={{ opacity: 1, y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         hasScrolled 
-          ? 'bg-black/10 backdrop-blur-lg' 
+          ? 'bg-[#1a1f37]/80 backdrop-blur-lg border-b border-white/10' 
           : 'bg-transparent'
       }`}
       style={{ 
@@ -36,15 +36,15 @@ const Navbar = () => {
           <div className="flex">
             <Link to="/" className="flex flex-shrink-0 items-center">
               <motion.img 
-                src="/images/logo.png"
+                src="/images/syft.png"
                 alt="Syft Logo" 
-                className="h-12 w-auto"
+                className="h-12 w-auto brightness-0 invert"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
               />
               <motion.span 
-                className="ml-3 text-2xl font-bold text-white mix-blend-difference"
+                className="ml-3 text-2xl font-bold text-white"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
@@ -58,25 +58,25 @@ const Navbar = () => {
           <div className="hidden sm:flex sm:items-center sm:space-x-8">
             <Link
               to="/"
-              className="rounded-md px-3 py-2 text-sm font-medium text-white/90 hover:text-white transition-colors"
+              className="rounded-md px-3 py-2 text-sm font-medium text-white hover:text-white/80 transition-colors"
             >
               Home
             </Link>
             <Link
               to="/pricing"
-              className="rounded-md px-3 py-2 text-sm font-medium text-white/90 hover:text-white transition-colors"
+              className="rounded-md px-3 py-2 text-sm font-medium text-white hover:text-white/80 transition-colors"
             >
               Pricing
             </Link>
             <Link
               to="/about"
-              className="rounded-md px-3 py-2 text-sm font-medium text-white/90 hover:text-white transition-colors"
+              className="rounded-md px-3 py-2 text-sm font-medium text-white hover:text-white/80 transition-colors"
             >
               About
             </Link>
             <Link
               to="/contact"
-              className="rounded-md px-3 py-2 text-sm font-medium text-white/90 hover:text-white transition-colors"
+              className="rounded-md px-3 py-2 text-sm font-medium text-white hover:text-white/80 transition-colors"
             >
               Contact
             </Link>
@@ -92,7 +92,7 @@ const Navbar = () => {
           <div className="flex items-center sm:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center rounded-md p-2 text-white/90 hover:text-white focus:outline-none"
+              className="inline-flex items-center justify-center rounded-md p-2 text-white hover:text-white/80 focus:outline-none"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -107,30 +107,30 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="sm:hidden bg-black/90 backdrop-blur-lg"
+            className="sm:hidden bg-[#1a1f37]/95 backdrop-blur-lg border-t border-white/10"
           >
             <div className="space-y-1 px-2 pb-3 pt-2">
               <Link
                 to="/"
-                className="block rounded-md px-3 py-2 text-base font-medium text-white/90 hover:text-white"
+                className="block rounded-md px-3 py-2 text-base font-medium text-white hover:text-white/80"
               >
                 Home
               </Link>
               <Link
                 to="/pricing"
-                className="block rounded-md px-3 py-2 text-base font-medium text-white/90 hover:text-white"
+                className="block rounded-md px-3 py-2 text-base font-medium text-white hover:text-white/80"
               >
                 Pricing
               </Link>
               <Link
                 to="/about"
-                className="block rounded-md px-3 py-2 text-base font-medium text-white/90 hover:text-white"
+                className="block rounded-md px-3 py-2 text-base font-medium text-white hover:text-white/80"
               >
                 About
               </Link>
               <Link
                 to="/contact"
-                className="block rounded-md px-3 py-2 text-base font-medium text-white/90 hover:text-white"
+                className="block rounded-md px-3 py-2 text-base font-medium text-white hover:text-white/80"
               >
                 Contact
               </Link>
