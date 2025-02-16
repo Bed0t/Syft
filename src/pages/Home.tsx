@@ -109,6 +109,72 @@ const Home = () => {
         </div>
       </div>
 
+      {/* Features Section */}
+      <div className="py-24 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900">Recruitment is Broken. Let's Fix It</h2>
+            <p className="mt-4 text-xl text-gray-600">
+              Technology is revolutionising how we hire. Are you ready to leave outdated practices behind?
+            </p>
+          </div>
+
+          <div className="mt-20 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: Brain,
+                title: "Smarter Decisions",
+                description: "Our Algorithm analyzes real-time data to evaluate candidates based on skills, experience, and cultural fit"
+              },
+              {
+                icon: UserCheck,
+                title: "Skills over Keywords",
+                description: "Focus on what candidates can do, not just the buzz words on their resumes"
+              },
+              {
+                icon: Users,
+                title: "Bias Elimination",
+                description: "Never miss out on top talent, we'll let you know when a good hire is in front of you"
+              },
+              {
+                icon: Globe2,
+                title: "Dilute that hiring team",
+                description: "Stop paying for a team of assistants to do a job that can be done by an algorithm"
+              },
+              {
+                icon: BarChart2,
+                title: "Time & Cost Savings",
+                description: "Automate repetitive tasks and say goodbye to agencies prioritising their % cut over your long-term success"
+              },
+              {
+                icon: Brain,
+                title: "Make fact-based decisions",
+                description: "Stop hiring based on gut feelings, let the data and facts guide your decisions"
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="p-8 bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100"
+              >
+                <div className="w-12 h-12 rounded-xl bg-[#4361ee]/10 flex items-center justify-center">
+                  <feature.icon className="w-6 h-6 text-[#4361ee]" />
+                </div>
+                <h3 className="mt-4 text-xl font-semibold text-gray-900">
+                  {feature.title}
+                </h3>
+                <p className="mt-2 text-gray-600">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* How It Works */}
       <div className="py-24 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
