@@ -94,7 +94,9 @@ const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
 const Layout = ({ children }: { children: React.ReactNode }) => (
   <>
     <Navbar />
-    {children}
+    <div className="pt-16">
+      {children}
+    </div>
     <Footer />
   </>
 );
