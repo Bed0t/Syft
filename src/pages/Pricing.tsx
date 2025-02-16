@@ -343,27 +343,31 @@ const Pricing = () => {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div>
-                <h4 className="font-medium text-white mb-4">Traditional Costs:</h4>
+                <h4 className="font-medium text-white mb-4">Traditional Recruitment Costs:</h4>
                 <ul className="space-y-2">
                   <li className="flex justify-between">
-                    <span className="text-gray-300">Internal Recruitment:</span>
-                    <span className="font-medium text-white">$4,700</span>
+                    <span className="text-gray-300">Agency/Advertising Fees:</span>
+                    <span className="font-medium text-white">$15,000</span>
                   </li>
                   <li className="flex justify-between">
-                    <span className="text-gray-300">HR Time (20 hours @ $60/hr):</span>
+                    <span className="text-gray-300">HR Time (40 hours @ $80/hr):</span>
+                    <span className="font-medium text-white">$3,200</span>
+                  </li>
+                  <li className="flex justify-between">
+                    <span className="text-gray-300">Job Board & Sourcing Fees:</span>
                     <span className="font-medium text-white">$1,200</span>
                   </li>
                   <li className="flex justify-between">
-                    <span className="text-gray-300">Job Board Fees:</span>
-                    <span className="font-medium text-white">$500</span>
+                    <span className="text-gray-300">Onboarding & Training:</span>
+                    <span className="font-medium text-white">$3,600</span>
                   </li>
                   <li className="flex justify-between">
-                    <span className="text-gray-300">Screening Time (15 hours @ $60/hr):</span>
-                    <span className="font-medium text-white">$900</span>
+                    <span className="text-gray-300">Time-to-Hire:</span>
+                    <span className="font-medium text-white">40+ days</span>
                   </li>
                   <li className="flex justify-between border-t border-white/10 pt-2 mt-2">
                     <span className="font-medium text-white">Total Traditional Cost:</span>
-                    <span className="font-medium text-white">$7,300/hire</span>
+                    <span className="font-medium text-white">$23,000/hire</span>
                   </li>
                 </ul>
               </div>
@@ -371,12 +375,12 @@ const Pricing = () => {
                 <h4 className="font-medium text-white mb-4">Syft Cost:</h4>
                 <ul className="space-y-2">
                   <li className="flex justify-between">
-                    <span className="text-gray-300">Essential Hire ($149.50/interview):</span>
-                    <span className="font-medium blur-md select-none text-white">$2,990</span>
+                    <span className="text-gray-300">Essential Hire Package:</span>
+                    <span className="font-medium text-white">$2,990</span>
                   </li>
                   <li className="flex justify-between">
-                    <span className="text-gray-300">Automated Screening:</span>
-                    <span className="font-medium text-white">$0</span>
+                    <span className="text-gray-300">AI-Powered Interviews & Screening:</span>
+                    <span className="font-medium text-white">Included</span>
                   </li>
                   <li className="flex justify-between">
                     <span className="text-gray-300">HR Time Saved:</span>
@@ -388,11 +392,11 @@ const Pricing = () => {
                   </li>
                   <li className="flex justify-between border-t border-white/10 pt-2 mt-2">
                     <span className="font-medium text-white">Total Syft Cost:</span>
-                    <span className="font-medium blur-md select-none text-white">$2,990/hire</span>
+                    <span className="font-medium text-white">$2,990/hire</span>
                   </li>
                   <li className="flex justify-between text-[#4361ee] font-medium">
                     <span>Total Savings:</span>
-                    <span className="blur-md select-none">$4,310/hire (59% reduction)</span>
+                    <span>$20,010/hire (87% reduction)</span>
                   </li>
                 </ul>
               </div>
