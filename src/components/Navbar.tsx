@@ -36,9 +36,9 @@ const Navbar = () => {
           <div className="flex">
             <Link to="/" className="flex flex-shrink-0 items-center">
               <motion.img 
-                src="/images/syft.png"
+                src="/src/assets/images/syft.png"
                 alt="Syft Logo" 
-                className="h-12 w-auto brightness-0 invert"
+                className="h-8 w-auto"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}

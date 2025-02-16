@@ -12,7 +12,7 @@ const Home = () => {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <div className="relative min-h-[140vh] bg-[#1a1f37]">
+      <div className="relative min-h-screen bg-[#1a1f37] pb-48">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1f37] to-[#2a1f67] z-0" />
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-32">
@@ -55,7 +55,7 @@ const Home = () => {
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=80"
+                  src="/src/assets/images/hero.png"
                   alt="AI Recruitment Platform"
                   className="w-full h-[600px] object-cover"
                 />
@@ -68,53 +68,53 @@ const Home = () => {
             </motion.div>
           </div>
         </div>
+      </div>
 
-        {/* Stats Banner - Positioned absolutely to overlap */}
-        <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[3rem] transform translate-y-1/2">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: Rocket,
-                  stat: "75% Faster",
-                  title: "Faster Hiring",
-                  description: "Reduce time-to-hire from 40+ days to just 5-7 days."
-                },
-                {
-                  icon: DollarSign,
-                  stat: "60% Lower",
-                  title: "Lower Costs",
-                  description: "Save up to $7,300 per hire vs. traditional recruitment."
-                },
-                {
-                  icon: Target,
-                  stat: "3x Better",
-                  title: "Better Hires",
-                  description: "AI-driven screening ensures precise candidate matching."
-                }
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="text-center p-8 rounded-xl bg-gray-50 shadow-lg hover:shadow-xl transition-shadow"
-                >
-                  <div className="mx-auto w-12 h-12 bg-[#4361ee]/10 rounded-xl flex items-center justify-center mb-4">
-                    <item.icon className="w-6 h-6 text-[#4361ee]" />
-                  </div>
-                  <div className="text-3xl font-bold text-[#4361ee]">{item.stat}</div>
-                  <div className="text-xl font-semibold text-gray-900 mt-2">{item.title}</div>
-                  <p className="mt-2 text-gray-600">{item.description}</p>
-                </motion.div>
-              ))}
-            </div>
+      {/* Stats Section */}
+      <div className="relative -mt-32 z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: Rocket,
+                stat: "75% Faster",
+                title: "Faster Hiring",
+                description: "Reduce time-to-hire from 40+ days to just 5-7 days."
+              },
+              {
+                icon: DollarSign,
+                stat: "60% Lower",
+                title: "Lower Costs",
+                description: "Save up to $7,300 per hire vs. traditional recruitment."
+              },
+              {
+                icon: Target,
+                stat: "3x Better",
+                title: "Better Hires",
+                description: "AI-driven screening ensures precise candidate matching."
+              }
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="text-center p-8 rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <div className="mx-auto w-12 h-12 bg-[#4361ee]/10 rounded-xl flex items-center justify-center mb-4">
+                  <item.icon className="w-6 h-6 text-[#4361ee]" />
+                </div>
+                <div className="text-3xl font-bold text-[#4361ee]">{item.stat}</div>
+                <div className="text-xl font-semibold text-gray-900 mt-2">{item.title}</div>
+                <p className="mt-2 text-gray-600">{item.description}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Rest of the sections with adjusted padding to account for overlap */}
+      {/* Features Section */}
       <div className="pt-[50vh]">
         {/* Features Section */}
         <div className="py-24 bg-white">
