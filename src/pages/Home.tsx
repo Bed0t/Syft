@@ -70,88 +70,56 @@ const Home = () => {
             {[
               {
                 icon: Rocket,
-                emoji: "🚀",
                 stat: "75% Faster",
                 title: "Faster Hiring",
                 description: "Reduce time-to-hire from 40+ days to just 5-7 days.",
                 hoverContent: {
-                  title: "⏳ Why It's Faster",
-                  sections: [
-                    {
-                      title: "Process Improvements:",
-                      items: [
-                        "AI-driven screening eliminates delays in resume filtering",
-                        "Automated interview scheduling accelerates the hiring process",
-                        "Immediate shortlisting of top candidates"
-                      ]
-                    },
-                    {
-                      title: "📊 Impact",
-                      items: [
-                        "Traditional hiring takes 40+ days",
-                        "Syft reduces this to just 5-7 days"
-                      ]
-                    }
+                  why: [
+                    "AI-driven screening eliminates delays in resume filtering",
+                    "Automated interview scheduling accelerates the hiring process",
+                    "Immediate shortlisting of top candidates"
+                  ],
+                  impact: [
+                    "Traditional hiring takes 40+ days",
+                    "Syft reduces this to just 5-7 days"
                   ]
                 }
               },
               {
                 icon: DollarSign,
-                emoji: "💲",
                 stat: "60% Lower",
                 title: "Lower Costs",
                 description: "Save up to $7,300 per hire vs. traditional recruitment.",
                 hoverContent: {
-                  title: "💡 Cost Breakdown",
-                  sections: [
-                    {
-                      title: "Traditional Costs:",
-                      items: [
-                        "Agency/Advertising Fees: ~$15,000",
-                        "HR Time: ~$3,200 (40 hours @ $80/hr)",
-                        "Job Board & Sourcing: ~$1,200",
-                        "Onboarding & Training: ~$3,600"
-                      ]
-                    },
-                    {
-                      title: "🔻 How We Cut Costs",
-                      items: [
-                        "No agency fees or expensive job board ads",
-                        "AI-powered interviews reduce HR time by 35+ hours",
-                        "Automated screening removes manual reviews"
-                      ]
-                    },
-                    {
-                      title: "📉 Result",
-                      items: ["Save up to 87% on hiring costs"]
-                    }
-                  ]
+                  breakdown: [
+                    "Traditional Recruitment costs: ~$23,000 per hire",
+                    "Agency/Advertising Fees: 15-25% of annual salary (avg. $15,000)",
+                    "HR Time (Screening & Interviews): ~$3,200 (40 hours @ $80/hr)",
+                    "Job Board & Sourcing Fees: ~$1,200",
+                    "Onboarding & Training Costs: ~$3,600"
+                  ],
+                  howWeCut: [
+                    "No agency fees or expensive job board ads",
+                    "AI-powered interviews reduce HR time by 35+ hours",
+                    "Automated screening removes the need for manual resume reviews"
+                  ],
+                  result: "Save up to 87% on hiring costs"
                 }
               },
               {
                 icon: Target,
-                emoji: "🎯",
                 stat: "3x Better",
                 title: "Better Hires",
                 description: "AI-driven screening ensures precise candidate matching.",
                 hoverContent: {
-                  title: "🧠 Smarter Hiring",
-                  sections: [
-                    {
-                      title: "AI-Powered Analysis:",
-                      items: [
-                        "AI analyzes candidate skills, experience, and cultural fit",
-                        "Machine learning ranks top candidates based on real data",
-                        "Automated behavioral analysis predicts long-term success"
-                      ]
-                    },
-                    {
-                      title: "📈 Results",
-                      items: [
-                        "Reduce turnover by up to 50%",
-                        "Ensure 3x better hiring decisions with AI-driven insights"
-                      ]
-                    }
+                  smarter: [
+                    "AI analyzes candidate skills, experience, and cultural fit",
+                    "Machine learning ranks top candidates based on real data",
+                    "Automated behavioral analysis predicts long-term success"
+                  ],
+                  results: [
+                    "Reduce turnover by up to 50%",
+                    "Ensure 3x better hiring decisions with AI-driven insights"
                   ]
                 }
               }
@@ -162,44 +130,113 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="group relative h-[280px] perspective-1000"
+                className="group relative h-[400px] perspective-1000"
               >
                 <motion.div
                   className="relative w-full h-full transition-all duration-500 transform-style-3d group-hover:rotate-y-180"
                 >
                   {/* Front of card */}
-                  <div className="absolute inset-0 w-full h-full text-center p-8 rounded-xl bg-white shadow-lg backface-hidden">
-                    <div className="mx-auto w-12 h-12 bg-[#4361ee]/10 rounded-xl flex items-center justify-center mb-4">
-                      <item.icon className="w-6 h-6 text-[#4361ee]" />
+                  <div className="absolute inset-0 w-full h-full backface-hidden">
+                    <div className="text-center p-8 rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow h-full">
+                      <div className="mx-auto w-12 h-12 bg-[#4361ee]/10 rounded-xl flex items-center justify-center mb-4">
+                        <item.icon className="w-6 h-6 text-[#4361ee]" />
+                      </div>
+                      <motion.div
+                        initial={{ scale: 1 }}
+                        whileHover={{ scale: 1.05 }}
+                        className="text-3xl font-bold text-[#4361ee]"
+                      >
+                        {item.stat}
+                      </motion.div>
+                      <div className="text-xl font-semibold text-gray-900 mt-2">{item.title}</div>
+                      <p className="mt-2 text-gray-600">{item.description}</p>
+                      <div className="absolute bottom-4 left-0 right-0 text-center">
+                        <span className="text-[#4361ee] text-sm">Hover for details ↗️</span>
+                      </div>
                     </div>
-                    <div className="text-4xl mb-2">{item.emoji}</div>
-                    <div className="text-3xl font-bold text-[#4361ee]">{item.stat}</div>
-                    <div className="text-xl font-semibold text-gray-900 mt-2">{item.title}</div>
-                    <p className="mt-2 text-gray-600">{item.description}</p>
                   </div>
 
                   {/* Back of card */}
-                  <div className="absolute inset-0 w-full h-full p-8 rounded-xl bg-white shadow-lg backface-hidden rotate-y-180 overflow-y-auto">
-                    <h3 className="text-xl font-bold text-[#4361ee] mb-4">{item.hoverContent.title}</h3>
-                    {item.hoverContent.sections.map((section, sIndex) => (
-                      <div key={sIndex} className="mb-4">
-                        <h4 className="font-semibold text-gray-900 mb-2">{section.title}</h4>
-                        <ul className="space-y-2">
-                          {section.items.map((listItem, lIndex) => (
-                            <li key={lIndex} className="text-sm text-gray-600 flex items-start">
-                              <span className="mr-2">•</span>
-                              <span>{listItem}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                    <Link
-                      to="/contact"
-                      className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-[#4361ee] rounded-lg hover:bg-[#3651d4] transition-colors mt-2"
-                    >
-                      Learn More
-                    </Link>
+                  <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180">
+                    <div className="text-left p-8 rounded-xl bg-[#4361ee] text-white shadow-lg h-full overflow-y-auto">
+                      {index === 0 && (
+                        <>
+                          <h3 className="text-xl font-semibold mb-4">⏳ Why It's Faster:</h3>
+                          <ul className="space-y-2 mb-6">
+                            {item.hoverContent.why.map((point, i) => (
+                              <li key={i} className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          <h3 className="text-xl font-semibold mb-4">📊 Impact:</h3>
+                          <ul className="space-y-2">
+                            {item.hoverContent.impact.map((point, i) => (
+                              <li key={i} className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </>
+                      )}
+
+                      {index === 1 && (
+                        <>
+                          <h3 className="text-xl font-semibold mb-4">💡 Cost Breakdown:</h3>
+                          <ul className="space-y-2 mb-6">
+                            {item.hoverContent.breakdown.map((point, i) => (
+                              <li key={i} className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          <h3 className="text-xl font-semibold mb-4">🔻 How We Cut Costs:</h3>
+                          <ul className="space-y-2 mb-6">
+                            {item.hoverContent.howWeCut.map((point, i) => (
+                              <li key={i} className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          <h3 className="text-xl font-semibold">📉 Result:</h3>
+                          <p className="mt-2">{item.hoverContent.result}</p>
+                        </>
+                      )}
+
+                      {index === 2 && (
+                        <>
+                          <h3 className="text-xl font-semibold mb-4">🧠 Smarter Hiring:</h3>
+                          <ul className="space-y-2 mb-6">
+                            {item.hoverContent.smarter.map((point, i) => (
+                              <li key={i} className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          <h3 className="text-xl font-semibold mb-4">📈 Results:</h3>
+                          <ul className="space-y-2">
+                            {item.hoverContent.results.map((point, i) => (
+                              <li key={i} className="flex items-start">
+                                <span className="mr-2">•</span>
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </>
+                      )}
+                      
+                      <Link
+                        to="/contact"
+                        className="absolute bottom-4 left-4 right-4 text-center py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+                      >
+                        Learn More
+                      </Link>
+                    </div>
                   </div>
                 </motion.div>
               </motion.div>
