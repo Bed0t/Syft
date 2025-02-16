@@ -1,19 +1,14 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Brain, Users, BarChart2, Globe2, UserCheck, Rocket, DollarSign, Target } from 'lucide-react';
 
 const Home = () => {
-  useEffect(() => {
-    // Set initial scroll position to show part of the stats section
-    window.scrollTo(0, window.innerHeight * 0.3);
-  }, []);
-
   return (
-    <div className="relative">
+    <div className="bg-[#1a1f37]">
       {/* Hero Section */}
-      <div className="relative min-h-[90vh]">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a1f37] to-[#2a1f67] z-0" />
+      <div className="relative h-screen">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a1f37] to-[#2a1f67]" />
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-32">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -57,7 +52,7 @@ const Home = () => {
                 <img
                   src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=80"
                   alt="AI Recruitment Platform"
-                  className="w-full h-auto object-cover"
+                  className="w-full h-[600px] object-cover"
                 />
               </div>
               
@@ -69,7 +64,7 @@ const Home = () => {
       </div>
 
       {/* Stats Section */}
-      <div className="relative -mt-20 z-10">
+      <div className="relative z-10 -mt-32">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             {[
