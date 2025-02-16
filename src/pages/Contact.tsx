@@ -124,7 +124,11 @@ const Contact = () => {
             </div>
 
             <div className="flex justify-center -space-x-2 mb-8 relative">
-              {[1, 2, 3].map((i) => (
+              {[
+                'https://d2zqmm5yxj3gn5.cloudfront.net/syft/team1.jpg',
+                'https://d2zqmm5yxj3gn5.cloudfront.net/syft/team2.jpg',
+                'https://d2zqmm5yxj3gn5.cloudfront.net/syft/team3.jpg'
+              ].map((imageUrl, i) => (
                 <div
                   key={i}
                   className="relative"
@@ -135,8 +139,8 @@ const Contact = () => {
                   <div className="absolute inset-0 rounded-full bg-[#4361ee]/10 blur-sm transform scale-110" />
                   <img
                     className="relative inline-block h-14 w-14 rounded-full ring-4 ring-[#1a1f37] transform hover:scale-105 transition-transform duration-200"
-                    src={`https://randomuser.me/api/portraits/${i % 2 ? 'women' : 'men'}/${i}.jpg`}
-                    alt="Team member"
+                    src={imageUrl}
+                    alt={`AI generated team member ${i + 1}`}
                   />
                 </div>
               ))}
