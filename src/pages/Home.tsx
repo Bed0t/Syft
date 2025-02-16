@@ -5,7 +5,7 @@ import { ArrowRight, Brain, Users, BarChart2, Globe2, UserCheck, Rocket, DollarS
 
 const Home = () => {
   return (
-    <div className="bg-[#1a1f37]">
+    <div className="pt-15 bg-[#1a1f37]">
       {/* Hero Section */}
       <div className="relative h-screen">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1f37] to-[#2a1f67]" />
