@@ -37,8 +37,8 @@ const Home = () => {
               className="max-w-2xl"
             >
               <h1 className="text-5xl sm:text-6xl font-bold text-white leading-tight">
-                Hire Smarter.
-                <span className="text-[#4361ee] block mt-2">Spend Less.</span>
+                Your Recruitment
+                <span className="text-[#4361ee] block mt-2">Co-Pilot</span>
               </h1>
               <p className="mt-6 text-xl text-gray-300 leading-relaxed">
                 Cut Hiring Costs by 70% & Hire 3x Faster with AI. Join hundreds of companies using Syft to revolutionise recruitment.
@@ -148,9 +148,9 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="group relative"
+                className="group relative h-full"
               >
-                <div className="text-center p-8 rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow">
+                <div className="text-center p-8 rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow h-full">
                   <div className="mx-auto w-12 h-12 bg-[#4361ee]/10 rounded-xl flex items-center justify-center mb-4">
                     <item.icon className="w-6 h-6 text-[#4361ee]" />
                   </div>
@@ -167,9 +167,10 @@ const Home = () => {
 
                 {/* Details Section (appears on hover) */}
                 <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  whileHover={{ opacity: 1, height: "auto" }}
-                  className="mt-4 p-6 rounded-xl bg-[#4361ee] text-white shadow-lg overflow-hidden"
+                  initial={{ opacity: 0, scaleY: 0 }}
+                  animate={{ opacity: 1, scaleY: 1 }}
+                  whileHover={{ opacity: 1, scaleY: 1 }}
+                  className="absolute top-full left-0 right-0 mt-2 p-6 rounded-xl bg-[#4361ee] text-white shadow-lg origin-top transform-gpu transition-all duration-200 group-hover:opacity-100 group-hover:scale-y-100"
                 >
                   {index === 0 && (
                     <>
