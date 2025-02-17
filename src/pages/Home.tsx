@@ -148,114 +148,106 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="group relative h-[400px] perspective-1000"
+                className="group relative"
               >
+                <div className="text-center p-8 rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow">
+                  <div className="mx-auto w-12 h-12 bg-[#4361ee]/10 rounded-xl flex items-center justify-center mb-4">
+                    <item.icon className="w-6 h-6 text-[#4361ee]" />
+                  </div>
+                  <motion.div
+                    initial={{ scale: 1 }}
+                    whileHover={{ scale: 1.05 }}
+                    className="text-3xl font-bold text-[#4361ee]"
+                  >
+                    {item.stat}
+                  </motion.div>
+                  <div className="text-xl font-semibold text-gray-900 mt-2">{item.title}</div>
+                  <p className="mt-2 text-gray-600">{item.description}</p>
+                </div>
+
+                {/* Details Section (appears on hover) */}
                 <motion.div
-                  className="relative w-full h-full transition-all duration-500 transform-style-3d group-hover:rotate-y-180"
+                  initial={{ opacity: 0, height: 0 }}
+                  whileHover={{ opacity: 1, height: "auto" }}
+                  className="mt-4 p-6 rounded-xl bg-[#4361ee] text-white shadow-lg overflow-hidden"
                 >
-                  {/* Front of card */}
-                  <div className="absolute inset-0 w-full h-full backface-hidden">
-                    <div className="text-center p-8 rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow h-full">
-                      <div className="mx-auto w-12 h-12 bg-[#4361ee]/10 rounded-xl flex items-center justify-center mb-4">
-                        <item.icon className="w-6 h-6 text-[#4361ee]" />
-                      </div>
-                      <motion.div
-                        initial={{ scale: 1 }}
-                        whileHover={{ scale: 1.05 }}
-                        className="text-3xl font-bold text-[#4361ee]"
-                      >
-                        {item.stat}
-                      </motion.div>
-                      <div className="text-xl font-semibold text-gray-900 mt-2">{item.title}</div>
-                      <p className="mt-2 text-gray-600">{item.description}</p>
-                      <div className="absolute bottom-4 left-0 right-0 text-center">
-                        <span className="text-[#4361ee] text-sm">Hover for details ↗️</span>
-                      </div>
-                    </div>
-                  </div>
+                  {index === 0 && (
+                    <>
+                      <h3 className="text-xl font-semibold mb-4">⏳ Why It's Faster:</h3>
+                      <ul className="space-y-2 mb-6">
+                        {item.hoverContent.why?.map((point, i) => (
+                          <li key={i} className="flex items-start">
+                            <span className="mr-2">•</span>
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <h3 className="text-xl font-semibold mb-4">📊 Impact:</h3>
+                      <ul className="space-y-2">
+                        {item.hoverContent.impact?.map((point, i) => (
+                          <li key={i} className="flex items-start">
+                            <span className="mr-2">•</span>
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
 
-                  {/* Back of card */}
-                  <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180">
-                    <div className="text-left p-8 rounded-xl bg-[#4361ee] text-white shadow-lg h-full overflow-y-auto">
-                      {index === 0 && (
-                        <>
-                          <h3 className="text-xl font-semibold mb-4">⏳ Why It's Faster:</h3>
-                          <ul className="space-y-2 mb-6">
-                            {item.hoverContent.why?.map((point, i) => (
-                              <li key={i} className="flex items-start">
-                                <span className="mr-2">•</span>
-                                <span>{point}</span>
-                              </li>
-                            ))}
-                          </ul>
-                          <h3 className="text-xl font-semibold mb-4">📊 Impact:</h3>
-                          <ul className="space-y-2">
-                            {item.hoverContent.impact?.map((point, i) => (
-                              <li key={i} className="flex items-start">
-                                <span className="mr-2">•</span>
-                                <span>{point}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </>
-                      )}
+                  {index === 1 && (
+                    <>
+                      <h3 className="text-xl font-semibold mb-4">💡 Cost Breakdown:</h3>
+                      <ul className="space-y-2 mb-6">
+                        {item.hoverContent.breakdown?.map((point, i) => (
+                          <li key={i} className="flex items-start">
+                            <span className="mr-2">•</span>
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <h3 className="text-xl font-semibold mb-4">🔻 How We Cut Costs:</h3>
+                      <ul className="space-y-2 mb-6">
+                        {item.hoverContent.howWeCut?.map((point, i) => (
+                          <li key={i} className="flex items-start">
+                            <span className="mr-2">•</span>
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <h3 className="text-xl font-semibold">📉 Result:</h3>
+                      <p className="mt-2">{item.hoverContent.result}</p>
+                    </>
+                  )}
 
-                      {index === 1 && (
-                        <>
-                          <h3 className="text-xl font-semibold mb-4">💡 Cost Breakdown:</h3>
-                          <ul className="space-y-2 mb-6">
-                            {item.hoverContent.breakdown?.map((point, i) => (
-                              <li key={i} className="flex items-start">
-                                <span className="mr-2">•</span>
-                                <span>{point}</span>
-                              </li>
-                            ))}
-                          </ul>
-                          <h3 className="text-xl font-semibold mb-4">🔻 How We Cut Costs:</h3>
-                          <ul className="space-y-2 mb-6">
-                            {item.hoverContent.howWeCut?.map((point, i) => (
-                              <li key={i} className="flex items-start">
-                                <span className="mr-2">•</span>
-                                <span>{point}</span>
-                              </li>
-                            ))}
-                          </ul>
-                          <h3 className="text-xl font-semibold">📉 Result:</h3>
-                          <p className="mt-2">{item.hoverContent.result}</p>
-                        </>
-                      )}
-
-                      {index === 2 && (
-                        <>
-                          <h3 className="text-xl font-semibold mb-4">🧠 Smarter Hiring:</h3>
-                          <ul className="space-y-2 mb-6">
-                            {item.hoverContent.smarter?.map((point, i) => (
-                              <li key={i} className="flex items-start">
-                                <span className="mr-2">•</span>
-                                <span>{point}</span>
-                              </li>
-                            ))}
-                          </ul>
-                          <h3 className="text-xl font-semibold mb-4">📈 Results:</h3>
-                          <ul className="space-y-2">
-                            {item.hoverContent.results?.map((point, i) => (
-                              <li key={i} className="flex items-start">
-                                <span className="mr-2">•</span>
-                                <span>{point}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </>
-                      )}
-                      
-                      <Link
-                        to="/contact"
-                        className="absolute bottom-4 left-4 right-4 text-center py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
-                      >
-                        Learn More
-                      </Link>
-                    </div>
-                  </div>
+                  {index === 2 && (
+                    <>
+                      <h3 className="text-xl font-semibold mb-4">🧠 Smarter Hiring:</h3>
+                      <ul className="space-y-2 mb-6">
+                        {item.hoverContent.smarter?.map((point, i) => (
+                          <li key={i} className="flex items-start">
+                            <span className="mr-2">•</span>
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <h3 className="text-xl font-semibold mb-4">📈 Results:</h3>
+                      <ul className="space-y-2">
+                        {item.hoverContent.results?.map((point, i) => (
+                          <li key={i} className="flex items-start">
+                            <span className="mr-2">•</span>
+                            <span>{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                  
+                  <Link
+                    to="/contact"
+                    className="mt-6 block text-center py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+                  >
+                    Learn More
+                  </Link>
                 </motion.div>
               </motion.div>
             ))}

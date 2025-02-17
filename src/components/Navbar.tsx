@@ -36,6 +36,7 @@ const Navbar = () => {
                 alt="Syft Logo" 
                 className="h-8 w-auto"
               />
+              <span className="ml-3 text-xl font-bold text-white">Syft</span>
             </Link>
           </div>
 
