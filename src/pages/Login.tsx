@@ -16,18 +16,44 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      console.log('Starting login process...');
+      
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (signInError) {
+        console.error('Sign in error:', signInError);
+        throw signInError;
+      }
 
+      if (!data.user) {
+        console.error('No user returned after login');
+        throw new Error('Login failed - no user returned');
+      }
+
+      console.log('Login successful, user:', data.user.id);
+      
+      // Get the user's profile
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', data.user.id)
+        .single();
+
+      if (userError) {
+        console.error('Error fetching user profile:', userError);
+        throw userError;
+      }
+
+      console.log('User profile fetched:', userData);
+      
       // Successful login
       navigate('/dashboard');
     } catch (err: any) {
+      console.error('Login error:', err);
       setError(err.message || 'Failed to sign in');
-    } finally {
       setLoading(false);
     }
   };

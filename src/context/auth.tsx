@@ -6,32 +6,59 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   isAdmin: boolean;
+  error: Error | null;
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null, loading: true, isAdmin: false });
+const AuthContext = createContext<AuthContextType>({ 
+  user: null, 
+  loading: true, 
+  isAdmin: false,
+  error: null 
+});
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
   const checkAdminStatus = async (userId: string) => {
     try {
+      console.log('Checking admin status for user:', userId);
       const { data, error } = await supabase
         .from('admin_users')
         .select('id')
         .eq('id', userId)
         .single();
       
-      return !error && !!data;
-    } catch {
+      if (error) {
+        console.error('Error checking admin status:', error);
+        throw error;
+      }
+      
+      const isUserAdmin = !error && !!data;
+      console.log('Admin status result:', isUserAdmin);
+      return isUserAdmin;
+    } catch (err) {
+      console.error('Failed to check admin status:', err);
       return false;
     }
   };
 
   useEffect(() => {
+    console.log('Initializing auth state...');
+    
     // Get initial session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session }, error }) => {
+      console.log('Initial session check:', { session: !!session, error });
+      
+      if (error) {
+        console.error('Session error:', error);
+        setError(error);
+        setLoading(false);
+        return;
+      }
+
       setUser(session?.user ?? null);
       if (session?.user) {
         const adminStatus = await checkAdminStatus(session.user.id);
@@ -43,7 +70,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state change:', event, !!session);
+      
       setUser(session?.user ?? null);
       if (session?.user) {
         const adminStatus = await checkAdminStatus(session.user.id);
@@ -60,16 +89,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAdmin }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, error }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-}; 
+export const useAuth = () => useContext(AuthContext); 
