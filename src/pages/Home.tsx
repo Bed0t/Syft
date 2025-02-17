@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Brain, Users, BarChart2, Globe2, UserCheck, Rocket, DollarSign, Target } from 'lucide-react';
+import { Globe } from '../components/Globe';
 
 interface HoverContent {
   why?: string[];
@@ -66,12 +67,8 @@ const Home = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="relative lg:block hidden"
             >
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                <img
-                  src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=80"
-                  alt="AI Recruitment Platform"
-                  className="w-full h-[600px] object-cover"
-                />
+              <div className="relative rounded-3xl overflow-hidden">
+                <Globe className="w-full h-[600px]" />
               </div>
               
               {/* Blue glow effect */}
