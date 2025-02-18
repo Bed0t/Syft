@@ -18,6 +18,10 @@ const Login = () => {
     try {
       console.log('Starting login process...');
       
+      // First, ensure we're starting with a clean session
+      await supabase.auth.signOut();
+      console.log('Cleared existing session');
+      
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -47,13 +51,20 @@ const Login = () => {
         throw userError;
       }
 
-      console.log('User profile fetched:', userData);
+      if (!userData) {
+        console.error('No user profile found');
+        throw new Error('User profile not found');
+      }
+
+      console.log('User profile fetched successfully');
       
       // Successful login
+      console.log('Navigating to dashboard...');
       navigate('/dashboard');
     } catch (err: any) {
       console.error('Login error:', err);
       setError(err.message || 'Failed to sign in');
+    } finally {
       setLoading(false);
     }
   };
