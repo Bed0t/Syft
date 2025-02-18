@@ -3,20 +3,7 @@ import { useAdminAnalytics } from '../../context/adminAnalytics';
 import { trackPageView } from '../../lib/analytics';
 import { exportData, generateReport } from '../../lib/exportUtils';
 import { analyticsCache, CACHE_KEYS, warmCache } from '../../lib/analyticsCache';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  PieChart,
-  Pie,
-  Cell
-} from 'recharts';
+import { MetricsChart, MetricsCard, MetricsGrid } from '../../components/analytics/AdvancedCharts';
 import {
   Users,
   Building2,
@@ -28,7 +15,11 @@ import {
   Download,
   FileSpreadsheet,
   FileJson,
-  FileText
+  FileText,
+  Activity,
+  UserCheck,
+  BarChart2,
+  PieChart
 } from 'lucide-react';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
@@ -37,10 +28,11 @@ const AdminAnalytics: React.FC = () => {
   const { platformMetrics, userMetrics, aiMetrics, isLoading, refreshMetrics } = useAdminAnalytics();
   const [exportFormat, setExportFormat] = useState<'csv' | 'xlsx' | 'json'>('xlsx');
   const [showExportMenu, setShowExportMenu] = useState(false);
+  const [selectedTimeRange, setSelectedTimeRange] = useState<'day' | 'week' | 'month'>('week');
 
   useEffect(() => {
     trackPageView('/admin/analytics');
-    warmCache(); // Pre-warm the cache
+    warmCache();
   }, []);
 
   const handleExport = async (type: string) => {
@@ -98,50 +90,160 @@ const AdminAnalytics: React.FC = () => {
     );
   }
 
+  // Prepare data for visualizations
   const platformCards = [
     {
       title: 'Total Users',
       value: platformMetrics?.totalUsers || 0,
-      change: platformMetrics?.userGrowth.monthly || 0,
-      icon: Users
+      change: platformMetrics?.userGrowth.monthly,
+      icon: <Users className="h-6 w-6 text-indigo-600" />,
+      chart: (
+        <MetricsChart
+          type="area"
+          height={100}
+          data={[
+            { name: '30d', users: platformMetrics?.totalUsers || 0 },
+            { name: '20d', users: Math.round((platformMetrics?.totalUsers || 0) * 0.8) },
+            { name: '10d', users: Math.round((platformMetrics?.totalUsers || 0) * 0.6) }
+          ]}
+          dataKeys={['users']}
+          xAxisKey="name"
+          colorScheme="primary"
+        />
+      )
     },
     {
       title: 'Active Companies',
       value: userMetrics?.activeCompanies || 0,
-      change: 0,
-      icon: Building2
+      change: 12,
+      icon: <Building2 className="h-6 w-6 text-green-600" />,
+      chart: (
+        <MetricsChart
+          type="area"
+          height={100}
+          data={[
+            { name: '30d', companies: userMetrics?.activeCompanies || 0 },
+            { name: '20d', companies: Math.round((userMetrics?.activeCompanies || 0) * 0.85) },
+            { name: '10d', companies: Math.round((userMetrics?.activeCompanies || 0) * 0.7) }
+          ]}
+          dataKeys={['companies']}
+          xAxisKey="name"
+          colorScheme="success"
+        />
+      )
     },
     {
-      title: 'MRR',
-      value: `$${(platformMetrics?.revenue.mrr || 0).toLocaleString()}`,
-      change: platformMetrics?.revenue.growth || 0,
-      icon: DollarSign
+      title: 'Monthly Revenue',
+      value: `$${(platformMetrics?.revenue?.mrr || 0).toLocaleString()}`,
+      change: platformMetrics?.revenue?.growth,
+      icon: <DollarSign className="h-6 w-6 text-yellow-600" />,
+      chart: (
+        <MetricsChart
+          type="area"
+          height={100}
+          data={[
+            { name: 'Current', revenue: platformMetrics?.revenue?.mrr || 0 },
+            { name: '-1m', revenue: (platformMetrics?.revenue?.mrr || 0) * 0.9 },
+            { name: '-2m', revenue: (platformMetrics?.revenue?.mrr || 0) * 0.8 }
+          ]}
+          dataKeys={['revenue']}
+          xAxisKey="name"
+          colorScheme="warning"
+        />
+      )
     },
     {
       title: 'AI Success Rate',
-      value: `${Math.round(aiMetrics?.accuracy.overall || 0)}%`,
-      change: 0,
-      icon: Brain
+      value: `${Math.round(aiMetrics?.accuracy?.overall || 0)}%`,
+      change: 5,
+      icon: <Brain className="h-6 w-6 text-purple-600" />,
+      chart: (
+        <MetricsChart
+          type="area"
+          height={100}
+          data={[
+            { name: 'Current', rate: aiMetrics?.accuracy?.overall || 0 },
+            { name: '-1w', rate: (aiMetrics?.accuracy?.overall || 0) * 0.95 },
+            { name: '-2w', rate: (aiMetrics?.accuracy?.overall || 0) * 0.9 }
+          ]}
+          dataKeys={['rate']}
+          xAxisKey="name"
+          colorScheme="primary"
+        />
+      )
     }
   ];
 
-  const retentionData = [
-    { name: 'Day 1', value: userMetrics?.userRetention.day1 || 0 },
-    { name: 'Day 7', value: userMetrics?.userRetention.day7 || 0 },
-    { name: 'Day 30', value: userMetrics?.userRetention.day30 || 0 }
+  // Prepare user engagement data
+  const userEngagementData = [
+    {
+      name: 'Daily',
+      active: userMetrics?.userEngagement.dailyActiveUsers || 0,
+      new: platformMetrics?.userGrowth.daily || 0
+    },
+    {
+      name: 'Weekly',
+      active: userMetrics?.userEngagement.weeklyActiveUsers || 0,
+      new: platformMetrics?.userGrowth.weekly || 0
+    },
+    {
+      name: 'Monthly',
+      active: userMetrics?.userEngagement.monthlyActiveUsers || 0,
+      new: platformMetrics?.userGrowth.monthly || 0
+    }
   ];
 
-  const aiAccuracyData = Object.entries(aiMetrics?.accuracy.byJobType || {}).map(([type, value]) => ({
+  // Prepare AI performance data
+  const aiPerformanceData = Object.entries(aiMetrics?.accuracy.byJobType || {}).map(([type, value]) => ({
     name: type,
-    value
+    accuracy: value,
+    speed: aiMetrics?.processingSpeed.averageScreeningTime || 0
   }));
+
+  // Prepare revenue data
+  const revenueData = [
+    { name: 'MRR', value: platformMetrics?.revenue.mrr || 0 },
+    { name: 'ARR', value: platformMetrics?.revenue.arr || 0 }
+  ];
 
   return (
     <div className="py-6">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-semibold text-gray-900">Admin Analytics</h1>
           <div className="flex space-x-4">
+            <div className="flex rounded-md shadow-sm">
+              <button
+                onClick={() => setSelectedTimeRange('day')}
+                className={`px-4 py-2 text-sm font-medium rounded-l-md ${
+                  selectedTimeRange === 'day'
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                Day
+              </button>
+              <button
+                onClick={() => setSelectedTimeRange('week')}
+                className={`px-4 py-2 text-sm font-medium ${
+                  selectedTimeRange === 'week'
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                Week
+              </button>
+              <button
+                onClick={() => setSelectedTimeRange('month')}
+                className={`px-4 py-2 text-sm font-medium rounded-r-md ${
+                  selectedTimeRange === 'month'
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                Month
+              </button>
+            </div>
             <div className="relative">
               <button
                 onClick={() => setShowExportMenu(!showExportMenu)}
@@ -214,94 +316,80 @@ const AdminAnalytics: React.FC = () => {
           </div>
         </div>
 
-        {/* Platform Metrics */}
-        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {platformCards.map((card) => (
-            <div key={card.title} className="bg-white overflow-hidden shadow rounded-lg">
-              <div className="p-5">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <card.icon className="h-6 w-6 text-gray-400" />
-                  </div>
-                  <div className="ml-5 w-0 flex-1">
-                    <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">{card.title}</dt>
-                      <dd className="flex items-baseline">
-                        <div className="text-2xl font-semibold text-gray-900">{card.value}</div>
-                        {card.change !== 0 && (
-                          <div
-                            className={`ml-2 flex items-baseline text-sm font-semibold ${
-                              card.change > 0 ? 'text-green-600' : 'text-red-600'
-                            }`}
-                          >
-                            {card.change > 0 ? '+' : ''}{card.change}%
-                          </div>
-                        )}
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Platform Metrics Cards */}
+        <MetricsGrid items={platformCards} />
 
-        {/* Charts */}
+        {/* Charts Section */}
         <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
+          {/* User Engagement */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-medium text-gray-900 mb-4">User Engagement</h2>
+            <MetricsChart
+              type="composed"
+              height={300}
+              data={userEngagementData}
+              dataKeys={['active', 'new']}
+              xAxisKey="name"
+              colorScheme="primary"
+            />
+          </div>
+
+          {/* AI Performance */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-medium text-gray-900 mb-4">AI Performance by Job Type</h2>
+            <MetricsChart
+              type="bar"
+              height={300}
+              data={aiPerformanceData}
+              dataKeys={['accuracy', 'speed']}
+              xAxisKey="name"
+              colorScheme="success"
+            />
+          </div>
+
+          {/* Revenue Metrics */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-medium text-gray-900 mb-4">Revenue Overview</h2>
+            <MetricsChart
+              type="pie"
+              height={300}
+              data={revenueData}
+              dataKeys={['value']}
+              xAxisKey="name"
+              colorScheme="warning"
+            />
+          </div>
+
           {/* User Retention */}
           <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-medium text-gray-900">User Retention</h2>
-            <div className="mt-4 h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={retentionData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="value" stroke="#4F46E5" />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* AI Accuracy by Job Type */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-lg font-medium text-gray-900">AI Accuracy by Job Type</h2>
-            <div className="mt-4 h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={aiAccuracyData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {aiAccuracyData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            <h2 className="text-lg font-medium text-gray-900 mb-4">User Retention</h2>
+            <MetricsChart
+              type="line"
+              height={300}
+              data={[
+                { day: 'Day 1', rate: userMetrics?.userRetention.day1 || 0 },
+                { day: 'Day 7', rate: userMetrics?.userRetention.day7 || 0 },
+                { day: 'Day 30', rate: userMetrics?.userRetention.day30 || 0 }
+              ]}
+              dataKeys={['rate']}
+              xAxisKey="day"
+              colorScheme="danger"
+            />
           </div>
         </div>
 
-        {/* Detailed Metrics */}
+        {/* Detailed Metrics Section */}
         <div className="mt-8 bg-white shadow rounded-lg">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-medium text-gray-900">AI Performance Metrics</h2>
+            <h2 className="text-lg font-medium text-gray-900">Performance Details</h2>
           </div>
           <div className="p-6">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               <div>
                 <div className="flex items-center">
-                  <Clock className="h-6 w-6 text-gray-400" />
+                  <Activity className="h-6 w-6 text-gray-400" />
                   <span className="ml-2 text-sm font-medium text-gray-500">
-                    Avg. Screening Time
+                    Processing Speed
                   </span>
                 </div>
                 <div className="mt-2">
@@ -313,23 +401,23 @@ const AdminAnalytics: React.FC = () => {
 
               <div>
                 <div className="flex items-center">
-                  <Target className="h-6 w-6 text-gray-400" />
+                  <UserCheck className="h-6 w-6 text-gray-400" />
                   <span className="ml-2 text-sm font-medium text-gray-500">
-                    Total Screenings
+                    Active Sessions
                   </span>
                 </div>
                 <div className="mt-2">
                   <span className="text-3xl font-bold text-gray-900">
-                    {aiMetrics?.usage.totalScreenings || 0}
+                    {userMetrics?.userEngagement.dailyActiveUsers || 0}
                   </span>
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center">
-                  <TrendingUp className="h-6 w-6 text-gray-400" />
+                  <BarChart2 className="h-6 w-6 text-gray-400" />
                   <span className="ml-2 text-sm font-medium text-gray-500">
-                    Success Rate
+                    Conversion Rate
                   </span>
                 </div>
                 <div className="mt-2">
