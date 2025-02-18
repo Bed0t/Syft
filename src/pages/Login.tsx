@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Brain } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useAuth } from '../context/auth';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -9,6 +10,14 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+
+  // Handle navigation when user is authenticated
+  useEffect(() => {
+    if (user && !authLoading) {
+      navigate('/dashboard');
+    }
+  }, [user, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,11 +27,7 @@ const Login = () => {
     try {
       console.log('Starting login process...');
       
-      // First, ensure we're starting with a clean session
-      await supabase.auth.signOut();
-      console.log('Cleared existing session');
-      
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -32,39 +37,11 @@ const Login = () => {
         throw signInError;
       }
 
-      if (!data.user) {
-        console.error('No user returned after login');
-        throw new Error('Login failed - no user returned');
-      }
-
-      console.log('Login successful, user:', data.user.id);
-      
-      // Get the user's profile
-      const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', data.user.id)
-        .single();
-
-      if (userError) {
-        console.error('Error fetching user profile:', userError);
-        throw userError;
-      }
-
-      if (!userData) {
-        console.error('No user profile found');
-        throw new Error('User profile not found');
-      }
-
-      console.log('User profile fetched successfully');
-      
-      // Successful login
-      console.log('Navigating to dashboard...');
-      navigate('/dashboard');
+      // Don't navigate here - the AuthProvider will handle it
+      console.log('Login successful - waiting for auth state update');
     } catch (err: any) {
       console.error('Login error:', err);
       setError(err.message || 'Failed to sign in');
-    } finally {
       setLoading(false);
     }
   };
