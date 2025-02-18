@@ -1,28 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Brain } from 'lucide-react';
+import { AuthError } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/auth';
+
+interface LocationState {
+  returnUrl?: string;
+  error?: string;
+}
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
-  const { user, loading: authLoading, isAdmin } = useAuth();
+  const location = useLocation();
+  const { user, loading: authLoading, isAdmin, isInitialized } = useAuth();
+
+  const getErrorMessage = useCallback((error: AuthError): string => {
+    switch (error.message) {
+      case 'Invalid login credentials':
+        return 'Invalid email or password';
+      case 'Email not confirmed':
+        return 'Please verify your email address';
+      case 'Rate limit exceeded':
+        return 'Too many login attempts. Please try again later';
+      default:
+        return error.message || 'Failed to sign in';
+    }
+  }, []);
 
   // Handle navigation when user is authenticated
   useEffect(() => {
-    if (!authLoading && user) {
+    if (!authLoading && isInitialized && user) {
       console.log('User authenticated, navigating...', { isAdmin });
-      if (isAdmin) {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/dashboard');
-      }
+      
+      // Get return URL from location state or use default
+      const state = location.state as LocationState;
+      const returnUrl = state?.returnUrl || (isAdmin ? '/admin/dashboard' : '/dashboard');
+      
+      // Navigate with replace to prevent back button from returning to login
+      navigate(returnUrl, { replace: true });
     }
-  }, [user, authLoading, isAdmin, navigate]);
+  }, [user, authLoading, isAdmin, isInitialized, navigate, location]);
+
+  // Handle initial error from navigation state
+  useEffect(() => {
+    const state = location.state as LocationState;
+    if (state?.error) {
+      setError(state.error);
+      // Clear the error from location state
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,9 +67,19 @@ const Login = () => {
     try {
       console.log('Starting login process...');
       
+      // Validate email
+      if (!email.includes('@')) {
+        throw new Error('Please enter a valid email address');
+      }
+
+      // Validate password
+      if (password.length < 6) {
+        throw new Error('Password must be at least 6 characters');
+      }
+
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
-        password,
+        password
       });
 
       if (signInError) {
@@ -46,9 +89,32 @@ const Login = () => {
 
       // Don't navigate here - the useEffect will handle it
       console.log('Login successful - waiting for auth state update');
-    } catch (err: any) {
+    } catch (err) {
       console.error('Login error:', err);
-      setError(err.message || 'Failed to sign in');
+      setError(err instanceof AuthError ? getErrorMessage(err) : 
+               err instanceof Error ? err.message : 
+               'An unexpected error occurred');
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError('Please enter your email address');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      if (error) throw error;
+      
+      // Show success message
+      setError('Password reset instructions sent to your email');
+    } catch (err) {
+      console.error('Password reset error:', err);
+      setError(err instanceof Error ? err.message : 'Failed to send reset instructions');
+    } finally {
       setLoading(false);
     }
   };
@@ -73,7 +139,13 @@ const Login = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
           {error && (
-            <div className="mb-4 rounded-md bg-red-100 p-2 text-sm text-red-700">{error}</div>
+            <div className={`mb-4 rounded-md p-2 text-sm ${
+              error.includes('sent to your email') 
+                ? 'bg-green-100 text-green-700'
+                : 'bg-red-100 text-red-700'
+            }`}>
+              {error}
+            </div>
           )}
 
           <form className="space-y-6" onSubmit={handleSubmit}>
@@ -91,6 +163,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -109,6 +182,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -119,7 +193,10 @@ const Login = () => {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  disabled={loading}
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                   Remember me
@@ -127,16 +204,21 @@ const Login = () => {
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  disabled={loading}
+                  className="font-medium text-indigo-600 hover:text-indigo-500 disabled:opacity-50"
+                >
                   Forgot your password?
-                </a>
+                </button>
               </div>
             </div>
 
             <div>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || authLoading}
                 className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
               >
                 {loading ? 'Signing in...' : 'Sign in'}

@@ -1,98 +1,184 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User } from '@supabase/supabase-js';
+import { User, AuthError, Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 
+// Enhanced error types
+export class AuthContextError extends Error {
+  constructor(message: string, public code?: string, public originalError?: unknown) {
+    super(message);
+    this.name = 'AuthContextError';
+  }
+}
+
+// Enhanced user type with admin info
+interface EnhancedUser extends User {
+  adminSession?: {
+    expiresAt: string;
+    lastActive?: string;
+  };
+}
+
+// Enhanced context type
 interface AuthContextType {
-  user: User | null;
+  user: EnhancedUser | null;
   loading: boolean;
   isAdmin: boolean;
-  error: Error | null;
+  error: AuthContextError | AuthError | null;
+  isInitialized: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({ 
   user: null, 
-  loading: true, 
+  loading: true,
   isAdmin: false,
-  error: null 
+  error: null,
+  isInitialized: false
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<EnhancedUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<AuthContextError | AuthError | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const checkAdminStatus = async (userId: string) => {
+  const handleError = (err: unknown, message: string): AuthContextError => {
+    console.error(`${message}:`, err);
+    const authError = new AuthContextError(
+      message,
+      err instanceof AuthError ? String(err.status) : undefined,
+      err
+    );
+    setError(authError);
+    return authError;
+  };
+
+  const checkAdminStatus = async (userId: string): Promise<boolean> => {
     try {
       console.log('Checking admin status for user:', userId);
       
-      // Check admin status directly
-      const { data: adminData, error: adminError } = await supabase
-        .from('admin_users')
-        .select('id')
-        .eq('id', userId);
+      const { data, error } = await supabase
+        .rpc('is_admin', { user_id: userId });
       
-      if (adminError) {
-        console.error('Error checking admin status:', adminError);
-        return false;
+      if (error) {
+        throw handleError(error, 'Error checking admin status');
       }
       
-      const isUserAdmin = adminData && adminData.length > 0;
-      console.log('Admin status result:', isUserAdmin);
-      return isUserAdmin;
+      console.log('Admin status result:', data);
+      return !!data;
     } catch (err) {
-      console.error('Failed to check admin status:', err);
+      handleError(err, 'Failed to check admin status');
       return false;
+    }
+  };
+
+  const updateUserState = async (session: Session | null) => {
+    try {
+      if (!session?.user) {
+        setUser(null);
+        setIsAdmin(false);
+        return;
+      }
+
+      const adminStatus = await checkAdminStatus(session.user.id);
+      
+      // If admin, get admin session info
+      let adminSession;
+      if (adminStatus) {
+        const { data: sessionInfo, error: sessionError } = await supabase
+          .rpc('get_admin_session_info', { user_id: session.user.id });
+          
+        if (sessionError) {
+          console.warn('Error fetching admin session:', sessionError);
+        } else if (sessionInfo) {
+          adminSession = {
+            expiresAt: sessionInfo.expires_at,
+            lastActive: sessionInfo.last_active
+          };
+        }
+      }
+
+      setUser({
+        ...session.user,
+        adminSession
+      });
+      setIsAdmin(adminStatus);
+    } catch (err) {
+      handleError(err, 'Failed to update user state');
     }
   };
 
   useEffect(() => {
     console.log('Initializing auth state...');
+    let mounted = true;
     
-    // Get initial session
-    supabase.auth.getSession().then(async ({ data: { session }, error }) => {
-      console.log('Initial session check:', { session: !!session, error });
-      
-      if (error) {
-        console.error('Session error:', error);
-        setError(error);
-        setLoading(false);
-        return;
-      }
+    const initializeAuth = async () => {
+      try {
+        setLoading(true);
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          throw handleError(error, 'Session error');
+        }
 
-      if (session?.user) {
-        setUser(session.user);
-        const adminStatus = await checkAdminStatus(session.user.id);
-        setIsAdmin(adminStatus);
-      } else {
-        setUser(null);
-        setIsAdmin(false);
+        if (mounted) {
+          await updateUserState(session);
+          setIsInitialized(true);
+        }
+      } catch (err) {
+        if (mounted) {
+          handleError(err, 'Failed to initialize auth');
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
       }
-      setLoading(false);
-    });
+    };
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state change:', event, !!session);
       
-      if (session?.user) {
-        setUser(session.user);
-        const adminStatus = await checkAdminStatus(session.user.id);
-        setIsAdmin(adminStatus);
-      } else {
-        setUser(null);
-        setIsAdmin(false);
+      if (!mounted) return;
+      
+      setLoading(true);
+      try {
+        switch (event) {
+          case 'SIGNED_IN':
+          case 'TOKEN_REFRESHED':
+          case 'USER_UPDATED':
+            await updateUserState(session);
+            break;
+          case 'SIGNED_OUT':
+            setUser(null);
+            setIsAdmin(false);
+            setError(null);
+            break;
+          default:
+            if (session?.user) {
+              await updateUserState(session);
+            }
+        }
+      } catch (err) {
+        handleError(err, 'Error handling auth state change');
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
       }
-      setLoading(false);
     });
 
+    initializeAuth();
+
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAdmin, error }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, error, isInitialized }}>
       {children}
     </AuthContext.Provider>
   );
