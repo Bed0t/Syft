@@ -26,19 +26,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       console.log('Checking admin status for user:', userId);
       
-      // First check if the user exists in auth.users
-      const { data: authUser, error: authError } = await supabase
-        .from('users')
-        .select('id')
-        .eq('id', userId)
-        .single();
-
-      if (authError) {
-        console.error('Error checking user:', authError);
-        return false;
-      }
-
-      // If user exists, check admin status
+      // Check admin status directly
       const { data: adminData, error: adminError } = await supabase
         .from('admin_users')
         .select('id')
