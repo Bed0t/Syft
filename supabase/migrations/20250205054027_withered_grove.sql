@@ -40,14 +40,6 @@ CREATE TABLE IF NOT EXISTS candidates (
   updated_at timestamptz DEFAULT now()
 );
 
--- Create interview status enum
-CREATE TYPE interview_status AS ENUM (
-  'scheduled',
-  'in_progress',
-  'completed',
-  'failed'
-);
-
 -- Create interviews table
 CREATE TABLE IF NOT EXISTS interviews (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

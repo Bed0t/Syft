@@ -163,11 +163,9 @@ const Home = () => {
                 </div>
 
                 {/* Details Section (appears on hover) */}
-                <motion.div
-                  initial={{ opacity: 0, scaleY: 0 }}
-                  animate={{ opacity: 1, scaleY: 1 }}
-                  whileHover={{ opacity: 1, scaleY: 1 }}
-                  className="absolute top-full left-0 right-0 mt-2 p-6 rounded-xl bg-[#4361ee] text-white shadow-lg origin-top transform-gpu transition-all duration-200 group-hover:opacity-100 group-hover:scale-y-100"
+                <div 
+                  className="absolute top-full left-0 right-0 mt-2 p-6 rounded-xl bg-[#4361ee] text-white shadow-lg overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-200 transform origin-top scale-y-0 group-hover:scale-y-100"
+                  style={{ transformOrigin: 'top' }}
                 >
                   {index === 0 && (
                     <>
@@ -246,7 +244,7 @@ const Home = () => {
                   >
                     Learn More
                   </Link>
-                </motion.div>
+                </div>
               </motion.div>
             ))}
           </div>
