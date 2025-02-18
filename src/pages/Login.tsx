@@ -10,17 +10,24 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, isAdmin } = useAuth();
 
   // Handle navigation when user is authenticated
   useEffect(() => {
-    if (user && !authLoading) {
-      navigate('/dashboard');
+    if (!authLoading && user) {
+      console.log('User authenticated, navigating...', { isAdmin });
+      if (isAdmin) {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     }
-  }, [user, authLoading, navigate]);
+  }, [user, authLoading, isAdmin, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
+    
     setError('');
     setLoading(true);
 
@@ -37,7 +44,7 @@ const Login = () => {
         throw signInError;
       }
 
-      // Don't navigate here - the AuthProvider will handle it
+      // Don't navigate here - the useEffect will handle it
       console.log('Login successful - waiting for auth state update');
     } catch (err: any) {
       console.error('Login error:', err);
