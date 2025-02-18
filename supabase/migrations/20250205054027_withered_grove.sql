@@ -74,45 +74,7 @@ ALTER TABLE candidates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE interviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE interview_questions ENABLE ROW LEVEL SECURITY;
 
--- Create policies
-CREATE POLICY "Users can read own company interviews"
-  ON interviews
-  FOR SELECT
-  TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM jobs
-      WHERE jobs.id = interviews.job_id
-      AND jobs.company_id = auth.uid()
-    )
-  );
-
-CREATE POLICY "Users can insert own company interviews"
-  ON interviews
-  FOR INSERT
-  TO authenticated
-  WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM jobs
-      WHERE jobs.id = interviews.job_id
-      AND jobs.company_id = auth.uid()
-    )
-  );
-
-CREATE POLICY "Users can read own company interview questions"
-  ON interview_questions
-  FOR SELECT
-  TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM interviews
-      JOIN jobs ON interviews.job_id = jobs.id
-      WHERE interview_questions.interview_id = interviews.id
-      AND jobs.company_id = auth.uid()
-    )
-  );
-
--- Create updated_at trigger function
+-- Create function if it doesn't exist
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -121,18 +83,80 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
--- Create triggers for updated_at
-CREATE TRIGGER update_jobs_updated_at
-  BEFORE UPDATE ON jobs
-  FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at_column();
+-- Only create triggers if they don't exist
+DO $$ BEGIN
+  CREATE TRIGGER IF NOT EXISTS update_jobs_updated_at
+    BEFORE UPDATE ON jobs
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
-CREATE TRIGGER update_candidates_updated_at
-  BEFORE UPDATE ON candidates
-  FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at_column();
+DO $$ BEGIN
+  CREATE TRIGGER IF NOT EXISTS update_candidates_updated_at
+    BEFORE UPDATE ON candidates
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
-CREATE TRIGGER update_interviews_updated_at
-  BEFORE UPDATE ON interviews
-  FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at_column();
+DO $$ BEGIN
+  CREATE TRIGGER IF NOT EXISTS update_interviews_updated_at
+    BEFORE UPDATE ON interviews
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+-- Create additional policies if they don't exist
+DO $$ BEGIN
+  CREATE POLICY IF NOT EXISTS "Users can read own company interviews"
+    ON interviews
+    FOR SELECT
+    TO authenticated
+    USING (
+      EXISTS (
+        SELECT 1 FROM jobs
+        WHERE jobs.id = interviews.job_id
+        AND jobs.company_id = auth.uid()
+      )
+    );
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE POLICY IF NOT EXISTS "Users can insert own company interviews"
+    ON interviews
+    FOR INSERT
+    TO authenticated
+    WITH CHECK (
+      EXISTS (
+        SELECT 1 FROM jobs
+        WHERE jobs.id = interviews.job_id
+        AND jobs.company_id = auth.uid()
+      )
+    );
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+  CREATE POLICY IF NOT EXISTS "Users can read own company interview questions"
+    ON interview_questions
+    FOR SELECT
+    TO authenticated
+    USING (
+      EXISTS (
+        SELECT 1 FROM interviews
+        JOIN jobs ON interviews.job_id = jobs.id
+        WHERE interview_questions.interview_id = interviews.id
+        AND jobs.company_id = auth.uid()
+      )
+    );
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
