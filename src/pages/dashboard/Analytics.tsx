@@ -1,38 +1,69 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TrendingUp, TrendingDown, Users, Clock, Target, Award } from 'lucide-react';
+import { useAnalytics } from '../../context/analytics';
+import { trackPageView } from '../../lib/analytics';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell } from 'recharts';
 
-const metrics = [
-  {
-    name: 'Time to Hire',
-    value: '18 days',
-    change: '-28%',
-    trend: 'down',
-    description: 'Average time from job posting to offer acceptance',
-  },
-  {
-    name: 'Interview Success Rate',
-    value: '72%',
-    change: '+12%',
-    trend: 'up',
-    description: 'Candidates who pass AI interview stage',
-  },
-  {
-    name: 'Candidate Quality Score',
-    value: '8.4/10',
-    change: '+5%',
-    trend: 'up',
-    description: 'Average AI-assessed candidate quality rating',
-  },
-  {
-    name: 'Cost per Hire',
-    value: '$3,200',
-    change: '-15%',
-    trend: 'down',
-    description: 'Average cost of hiring a new employee',
-  },
-];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 const Analytics: React.FC = () => {
+  const { dashboardMetrics, isLoading, refreshMetrics } = useAnalytics();
+
+  useEffect(() => {
+    trackPageView('/dashboard/analytics');
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-lg">Loading analytics...</div>
+      </div>
+    );
+  }
+
+  const metrics = [
+    {
+      name: 'Time to Hire',
+      value: `${Math.round(dashboardMetrics?.hiringEfficiency.averageTimeToHire || 0)} days`,
+      change: dashboardMetrics?.jobMetrics[0]?.metrics.applications.change + '%' || '0%',
+      trend: (dashboardMetrics?.jobMetrics[0]?.metrics.applications.change || 0) > 0 ? 'up' : 'down',
+      description: 'Average time from job posting to offer acceptance',
+    },
+    {
+      name: 'AI Success Rate',
+      value: `${Math.round(dashboardMetrics?.hiringEfficiency.aiRecommendationAccuracy || 0)}%`,
+      change: '+12%',
+      trend: 'up',
+      description: 'Candidates who pass AI interview stage',
+    },
+    {
+      name: 'Conversion Rate',
+      value: `${Math.round(dashboardMetrics?.jobMetrics[0]?.metrics.conversionRate.value || 0)}%`,
+      change: dashboardMetrics?.jobMetrics[0]?.metrics.conversionRate.change + '%' || '0%',
+      trend: (dashboardMetrics?.jobMetrics[0]?.metrics.conversionRate.change || 0) > 0 ? 'up' : 'down',
+      description: 'Application to hire conversion rate',
+    },
+    {
+      name: 'Active Jobs',
+      value: dashboardMetrics?.jobMetrics[0]?.metrics.activeJobs.value.toString() || '0',
+      change: dashboardMetrics?.jobMetrics[0]?.metrics.activeJobs.change + '%' || '0%',
+      trend: (dashboardMetrics?.jobMetrics[0]?.metrics.activeJobs.change || 0) > 0 ? 'up' : 'down',
+      description: 'Currently active job postings',
+    },
+  ];
+
+  const hiringPipelineData = Object.entries(dashboardMetrics?.hiringEfficiency.stageConversionRates || {})
+    .map(([stage, rate]) => ({
+      stage,
+      rate: Math.round(rate)
+    }));
+
+  const sourceQualityData = dashboardMetrics?.jobBoardPerformance.map(board => ({
+    name: board.boardName,
+    value: board.hireRate
+  })) || [];
+
   return (
     <div className="py-6">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
@@ -80,20 +111,41 @@ const Analytics: React.FC = () => {
           {/* Hiring Pipeline */}
           <div className="rounded-lg bg-white p-6 shadow">
             <h2 className="text-lg font-medium text-gray-900">Hiring Pipeline</h2>
-            <div className="mt-4">
-              <div className="flex h-64 items-center justify-center text-gray-500">
-                [Hiring Pipeline Chart Placeholder]
-              </div>
+            <div className="mt-4 h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={hiringPipelineData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="stage" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="rate" fill="#4F46E5" />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
           {/* Source Quality */}
           <div className="rounded-lg bg-white p-6 shadow">
             <h2 className="text-lg font-medium text-gray-900">Source Quality</h2>
-            <div className="mt-4">
-              <div className="flex h-64 items-center justify-center text-gray-500">
-                [Source Quality Chart Placeholder]
-              </div>
+            <div className="mt-4 h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={sourceQualityData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {sourceQualityData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
@@ -111,8 +163,12 @@ const Analytics: React.FC = () => {
                   <span className="ml-2 text-sm font-medium text-gray-500">Total Applications</span>
                 </div>
                 <div className="mt-2">
-                  <span className="text-3xl font-bold text-gray-900">1,284</span>
-                  <span className="ml-2 text-sm text-green-600">+12%</span>
+                  <span className="text-3xl font-bold text-gray-900">
+                    {dashboardMetrics?.jobMetrics[0]?.totalApplications || 0}
+                  </span>
+                  <span className="ml-2 text-sm text-green-600">
+                    {dashboardMetrics?.jobMetrics[0]?.metrics.applications.change}%
+                  </span>
                 </div>
               </div>
 
@@ -120,34 +176,40 @@ const Analytics: React.FC = () => {
                 <div className="flex items-center">
                   <Clock className="h-6 w-6 text-gray-400" />
                   <span className="ml-2 text-sm font-medium text-gray-500">
-                    Interview Completion
+                    Average Session Time
                   </span>
                 </div>
                 <div className="mt-2">
-                  <span className="text-3xl font-bold text-gray-900">89%</span>
-                  <span className="ml-2 text-sm text-green-600">+5%</span>
+                  <span className="text-3xl font-bold text-gray-900">
+                    {dashboardMetrics?.jobMetrics[0]?.metrics.sessionDuration.value}
+                  </span>
+                  <span className="ml-2 text-sm text-green-600">
+                    {dashboardMetrics?.jobMetrics[0]?.metrics.sessionDuration.change}%
+                  </span>
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center">
                   <Target className="h-6 w-6 text-gray-400" />
-                  <span className="ml-2 text-sm font-medium text-gray-500">Offer Acceptance</span>
+                  <span className="ml-2 text-sm font-medium text-gray-500">AI Match Rate</span>
                 </div>
                 <div className="mt-2">
-                  <span className="text-3xl font-bold text-gray-900">78%</span>
-                  <span className="ml-2 text-sm text-red-600">-2%</span>
+                  <span className="text-3xl font-bold text-gray-900">
+                    {Math.round(dashboardMetrics?.hiringEfficiency.aiRecommendationAccuracy || 0)}%
+                  </span>
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center">
                   <Award className="h-6 w-6 text-gray-400" />
-                  <span className="ml-2 text-sm font-medium text-gray-500">Quality of Hire</span>
+                  <span className="ml-2 text-sm font-medium text-gray-500">Diversity Score</span>
                 </div>
                 <div className="mt-2">
-                  <span className="text-3xl font-bold text-gray-900">4.8</span>
-                  <span className="ml-2 text-sm text-green-600">+0.3</span>
+                  <span className="text-3xl font-bold text-gray-900">
+                    {Object.keys(dashboardMetrics?.diversityStats.gender || {}).length}/5
+                  </span>
                 </div>
               </div>
             </div>
