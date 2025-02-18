@@ -66,10 +66,10 @@ const Login = () => {
         throw new Error('Please enter a valid email address');
       }
 
-      // Validate password
-      if (password.length < 6) {
-        throw new Error('Password must be at least 6 characters');
-      }
+      // Remove password validation
+      // if (password.length < 6) {
+      //   throw new Error('Password must be at least 6 characters');
+      // }
 
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
