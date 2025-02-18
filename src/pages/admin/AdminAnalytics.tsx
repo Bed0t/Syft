@@ -1,6 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAdminAnalytics } from '../../context/adminAnalytics';
 import { trackPageView } from '../../lib/analytics';
+import { exportData, generateReport } from '../../lib/exportUtils';
+import { analyticsCache, CACHE_KEYS, warmCache } from '../../lib/analyticsCache';
 import {
   BarChart,
   Bar,
@@ -23,17 +25,70 @@ import {
   TrendingUp,
   Clock,
   Target,
-  Download
+  Download,
+  FileSpreadsheet,
+  FileJson,
+  FileText
 } from 'lucide-react';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 const AdminAnalytics: React.FC = () => {
-  const { platformMetrics, userMetrics, aiMetrics, isLoading, exportAnalytics } = useAdminAnalytics();
+  const { platformMetrics, userMetrics, aiMetrics, isLoading, refreshMetrics } = useAdminAnalytics();
+  const [exportFormat, setExportFormat] = useState<'csv' | 'xlsx' | 'json'>('xlsx');
+  const [showExportMenu, setShowExportMenu] = useState(false);
 
   useEffect(() => {
     trackPageView('/admin/analytics');
+    warmCache(); // Pre-warm the cache
   }, []);
+
+  const handleExport = async (type: string) => {
+    try {
+      let data;
+      switch (type) {
+        case 'platform':
+          data = await analyticsCache.get(CACHE_KEYS.PLATFORM_METRICS) || platformMetrics;
+          break;
+        case 'users':
+          data = await analyticsCache.get(CACHE_KEYS.USER_METRICS) || userMetrics;
+          break;
+        case 'ai':
+          data = await analyticsCache.get(CACHE_KEYS.AI_METRICS) || aiMetrics;
+          break;
+        case 'all':
+          data = {
+            platform: platformMetrics,
+            users: userMetrics,
+            ai: aiMetrics
+          };
+          break;
+        default:
+          throw new Error(`Invalid export type: ${type}`);
+      }
+
+      if (exportFormat === 'xlsx') {
+        const report = await generateReport(data, type);
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const fileName = `syft_analytics_${type}_${timestamp}.xlsx`;
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(report);
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        await exportData({
+          fileName: `syft_analytics_${type}`,
+          format: exportFormat,
+          data
+        });
+      }
+    } catch (error) {
+      console.error('Error exporting data:', error);
+      // TODO: Show error notification
+    }
+  };
 
   if (isLoading) {
     return (
@@ -87,13 +142,75 @@ const AdminAnalytics: React.FC = () => {
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-semibold text-gray-900">Admin Analytics</h1>
           <div className="flex space-x-4">
-            <button
-              onClick={() => exportAnalytics('platform')}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Export Data
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setShowExportMenu(!showExportMenu)}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export Data
+              </button>
+              {showExportMenu && (
+                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                  <div className="py-1" role="menu">
+                    <div className="px-4 py-2 text-xs text-gray-500">Export Format</div>
+                    <button
+                      onClick={() => setExportFormat('xlsx')}
+                      className={`flex items-center px-4 py-2 text-sm w-full ${
+                        exportFormat === 'xlsx' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                      }`}
+                    >
+                      <FileSpreadsheet className="h-4 w-4 mr-2" />
+                      Excel (XLSX)
+                    </button>
+                    <button
+                      onClick={() => setExportFormat('csv')}
+                      className={`flex items-center px-4 py-2 text-sm w-full ${
+                        exportFormat === 'csv' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                      }`}
+                    >
+                      <FileText className="h-4 w-4 mr-2" />
+                      CSV
+                    </button>
+                    <button
+                      onClick={() => setExportFormat('json')}
+                      className={`flex items-center px-4 py-2 text-sm w-full ${
+                        exportFormat === 'json' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                      }`}
+                    >
+                      <FileJson className="h-4 w-4 mr-2" />
+                      JSON
+                    </button>
+                    <div className="border-t border-gray-100 my-1"></div>
+                    <div className="px-4 py-2 text-xs text-gray-500">Export Data</div>
+                    <button
+                      onClick={() => handleExport('platform')}
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 w-full hover:bg-gray-100"
+                    >
+                      Platform Metrics
+                    </button>
+                    <button
+                      onClick={() => handleExport('users')}
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 w-full hover:bg-gray-100"
+                    >
+                      User Metrics
+                    </button>
+                    <button
+                      onClick={() => handleExport('ai')}
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 w-full hover:bg-gray-100"
+                    >
+                      AI Metrics
+                    </button>
+                    <button
+                      onClick={() => handleExport('all')}
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 w-full hover:bg-gray-100"
+                    >
+                      All Metrics
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
