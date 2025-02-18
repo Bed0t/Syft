@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase, resetUserData } from './supabase';
 
 export interface DashboardStats {
   totalApplications: number;
@@ -31,8 +31,36 @@ export interface DashboardStats {
   };
 }
 
+export const initializeDashboard = async (userId: string): Promise<boolean> => {
+  try {
+    // Check if user has any jobs
+    const { data: jobs, error: jobsError } = await supabase
+      .from('jobs')
+      .select('id')
+      .eq('user_id', userId)
+      .limit(1);
+
+    if (jobsError) throw jobsError;
+
+    // If no jobs found, initialize data
+    if (!jobs || jobs.length === 0) {
+      const { success, error } = await resetUserData(userId);
+      if (!success) throw error;
+      return true;
+    }
+
+    return false;
+  } catch (error) {
+    console.error('Error initializing dashboard:', error);
+    return false;
+  }
+};
+
 export const calculateDashboardStats = async (userId: string): Promise<DashboardStats> => {
   try {
+    // First check if we need to initialize
+    await initializeDashboard(userId);
+
     // Get all jobs for the user
     const { data: jobs, error: jobsError } = await supabase
       .from('jobs')
