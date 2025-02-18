@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { AuthError } from '@supabase/supabase-js';
+import { AuthError, PostgrestError } from '@supabase/supabase-js';
 import { supabase } from '../supabase';
 
 export interface AdminUser {
@@ -129,11 +129,10 @@ export const invalidateAdminSession = async (userId: string): Promise<void> => {
     const { error } = await supabase
       .from('admin_sessions')
       .delete()
-      .eq('user_id', userId)
-      .throwOnError();
+      .eq('user_id', userId);
 
     if (error) {
-      throw new AdminAuthError('Failed to invalidate admin session', error.code);
+      throw new AdminAuthError('Failed to invalidate admin session', (error as PostgrestError).code);
     }
   } catch (error) {
     if (error instanceof AdminAuthError) throw error;
@@ -150,8 +149,9 @@ export const getAdminSessionInfo = async (userId: string): Promise<AdminSession 
       .single();
 
     if (error) {
-      if (error.code === 'PGRST116') return null; // No session found
-      throw new AdminAuthError('Failed to get admin session info', error.code);
+      const pgError: PostgrestError = error;
+      if (pgError.code === 'PGRST116') return null; // No session found
+      throw new AdminAuthError('Failed to get admin session info', pgError.code);
     }
 
     return data ? {

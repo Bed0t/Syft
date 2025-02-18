@@ -13,6 +13,7 @@ export class AuthContextError extends Error {
 // Enhanced user type with admin info
 interface EnhancedUser extends User {
   adminSession?: {
+    id: string;
     expiresAt: string;
     lastActive?: string;
   };
@@ -25,6 +26,8 @@ interface AuthContextType {
   isAdmin: boolean;
   error: AuthContextError | AuthError | null;
   isInitialized: boolean;
+  remainingAttempts?: number;
+  lockoutEndsAt?: Date;
 }
 
 const AuthContext = createContext<AuthContextType>({ 
@@ -41,9 +44,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [error, setError] = useState<AuthContextError | AuthError | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [remainingAttempts, setRemainingAttempts] = useState<number>();
+  const [lockoutEndsAt, setLockoutEndsAt] = useState<Date>();
 
   const handleError = (err: unknown, message: string): AuthContextError => {
     console.error(`${message}:`, err);
+    
+    // Check for rate limit errors
+    if (err instanceof AuthError) {
+      if (err.message.includes('Too many requests')) {
+        const match = err.message.match(/Try again in (\d+) minutes/);
+        if (match) {
+          const minutes = parseInt(match[1], 10);
+          setLockoutEndsAt(new Date(Date.now() + minutes * 60 * 1000));
+          setRemainingAttempts(0);
+        }
+      } else if (err.message.includes('Invalid login credentials')) {
+        // Extract remaining attempts from error message if available
+        const match = err.message.match(/(\d+) attempts? remaining/);
+        if (match) {
+          setRemainingAttempts(parseInt(match[1], 10));
+        } else {
+          // If no attempts info in message, decrement current count
+          setRemainingAttempts(prev => Math.max((prev ?? 5) - 1, 0));
+        }
+      }
+    }
+    
     const authError = new AuthContextError(
       message,
       err instanceof AuthError ? String(err.status) : undefined,
@@ -55,7 +82,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const checkAdminStatus = async (userId: string): Promise<boolean> => {
     try {
-      console.log('Checking admin status for user:', userId);
+      // Only log user ID, not any sensitive info
+      console.log('Checking admin status for user ID:', userId);
       
       const { data, error } = await supabase
         .rpc('is_admin', { user_id: userId });
@@ -64,10 +92,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         throw handleError(error, 'Error checking admin status');
       }
       
-      console.log('Admin status result:', data);
+      // Don't log the actual result for security
+      console.log('Admin status check completed');
       return !!data;
     } catch (err) {
       handleError(err, 'Failed to check admin status');
+      return false;
+    }
+  };
+
+  const createAdminSession = async (userId: string): Promise<string | null> => {
+    try {
+      const { data, error } = await supabase
+        .rpc('create_admin_session', { user_id: userId });
+      
+      if (error) throw error;
+      return data;
+    } catch (err) {
+      handleError(err, 'Failed to create admin session');
+      return null;
+    }
+  };
+
+  const verifyAdminSession = async (sessionId: string): Promise<boolean> => {
+    try {
+      const { data, error } = await supabase
+        .rpc('verify_admin_session', { session_id: sessionId });
+      
+      if (error) throw error;
+      return !!data;
+    } catch (err) {
+      handleError(err, 'Failed to verify admin session');
       return false;
     }
   };
@@ -80,21 +135,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-      const adminStatus = await checkAdminStatus(session.user.id);
+      let currentAdminStatus = await checkAdminStatus(session.user.id);
       
-      // If admin, get admin session info
-      let adminSession;
-      if (adminStatus) {
-        const { data: sessionInfo, error: sessionError } = await supabase
-          .rpc('get_admin_session_info', { user_id: session.user.id });
-          
-        if (sessionError) {
-          console.warn('Error fetching admin session:', sessionError);
-        } else if (sessionInfo) {
-          adminSession = {
-            expiresAt: sessionInfo.expires_at,
-            lastActive: sessionInfo.last_active
-          };
+      // If admin, create/verify session
+      let adminSession: EnhancedUser['adminSession'];
+      if (currentAdminStatus) {
+        const currentUser = user || session.user as EnhancedUser;
+        if (!currentUser.adminSession?.id) {
+          const sessionId = await createAdminSession(session.user.id);
+          if (sessionId) {
+            adminSession = {
+              id: sessionId,
+              expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+              lastActive: new Date().toISOString()
+            };
+          } else {
+            currentAdminStatus = false;
+          }
+        } else {
+          const isValid = await verifyAdminSession(currentUser.adminSession.id);
+          if (!isValid) {
+            currentAdminStatus = false;
+          } else {
+            adminSession = currentUser.adminSession;
+          }
         }
       }
 
@@ -102,7 +166,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         ...session.user,
         adminSession
       });
-      setIsAdmin(adminStatus);
+      setIsAdmin(currentAdminStatus);
     } catch (err) {
       handleError(err, 'Failed to update user state');
     }
@@ -138,7 +202,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state change:', event, !!session);
+      console.log('Auth state change:', event);
       
       if (!mounted) return;
       
@@ -178,7 +242,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAdmin, error, isInitialized }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      isAdmin, 
+      error, 
+      isInitialized,
+      remainingAttempts,
+      lockoutEndsAt
+    }}>
       {children}
     </AuthContext.Provider>
   );

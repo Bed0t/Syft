@@ -18,25 +18,12 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, loading: authLoading, isAdmin, isInitialized } = useAuth();
-
-  const getErrorMessage = useCallback((error: AuthError): string => {
-    switch (error.message) {
-      case 'Invalid login credentials':
-        return 'Invalid email or password';
-      case 'Email not confirmed':
-        return 'Please verify your email address';
-      case 'Rate limit exceeded':
-        return 'Too many login attempts. Please try again later';
-      default:
-        return error.message || 'Failed to sign in';
-    }
-  }, []);
+  const { user, loading: authLoading, isAdmin, isInitialized, remainingAttempts, lockoutEndsAt } = useAuth();
 
   // Handle navigation when user is authenticated
   useEffect(() => {
     if (!authLoading && isInitialized && user) {
-      console.log('User authenticated, navigating...', { isAdmin });
+      console.log('User authenticated, navigating...');
       
       // Get return URL from location state or use default
       const state = location.state as LocationState;
@@ -61,6 +48,13 @@ const Login = () => {
     e.preventDefault();
     if (loading) return;
     
+    // Check if user is locked out
+    if (lockoutEndsAt && lockoutEndsAt > new Date()) {
+      const minutes = Math.ceil((lockoutEndsAt.getTime() - Date.now()) / (1000 * 60));
+      setError(`Too many login attempts. Please try again in ${minutes} minutes.`);
+      return;
+    }
+    
     setError('');
     setLoading(true);
 
@@ -83,17 +77,37 @@ const Login = () => {
       });
 
       if (signInError) {
-        console.error('Sign in error:', signInError);
+        console.error('Sign in error type:', signInError.name);
         throw signInError;
       }
 
       // Don't navigate here - the useEffect will handle it
       console.log('Login successful - waiting for auth state update');
     } catch (err) {
-      console.error('Login error:', err);
-      setError(err instanceof AuthError ? getErrorMessage(err) : 
-               err instanceof Error ? err.message : 
-               'An unexpected error occurred');
+      console.error('Login error type:', err instanceof Error ? err.name : typeof err);
+      
+      let errorMessage: string;
+      if (err instanceof AuthError) {
+        switch (err.message) {
+          case 'Invalid login credentials':
+            errorMessage = remainingAttempts 
+              ? `Invalid email or password. ${remainingAttempts} attempts remaining.`
+              : 'Invalid email or password.';
+            break;
+          case 'Email not confirmed':
+            errorMessage = 'Please verify your email address.';
+            break;
+          case 'Rate limit exceeded':
+            errorMessage = 'Too many login attempts. Please try again later.';
+            break;
+          default:
+            errorMessage = err.message;
+        }
+      } else {
+        errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred';
+      }
+      
+      setError(errorMessage);
       setLoading(false);
     }
   };
@@ -106,7 +120,10 @@ const Login = () => {
 
     try {
       setLoading(true);
-      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`
+      });
+      
       if (error) throw error;
       
       // Show success message
@@ -163,7 +180,7 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
-                  disabled={loading}
+                  disabled={loading || (lockoutEndsAt && lockoutEndsAt > new Date())}
                 />
               </div>
             </div>
@@ -182,7 +199,7 @@ const Login = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500"
-                  disabled={loading}
+                  disabled={loading || (lockoutEndsAt && lockoutEndsAt > new Date())}
                 />
               </div>
             </div>
@@ -196,7 +213,7 @@ const Login = () => {
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                  disabled={loading}
+                  disabled={loading || (lockoutEndsAt && lockoutEndsAt > new Date())}
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                   Remember me
@@ -207,7 +224,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={handleForgotPassword}
-                  disabled={loading}
+                  disabled={loading || !email || (lockoutEndsAt && lockoutEndsAt > new Date())}
                   className="font-medium text-indigo-600 hover:text-indigo-500 disabled:opacity-50"
                 >
                   Forgot your password?
@@ -218,7 +235,7 @@ const Login = () => {
             <div>
               <button
                 type="submit"
-                disabled={loading || authLoading}
+                disabled={loading || authLoading || (lockoutEndsAt && lockoutEndsAt > new Date())}
                 className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
               >
                 {loading ? 'Signing in...' : 'Sign in'}
