@@ -25,18 +25,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const checkAdminStatus = async (userId: string) => {
     try {
       console.log('Checking admin status for user:', userId);
-      const { data, error } = await supabase
-        .from('admin_users')
+      
+      // First check if the user exists in auth.users
+      const { data: authUser, error: authError } = await supabase
+        .from('users')
         .select('id')
         .eq('id', userId)
         .single();
+
+      if (authError) {
+        console.error('Error checking user:', authError);
+        return false;
+      }
+
+      // If user exists, check admin status
+      const { data: adminData, error: adminError } = await supabase
+        .from('admin_users')
+        .select('id')
+        .eq('id', userId);
       
-      if (error) {
-        console.error('Error checking admin status:', error);
-        throw error;
+      if (adminError) {
+        console.error('Error checking admin status:', adminError);
+        return false;
       }
       
-      const isUserAdmin = !error && !!data;
+      const isUserAdmin = adminData && adminData.length > 0;
       console.log('Admin status result:', isUserAdmin);
       return isUserAdmin;
     } catch (err) {
@@ -59,11 +72,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return;
       }
 
-      setUser(session?.user ?? null);
       if (session?.user) {
+        setUser(session.user);
         const adminStatus = await checkAdminStatus(session.user.id);
         setIsAdmin(adminStatus);
       } else {
+        setUser(null);
         setIsAdmin(false);
       }
       setLoading(false);
@@ -73,11 +87,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state change:', event, !!session);
       
-      setUser(session?.user ?? null);
       if (session?.user) {
+        setUser(session.user);
         const adminStatus = await checkAdminStatus(session.user.id);
         setIsAdmin(adminStatus);
       } else {
+        setUser(null);
         setIsAdmin(false);
       }
       setLoading(false);
