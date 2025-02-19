@@ -12,13 +12,11 @@ import {
   Home,
   User,
   Ticket,
-  LineChart,
   Building,
 } from 'lucide-react';
 import Overview from './sections/Overview';
 import UserManagement from './sections/UserManagement';
 import SupportTickets from './sections/SupportTickets';
-import Analytics from './sections/Analytics';
 import Companies from './sections/Companies';
 
 interface DashboardStats {
@@ -104,7 +102,6 @@ const AdminDashboard: React.FC = () => {
     { name: 'Users', icon: User, path: 'users' },
     { name: 'Companies', icon: Building, path: 'companies' },
     { name: 'Support', icon: Ticket, path: 'support' },
-    { name: 'Analytics', icon: LineChart, path: 'analytics' },
   ];
 
   return (
@@ -158,7 +155,6 @@ const AdminDashboard: React.FC = () => {
             <Route path="/users" element={<UserManagement />} />
             <Route path="/companies" element={<Companies />} />
             <Route path="/support" element={<SupportTickets />} />
-            <Route path="/analytics" element={<Analytics />} />
           </Routes>
         </main>
       </div>
