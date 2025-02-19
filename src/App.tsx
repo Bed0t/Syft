@@ -14,6 +14,8 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import SignupFlow from './components/SignupFlow';
 import { AuthProvider, useAuth } from './context/auth';
+import { AnalyticsProvider } from './context/analytics';
+import { AdminAnalyticsProvider } from './context/adminAnalytics';
 
 // Protected Route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -136,7 +138,9 @@ function App() {
               path="/admin/dashboard/*"
               element={
                 <ProtectedAdminRoute>
-                  <AdminDashboard />
+                  <AdminAnalyticsProvider>
+                    <AdminDashboard />
+                  </AdminAnalyticsProvider>
                 </ProtectedAdminRoute>
               }
             />
@@ -156,7 +160,9 @@ function App() {
               path="/dashboard/*"
               element={
                 <ProtectedRoute>
-                  <Dashboard />
+                  <AnalyticsProvider>
+                    <Dashboard />
+                  </AnalyticsProvider>
                 </ProtectedRoute>
               }
             />

@@ -12,6 +12,7 @@ interface AnalyticsContextType {
   // Actions
   refreshMetrics: () => Promise<void>;
   trackEvent: (event: AnalyticsEvent) => Promise<void>;
+  error: Error | null;
 }
 
 interface DashboardMetrics {
@@ -77,27 +78,48 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [dashboardMetrics, setDashboardMetrics] = useState<DashboardMetrics | null>(null);
   const [jobMetrics, setJobMetrics] = useState<Record<string, JobMetrics> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   const refreshMetrics = async () => {
-    if (!user) return;
+    if (!user) {
+      console.log('No user found, skipping metrics refresh');
+      return;
+    }
 
     setIsLoading(true);
+    setError(null);
+    
     try {
-      // Fetch dashboard metrics using the new stored procedure
-      const { data: metrics, error } = await supabase
+      console.log('Fetching dashboard metrics for user:', user.id);
+      
+      // Fetch dashboard metrics using the stored procedure
+      const { data: metrics, error: metricsError } = await supabase
         .rpc('get_user_dashboard_metrics', { p_user_id: user.id });
 
-      if (error) throw error;
+      if (metricsError) {
+        console.error('Error fetching dashboard metrics:', metricsError);
+        throw metricsError;
+      }
 
+      if (!metrics) {
+        console.warn('No metrics data returned from the database');
+        setDashboardMetrics(null);
+        return;
+      }
+
+      console.log('Received metrics data:', metrics);
       setDashboardMetrics(metrics);
 
-      // Fetch individual job metrics if needed
+      // Fetch individual job metrics
       const { data: jobs, error: jobsError } = await supabase
         .from('jobs')
         .select('id, metrics')
         .eq('user_id', user.id);
 
-      if (jobsError) throw jobsError;
+      if (jobsError) {
+        console.error('Error fetching job metrics:', jobsError);
+        throw jobsError;
+      }
 
       const jobMetricsMap = jobs.reduce((acc, job) => ({
         ...acc,
@@ -105,8 +127,11 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       }), {});
 
       setJobMetrics(jobMetricsMap);
-    } catch (error) {
-      console.error('Error fetching analytics:', error);
+    } catch (err) {
+      console.error('Error in refreshMetrics:', err);
+      setError(err instanceof Error ? err : new Error('Failed to fetch analytics'));
+      setDashboardMetrics(null);
+      setJobMetrics(null);
     } finally {
       setIsLoading(false);
     }
@@ -176,6 +201,7 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       dashboardMetrics,
       jobMetrics,
       isLoading,
+      error,
       refreshMetrics,
       trackEvent
     }}>
