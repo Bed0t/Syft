@@ -5,7 +5,6 @@ import {
   LayoutDashboard,
   Briefcase,
   Users,
-  BarChart,
   CreditCard,
   Settings as SettingsIcon,
 } from 'lucide-react';
@@ -15,7 +14,6 @@ import { useAuth } from '../context/auth';
 const Overview = React.lazy(() => import('./dashboard/Overview'));
 const Jobs = React.lazy(() => import('./dashboard/Jobs'));
 const Candidates = React.lazy(() => import('./dashboard/Candidates'));
-const Analytics = React.lazy(() => import('./dashboard/Analytics'));
 const Billing = React.lazy(() => import('./dashboard/Billing'));
 const Settings = React.lazy(() => import('./dashboard/Settings'));
 const CreateJob = React.lazy(() => import('./dashboard/CreateJob'));
@@ -31,7 +29,6 @@ const navigation = [
   { name: 'Overview', icon: LayoutDashboard, path: '' },
   { name: 'Jobs', icon: Briefcase, path: 'jobs' },
   { name: 'Candidates', icon: Users, path: 'candidates' },
-  { name: 'Analytics', icon: BarChart, path: 'analytics' },
   { name: 'Billing', icon: CreditCard, path: 'billing' },
   { name: 'Settings', icon: SettingsIcon, path: 'settings' },
 ];
@@ -93,7 +90,6 @@ const Dashboard = () => {
               <Route path="jobs/create" element={<CreateJob />} />
               <Route path="jobs/:id" element={<JobDetails />} />
               <Route path="candidates" element={<Candidates />} />
-              <Route path="analytics" element={<Analytics />} />
               <Route path="billing" element={<Billing />} />
               <Route path="settings" element={<Settings />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
