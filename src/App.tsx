@@ -14,8 +14,6 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import SignupFlow from './components/SignupFlow';
 import { AuthProvider, useAuth } from './context/auth';
-import { AnalyticsProvider } from './context/analytics';
-import { AdminAnalyticsProvider } from './context/adminAnalytics';
 
 // Protected Route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -83,7 +81,6 @@ const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
           .single();
 
         if (error || !data) {
-          // If session is invalid, sign out
           await supabase.auth.signOut();
           setSessionValid(false);
         } else {
@@ -103,7 +100,6 @@ const ProtectedAdminRoute = ({ children }: { children: React.ReactNode }) => {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
-  // Redirect non-admin users to regular dashboard
   if (!isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
@@ -138,9 +134,7 @@ function App() {
               path="/admin/dashboard/*"
               element={
                 <ProtectedAdminRoute>
-                  <AdminAnalyticsProvider>
-                    <AdminDashboard />
-                  </AdminAnalyticsProvider>
+                  <AdminDashboard />
                 </ProtectedAdminRoute>
               }
             />
@@ -160,9 +154,7 @@ function App() {
               path="/dashboard/*"
               element={
                 <ProtectedRoute>
-                  <AnalyticsProvider>
-                    <Dashboard />
-                  </AnalyticsProvider>
+                  <Dashboard />
                 </ProtectedRoute>
               }
             />
