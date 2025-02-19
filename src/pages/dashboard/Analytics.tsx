@@ -13,6 +13,35 @@ import {
   Brain
 } from 'lucide-react';
 
+// Add type definitions
+interface JobMetric {
+  stage: string;
+  metrics: {
+    activeJobs: {
+      value: number;
+      change: number;
+    };
+    applications: {
+      value: number;
+      change: number;
+    };
+    conversionRate: {
+      value: number;
+      change: number;
+    };
+    sessionDuration: {
+      value: string;
+      change: number;
+    };
+  };
+  totalApplications: number;
+  monthlyApplications: Array<{
+    month: string;
+    applications: number;
+  }>;
+  applicationSources: Record<string, number>;
+}
+
 const Analytics: React.FC = () => {
   const { dashboardMetrics, jobMetrics, isLoading, refreshMetrics } = useAnalytics();
   const [selectedTimeRange, setSelectedTimeRange] = useState<'week' | 'month' | 'year'>('month');
@@ -30,7 +59,7 @@ const Analytics: React.FC = () => {
     );
   }
 
-  // Prepare metrics cards data
+  // Update the metrics cards data preparation
   const metricsCards = [
     {
       title: 'Active Jobs',
@@ -41,10 +70,10 @@ const Analytics: React.FC = () => {
         <MetricsChart
           type="area"
           height={100}
-          data={dashboardMetrics?.jobMetrics.map(m => ({
-            name: m.stage,
-            jobs: m.metrics.activeJobs.value
-          })) || []}
+          data={[
+            { name: 'Current', jobs: dashboardMetrics?.jobMetrics[0]?.metrics.activeJobs.value || 0 },
+            { name: 'Previous', jobs: (dashboardMetrics?.jobMetrics[0]?.metrics.activeJobs.value || 0) * 0.8 }
+          ]}
           dataKeys={['jobs']}
           xAxisKey="name"
           colorScheme="primary"
@@ -60,7 +89,14 @@ const Analytics: React.FC = () => {
         <MetricsChart
           type="area"
           height={100}
-          data={dashboardMetrics?.jobMetrics[0]?.monthlyApplications || {}}
+          data={
+            Array.isArray(dashboardMetrics?.jobMetrics[0]?.monthlyApplications)
+              ? dashboardMetrics?.jobMetrics[0]?.monthlyApplications
+              : [
+                  { month: 'Current', applications: dashboardMetrics?.jobMetrics[0]?.totalApplications || 0 },
+                  { month: 'Previous', applications: (dashboardMetrics?.jobMetrics[0]?.totalApplications || 0) * 0.8 }
+                ]
+          }
           dataKeys={['applications']}
           xAxisKey="month"
           colorScheme="success"
@@ -104,6 +140,24 @@ const Analytics: React.FC = () => {
           colorScheme="primary"
         />
       )
+    }
+  ];
+
+  // Update the AI performance data
+  const aiPerformanceData = [
+    {
+      stage: 'Screening',
+      accuracy: Number(dashboardMetrics?.hiringEfficiency.aiRecommendationAccuracy || 0),
+      speed: typeof dashboardMetrics?.jobMetrics[0]?.metrics.sessionDuration.value === 'string' 
+        ? parseFloat(dashboardMetrics?.jobMetrics[0]?.metrics.sessionDuration.value) || 0
+        : 0
+    },
+    {
+      stage: 'Matching',
+      accuracy: Number(dashboardMetrics?.hiringEfficiency.aiRecommendationAccuracy || 0) * 0.9,
+      speed: typeof dashboardMetrics?.jobMetrics[0]?.metrics.sessionDuration.value === 'string'
+        ? (parseFloat(dashboardMetrics?.jobMetrics[0]?.metrics.sessionDuration.value) || 0) * 1.2
+        : 0
     }
   ];
 
@@ -162,7 +216,7 @@ const Analytics: React.FC = () => {
             >
               Year
             </button>
-          </div>
+            </div>
         </div>
 
         {/* Metrics Cards */}
@@ -181,7 +235,7 @@ const Analytics: React.FC = () => {
               xAxisKey="stage"
               colorScheme="primary"
             />
-          </div>
+              </div>
 
           {/* Application Sources */}
           <div className="bg-white rounded-lg shadow p-6">
@@ -194,7 +248,7 @@ const Analytics: React.FC = () => {
               xAxisKey="name"
               colorScheme="success"
             />
-          </div>
+            </div>
 
           {/* Diversity Stats */}
           <div className="bg-white rounded-lg shadow p-6">
@@ -215,18 +269,7 @@ const Analytics: React.FC = () => {
             <MetricsChart
               type="composed"
               height={300}
-              data={[
-                {
-                  stage: 'Screening',
-                  accuracy: dashboardMetrics?.hiringEfficiency.aiRecommendationAccuracy || 0,
-                  speed: dashboardMetrics?.jobMetrics[0]?.metrics.sessionDuration.value || 0
-                },
-                {
-                  stage: 'Matching',
-                  accuracy: (dashboardMetrics?.hiringEfficiency.aiRecommendationAccuracy || 0) * 0.9,
-                  speed: (dashboardMetrics?.jobMetrics[0]?.metrics.sessionDuration.value || 0) * 1.2
-                }
-              ]}
+              data={aiPerformanceData}
               dataKeys={['accuracy', 'speed']}
               xAxisKey="stage"
               colorScheme="danger"

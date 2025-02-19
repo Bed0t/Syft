@@ -83,27 +83,15 @@ export const AnalyticsProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     setIsLoading(true);
     try {
-      // Fetch dashboard metrics using the stored procedure
+      // Fetch dashboard metrics using the new stored procedure
       const { data: metrics, error } = await supabase
-        .rpc('get_dashboard_metrics', { user_id: user.id });
+        .rpc('get_user_dashboard_metrics', { p_user_id: user.id });
 
       if (error) throw error;
 
-      // Transform the data into our frontend format
-      const transformedMetrics: DashboardMetrics = {
-        jobMetrics: metrics.job_metrics || [],
-        hiringEfficiency: {
-          averageTimeToHire: calculateAverageTimeToHire(metrics.job_metrics),
-          aiRecommendationAccuracy: calculateAIAccuracy(metrics.job_metrics),
-          stageConversionRates: calculateStageConversion(metrics.job_metrics)
-        },
-        diversityStats: transformDiversityStats(metrics.diversity_stats),
-        jobBoardPerformance: metrics.job_board_performance || []
-      };
+      setDashboardMetrics(metrics);
 
-      setDashboardMetrics(transformedMetrics);
-
-      // Fetch individual job metrics
+      // Fetch individual job metrics if needed
       const { data: jobs, error: jobsError } = await supabase
         .from('jobs')
         .select('id, metrics')
