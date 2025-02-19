@@ -179,6 +179,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const initializeAuth = async () => {
       try {
         setLoading(true);
+        // First clear any existing session
+        await supabase.auth.signOut();
+        
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {

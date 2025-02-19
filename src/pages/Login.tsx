@@ -61,15 +61,13 @@ const Login = () => {
     try {
       console.log('Starting login process...');
       
+      // Clear any existing session first
+      await supabase.auth.signOut();
+      
       // Validate email
       if (!email.includes('@')) {
         throw new Error('Please enter a valid email address');
       }
-
-      // Remove password validation
-      // if (password.length < 6) {
-      //   throw new Error('Password must be at least 6 characters');
-      // }
 
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
@@ -108,6 +106,7 @@ const Login = () => {
       }
       
       setError(errorMessage);
+    } finally {
       setLoading(false);
     }
   };
