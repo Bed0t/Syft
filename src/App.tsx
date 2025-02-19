@@ -51,9 +51,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/login" replace />;
   }
 
-  // Redirect admin users to admin dashboard
-  if (isAdmin) {
-    console.log('Admin user detected, redirecting to admin dashboard');
+  // Redirect admin users to admin dashboard if they try to access regular dashboard
+  if (isAdmin && window.location.pathname.startsWith('/dashboard')) {
+    console.log('Admin user detected on regular dashboard, redirecting to admin dashboard');
     return <Navigate to="/admin/dashboard" replace />;
   }
 

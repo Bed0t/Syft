@@ -23,11 +23,13 @@ const Login = () => {
   // Handle navigation when user is authenticated
   useEffect(() => {
     if (!authLoading && isInitialized && user) {
-      console.log('User authenticated, navigating...');
+      console.log('User authenticated, navigating...', { isAdmin });
       
-      // Get return URL from location state or use default
+      // Get return URL from location state or use default based on admin status
       const state = location.state as LocationState;
       const returnUrl = state?.returnUrl || (isAdmin ? '/admin/dashboard' : '/dashboard');
+      
+      console.log('Redirecting to:', returnUrl);
       
       // Navigate with replace to prevent back button from returning to login
       navigate(returnUrl, { replace: true });
