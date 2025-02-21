@@ -11,6 +11,38 @@ const plans = [
   { id: 'enterprise', name: 'Enterprise', description: '20+ roles', icon: '🏢' }
 ];
 
+const avatarImages = [
+  "https://originui.com/avatar-80-03.jpg",
+  "https://originui.com/avatar-80-04.jpg",
+  "https://originui.com/avatar-80-05.jpg"
+];
+
+const TeamAvatar = ({ image, delay, index }: { image: string; delay: number; index: number }) => (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.5 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{
+      type: "spring",
+      stiffness: 100,
+      delay: delay,
+      duration: 0.5
+    }}
+    className="relative"
+    style={{
+      transform: `translateY(${index * 4}px)`,
+    }}
+  >
+    <div className="absolute inset-0 rounded-full bg-[#4361ee]/10 blur-md transform scale-110" />
+    <img
+      src={image}
+      alt={`Team member ${index + 1}`}
+      width={56}
+      height={56}
+      className="relative w-14 h-14 rounded-full ring-4 ring-[#1a1f37] transform hover:scale-105 transition-transform duration-200"
+    />
+  </motion.div>
+);
+
 const Contact = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -107,7 +139,7 @@ const Contact = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1f37] to-[#2a1f67] z-0" />
         
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Header with Team Photos */}
+          {/* Header with Team Avatars */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -124,25 +156,13 @@ const Contact = () => {
             </div>
 
             <div className="flex justify-center -space-x-2 mb-8 relative">
-              {[
-                'https://d2zqmm5yxj3gn5.cloudfront.net/syft/team1.jpg',
-                'https://d2zqmm5yxj3gn5.cloudfront.net/syft/team2.jpg',
-                'https://d2zqmm5yxj3gn5.cloudfront.net/syft/team3.jpg'
-              ].map((imageUrl, i) => (
-                <div
-                  key={i}
-                  className="relative"
-                  style={{
-                    transform: `translateY(${i * 4}px)`,
-                  }}
-                >
-                  <div className="absolute inset-0 rounded-full bg-[#4361ee]/10 blur-sm transform scale-110" />
-                  <img
-                    className="relative inline-block h-14 w-14 rounded-full ring-4 ring-[#1a1f37] transform hover:scale-105 transition-transform duration-200"
-                    src={imageUrl}
-                    alt={`AI generated team member ${i + 1}`}
-                  />
-                </div>
+              {avatarImages.map((imageUrl, index) => (
+                <TeamAvatar
+                  key={index}
+                  image={imageUrl}
+                  delay={index * 0.1}
+                  index={index}
+                />
               ))}
             </div>
             <h1 className="text-4xl font-bold text-white tracking-tight">Contact Us</h1>
@@ -220,7 +240,7 @@ const Contact = () => {
 
                 <div>
                   <label htmlFor="phone" className="block text-sm font-semibold text-gray-300">
-                    Phone Number
+                    Phone Number *
                   </label>
                   <input
                     type="tel"
@@ -229,6 +249,7 @@ const Contact = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     className="mt-1 block w-full rounded-lg border-2 border-white/10 px-4 py-3 bg-white/5 text-white placeholder-gray-400 shadow-sm focus:border-[#4361ee] focus:ring-2 focus:ring-[#4361ee]/50 focus:bg-white/10 transition-all duration-200"
+                    required
                   />
                 </div>
               </div>

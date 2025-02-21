@@ -41,7 +41,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden sm:flex sm:items-center sm:space-x-8">
+          <div className="hidden sm:flex sm:items-center sm:space-x-6">
             <Link
               to="/"
               className="rounded-md px-3 py-2 text-sm font-medium text-white hover:text-white/80 transition-colors"
@@ -50,7 +50,7 @@ const Navbar = () => {
             </Link>
             <Link
               to="/pricing"
-              className="rounded-md px-3 py-2 text-sm font-medium text-white hover:text-white/80 transition-colors"
+              className="rounded-md px-3 py- text-sm font-medium text-white hover:text-white/80 transition-colors"
             >
               Pricing
             </Link>

@@ -165,38 +165,35 @@ const Pricing = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-12 bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 p-8"
+            className="mt-8 bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 p-6"
           >
-            <h3 className="text-lg font-semibold text-white mb-6">
-              Traditional Recruitment Costs in Australia
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="flex items-start">
-                <DollarSign className="h-6 w-6 text-[#4361ee] mt-1" />
-                <div className="ml-3">
-                  <p className="font-medium text-white">Internal Recruitment</p>
-                  <p className="text-gray-300">~$4,700 per hire</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-center">
+              <div className="flex items-center space-x-3">
+                <DollarSign className="h-5 w-5 text-[#4361ee]" />
+                <div>
+                  <p className="font-medium text-white text-sm">Internal Recruitment</p>
+                  <p className="text-gray-300 text-sm">~$4,700 per hire</p>
                 </div>
               </div>
-              <div className="flex items-start">
-                <Users className="h-6 w-6 text-[#4361ee] mt-1" />
-                <div className="ml-3">
-                  <p className="font-medium text-white">External Recruitment</p>
-                  <p className="text-gray-300">15-25% of annual salary</p>
+              <div className="flex items-center space-x-3">
+                <Users className="h-5 w-5 text-[#4361ee]" />
+                <div>
+                  <p className="font-medium text-white text-sm">External Recruitment</p>
+                  <p className="text-gray-300 text-sm">15-25% of salary</p>
                 </div>
               </div>
-              <div className="flex items-start">
-                <Clock className="h-6 w-6 text-[#4361ee] mt-1" />
-                <div className="ml-3">
-                  <p className="font-medium text-white">Average Time-to-Hire</p>
-                  <p className="text-gray-300">40+ days</p>
+              <div className="flex items-center space-x-3">
+                <Clock className="h-5 w-5 text-[#4361ee]" />
+                <div>
+                  <p className="font-medium text-white text-sm">Time-to-Hire</p>
+                  <p className="text-gray-300 text-sm">40+ days</p>
                 </div>
               </div>
-              <div className="flex items-start">
-                <Calculator className="h-6 w-6 text-[#4361ee] mt-1" />
-                <div className="ml-3">
-                  <p className="font-medium text-white">HR Personnel Costs</p>
-                  <p className="text-gray-300">$40-60+/hour</p>
+              <div className="flex items-center space-x-3">
+                <Calculator className="h-5 w-5 text-[#4361ee]" />
+                <div>
+                  <p className="font-medium text-white text-sm">HR Personnel</p>
+                  <p className="text-gray-300 text-sm">$40-60+/hour</p>
                 </div>
               </div>
             </div>
@@ -207,29 +204,44 @@ const Pricing = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-12 flex justify-center"
+            className="mt-12 relative"
           >
-            <div className="relative flex items-center p-1 bg-white/10 rounded-full">
-              <button
-                onClick={() => setIsAnnual(false)}
-                className={`${
-                  !isAnnual ? 'bg-[#4361ee] text-white' : 'text-gray-300'
-                } relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200`}
-              >
-                Monthly billing
-              </button>
-              <button
-                onClick={() => setIsAnnual(true)}
-                className={`${
-                  isAnnual ? 'bg-[#4361ee] text-white' : 'text-gray-300'
-                } relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200`}
-              >
-                Annual billing
-                <span className="absolute -top-2 -right-2 px-2 py-0.5 text-xs font-semibold text-white bg-green-500 rounded-full">
-                  Save 20%
-                </span>
-              </button>
+            <div className="flex justify-center">
+              <div className="relative flex items-center p-1 bg-white/10 rounded-full">
+                <button
+                  onClick={() => setIsAnnual(false)}
+                  className={`${
+                    !isAnnual ? 'bg-[#4361ee] text-white' : 'text-gray-300'
+                  } relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200`}
+                >
+                  Monthly billing
+                </button>
+                <button
+                  onClick={() => setIsAnnual(true)}
+                  className={`${
+                    isAnnual ? 'bg-[#4361ee] text-white' : 'text-gray-300'
+                  } relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200`}
+                >
+                  Annual billing
+                  <span className="absolute -top-2 -right-2 px-2 py-0.5 text-xs font-semibold text-white bg-green-500 rounded-full">
+                    Save 20%
+                  </span>
+                </button>
+              </div>
             </div>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ 
+                duration: 1,
+                repeat: Infinity,
+                repeatType: "reverse",
+                repeatDelay: 0.5
+              }}
+              className="absolute top-1/2 -translate-y-1/2 left-[calc(50%+180px)] px-4 py-1 bg-yellow-400/90 text-black text-sm font-medium rounded-lg shadow-lg border-2 border-yellow-500 transform -rotate-2"
+            >
+              Pricing coming soon, Contact us to get started!
+            </motion.div>
           </motion.div>
 
           {/* Pricing Cards */}

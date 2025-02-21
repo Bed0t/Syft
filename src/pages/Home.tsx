@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Brain, Users, BarChart2, Globe2, UserCheck, Rocket, DollarSign, Target } from 'lucide-react';
@@ -23,10 +23,27 @@ interface StatCard {
 }
 
 const Home = () => {
+  const [titleNumber, setTitleNumber] = useState(0);
+  const titles = useMemo(
+    () => ["Co-Pilot", "Partner", "Sidekick", "Assistant", "Wingman", "Accelerator", "Game-Changer", "Hero"],
+    []
+  );
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (titleNumber === titles.length - 1) {
+        setTitleNumber(0);
+      } else {
+        setTitleNumber(titleNumber + 1);
+      }
+    }, 2000);
+    return () => clearTimeout(timeoutId);
+  }, [titleNumber, titles]);
+
   return (
     <div className="bg-[#1a1f37]">
       {/* Hero Section */}
-      <div className="relative h-screen pt-20">
+      <div className="relative h-screen pt-1">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1f37] to-[#2a1f67]" />
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-12">
@@ -39,7 +56,29 @@ const Home = () => {
             >
               <h1 className="text-5xl sm:text-6xl font-bold text-white leading-tight">
                 Your Recruitment
-                <span className="text-[#4361ee] block mt-2">Co-Pilot</span>
+                <div className="relative h-[1.2em] overflow-hidden">
+                  {titles.map((title, index) => (
+                    <motion.span
+                      key={index}
+                      className="absolute text-[#4361ee]"
+                      initial={{ opacity: 0, y: 50 }}
+                      animate={
+                        titleNumber === index
+                          ? {
+                              y: 0,
+                              opacity: 1,
+                            }
+                          : {
+                              y: titleNumber > index ? -50 : 50,
+                              opacity: 0,
+                            }
+                      }
+                      transition={{ type: "spring", stiffness: 25 }}
+                    >
+                      {title}
+                    </motion.span>
+                  ))}
+                </div>
               </h1>
               <p className="mt-6 text-xl text-gray-300 leading-relaxed">
                 Cut Hiring Costs by 70% & Hire 3x Faster with AI. Join hundreds of companies using Syft to revolutionise recruitment.
@@ -72,14 +111,14 @@ const Home = () => {
               </div>
               
               {/* Blue glow effect */}
-              <div className="absolute -inset-4 bg-blue-500/20 blur-3xl rounded-full -z-10" />
+              <div className="absolute -inset-6 bg-blue-500/20 blur-3xl rounded-full -z-10" />
             </motion.div>
           </div>
         </div>
       </div>
 
       {/* Stats Section */}
-      <div className="relative z-10 -mt-32">
+      <div className="relative z-20 bg-[#1a1f37]">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             {[
