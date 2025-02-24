@@ -7,13 +7,13 @@ const GLOBE_CONFIG: COBEOptions = {
   onRender: () => {},
   devicePixelRatio: 2,
   phi: 0,
-  theta: 0.3,
+  theta: 0.4,
   dark: 1,
   diffuse: 1.2,
   mapSamples: 16000,
   mapBrightness: 6,
   baseColor: [0.3, 0.3, 0.3],
-  markerColor: [0.267, 0.380, 0.933], // #4361ee in RGB
+  markerColor: [0.267, 0.380, 0.933], //rgb(238, 115, 67) in RGB
   glowColor: [0.267, 0.380, 0.933],
   markers: [
     // Australia

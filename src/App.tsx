@@ -13,6 +13,7 @@ import Dashboard from './pages/Dashboard';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import SignupFlow from './components/SignupFlow';
+import ROICalculator from './pages/ROICalculator';
 import { AuthProvider, useAuth } from './context/auth';
 
 // Protected Route component
@@ -149,6 +150,7 @@ function App() {
             <Route path="/about" element={<Layout><About /></Layout>} />
             <Route path="/contact" element={<Layout><Contact /></Layout>} />
             <Route path="/thank-you" element={<Layout><ThankYou /></Layout>} />
+            <Route path="/roi-calculator" element={<Layout><ROICalculator /></Layout>} />
             
             <Route
               path="/dashboard/*"

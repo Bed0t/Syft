@@ -238,7 +238,7 @@ const Pricing = () => {
                 repeatType: "reverse",
                 repeatDelay: 0.5
               }}
-              className="absolute top-1/2 -translate-y-1/2 left-[calc(50%+180px)] px-4 py-1 bg-yellow-400/90 text-black text-sm font-medium rounded-lg shadow-lg border-2 border-yellow-500 transform -rotate-2"
+              className="absolute top-1 -translate-y-1 left-[calc(49%+175px)] px-2 py-2 bg-yellow-500/100 text-black text-bm font-medium rounded-lg shadow-lg border-1 border-yellow-500 transform -rotate-5"
             >
               Pricing coming soon, Contact us to get started!
             </motion.div>

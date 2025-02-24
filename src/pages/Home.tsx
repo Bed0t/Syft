@@ -46,7 +46,7 @@ const Home = () => {
       <div className="relative h-screen pt-1">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1f37] to-[#2a1f67]" />
         
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-12 pt-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
