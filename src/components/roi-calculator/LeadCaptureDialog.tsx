@@ -20,22 +20,34 @@ export function LeadCaptureDialog({ metrics, inputs, onCaptureLead }: LeadCaptur
     setIsGenerating(true);
 
     try {
+      // Generate PDF instance to determine page dimensions
       const pdf = new jsPDF('p', 'px', 'a4');
-      const content = generatePDFContent({ metrics, inputs });
-      
-      // Add content to PDF
-      pdf.html(content, {
-        callback: function (pdf) {
-          pdf.save('syft-roi-analysis.pdf');
+      const pageWidth = pdf.internal.pageSize.getWidth ? pdf.internal.pageSize.getWidth() : pdf.internal.pageSize.width;
+
+      // Create a temporary container for the PDF content with adjusted width to fit within the page.
+      // The inner wrapper uses box-sizing so the horizontal padding (20px each side) is contained,
+      // making the effective content width (pageWidth - 40px).
+      const container = document.createElement('div');
+      container.innerHTML = `<div style="padding: 0 20px; box-sizing: border-box; width: ${pageWidth}px;">${generatePDFContent({ metrics, inputs })}</div>`;
+      container.style.position = 'absolute';
+      container.style.left = '-9999px';
+      document.body.appendChild(container);
+
+      const element = container.firstElementChild as HTMLElement;
+
+      // Add content to PDF without extra horizontal offset. Using x:0 ensures the element's defined width
+      // fits exactly within the page margins.
+      (pdf as any).html(element, {
+        callback: (doc: any) => { // doc is of type jsPDF
+          doc.save('syft-roi-analysis.pdf');
+          document.body.removeChild(container);
           onCaptureLead(email);
           setIsOpen(false);
         },
         x: 0,
-        y: 0,
+        y: 20,
         html2canvas: {
-          scale: 2,
-          useCORS: true,
-          logging: false
+          scale: 0.7,
         }
       });
     } catch (error) {
@@ -52,10 +64,9 @@ export function LeadCaptureDialog({ metrics, inputs, onCaptureLead }: LeadCaptur
         className="w-full bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2"
       >
         <Download className="w-5 h-5" />
-        Download Full Report
+        Download Full ROI Report
       </button>
 
-      {/* Download Dialog */}
       {isOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">

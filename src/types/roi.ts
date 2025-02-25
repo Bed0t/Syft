@@ -15,7 +15,7 @@ export interface RecruitmentMetrics {
   hiresPerYear: number;
   hrTimePerHire: number;
   hrHourlyRate: number;
-  totalCostPerHire: number;
+  interviewCost: number;
   timeToHire: number;
   revenueLostPerDay: number;
 }
@@ -33,7 +33,7 @@ export interface CalculatorInputs {
   agencyFeesPerHire: number;
   internalTeam: InternalTeam;
   hrHourlyRate: number;
-  totalCostPerHire: number;
+  interviewCost: number;
   hrTimePerHire: number;
   timeToHire: number;
   revenueLostPerDay: number;
