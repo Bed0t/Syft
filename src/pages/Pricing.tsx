@@ -204,8 +204,26 @@ const Pricing = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-12 relative"
+            className="mt-12 mb-8 relative"
           >
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center px-4 py-2 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-yellow-500" />
+                  <span className="text-yellow-500 text-sm font-medium">
+                    Pre-Launch Pricing
+                  </span>
+                </div>
+              </div>
+              <p className="mt-2 text-sm text-gray-300">
+              We’re fine-tuning our platform to deliver the best experience for you.
+              <br></br>
+              Pricing plans are coming soon! In the meantime, every customer is paired with a dedicated account manager
+              <br></br>
+              to handle all your needs—think of us as your recruitment concierge. Contact us to learn more and get early access.
+              </p>
+            </div>
+
             <div className="flex justify-center">
               <div className="relative flex items-center p-1 bg-white/10 rounded-full">
                 <button
@@ -229,19 +247,6 @@ const Pricing = () => {
                 </button>
               </div>
             </div>
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ 
-                duration: 1,
-                repeat: Infinity,
-                repeatType: "reverse",
-                repeatDelay: 0.5
-              }}
-              className="absolute top-1 -translate-y-1 left-[calc(49%+175px)] px-2 py-2 bg-yellow-500/100 text-black text-bm font-medium rounded-lg shadow-lg border-1 border-yellow-500 transform -rotate-5"
-            >
-              Pricing coming soon, Contact us to get started!
-            </motion.div>
           </motion.div>
 
           {/* Pricing Cards */}

@@ -43,18 +43,18 @@ const Home = () => {
   return (
     <div className="bg-[#1a1f37]">
       {/* Hero Section */}
-      <div className="relative h-screen pt-1">
+      <div className="relative min-h-[100vh] flex items-center">
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1f37] to-[#2a1f67]" />
         
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-12 pt-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-12 py-12 lg:py-16">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="max-w-2xl"
+              className="max-w-2xl mx-auto lg:mx-0"
             >
-              <h1 className="text-5xl sm:text-6xl font-bold text-white leading-tight">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.1]">
                 Your Recruitment
                 <div className="relative h-[1.2em] overflow-hidden">
                   {titles.map((title, index) => (
@@ -64,14 +64,8 @@ const Home = () => {
                       initial={{ opacity: 0, y: 50 }}
                       animate={
                         titleNumber === index
-                          ? {
-                              y: 0,
-                              opacity: 1,
-                            }
-                          : {
-                              y: titleNumber > index ? -50 : 50,
-                              opacity: 0,
-                            }
+                          ? { y: 0, opacity: 1 }
+                          : { y: titleNumber > index ? -50 : 50, opacity: 0 }
                       }
                       transition={{ type: "spring", stiffness: 25 }}
                     >
@@ -80,20 +74,20 @@ const Home = () => {
                   ))}
                 </div>
               </h1>
-              <p className="mt-6 text-xl text-gray-300 leading-relaxed">
+              <p className="mt-6 text-lg sm:text-xl text-gray-300 leading-relaxed max-w-xl">
                 Cut Hiring Costs by 70% & Hire 3x Faster with AI. Join hundreds of companies using Syft to revolutionise recruitment.
               </p>
-              <div className="mt-10 flex flex-col sm:flex-row gap-4">
+              <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-4">
                 <Link
                   to="/contact"
-                  className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-[#4361ee] rounded-lg hover:bg-[#3651d4] transition-colors"
+                  className="inline-flex items-center justify-center px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg font-medium text-white bg-[#4361ee] rounded-lg hover:bg-[#3651d4] transition-colors"
                 >
                   <span>🔥 Get Started</span>
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
                 <Link
                   to="/pricing"
-                  className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
+                  className="inline-flex items-center justify-center px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg font-medium text-white border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
                 >
                   <span>📈 View Pricing</span>
                 </Link>
@@ -104,10 +98,10 @@ const Home = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="relative lg:block hidden"
+              className="relative hidden lg:block"
             >
               <div className="relative rounded-3xl overflow-hidden">
-                <Globe className="w-full h-[600px]" />
+                <Globe className="w-full aspect-square max-h-[600px]" />
               </div>
               
               {/* Blue glow effect */}
@@ -118,9 +112,9 @@ const Home = () => {
       </div>
 
       {/* Stats Section */}
-      <div className="relative z-20 bg-[#1a1f37]">
+      <div className="relative z-20 bg-[#1a1f37] py-16 sm:py-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
             {[
               {
                 icon: Rocket,
@@ -186,24 +180,24 @@ const Home = () => {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 className="group relative h-full"
               >
-                <div className="text-center p-8 rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow h-full">
-                  <div className="mx-auto w-12 h-12 bg-[#4361ee]/10 rounded-xl flex items-center justify-center mb-4">
-                    <item.icon className="w-6 h-6 text-[#4361ee]" />
+                <div className="text-center p-6 sm:p-8 rounded-xl bg-white shadow-lg hover:shadow-xl transition-shadow h-full">
+                  <div className="mx-auto w-10 sm:w-12 h-10 sm:h-12 bg-[#4361ee]/10 rounded-xl flex items-center justify-center mb-4">
+                    <item.icon className="w-5 sm:w-6 h-5 sm:h-6 text-[#4361ee]" />
                   </div>
                   <motion.div
                     initial={{ scale: 1 }}
                     whileHover={{ scale: 1.05 }}
-                    className="text-3xl font-bold text-[#4361ee]"
+                    className="text-2xl sm:text-3xl font-bold text-[#4361ee]"
                   >
                     {item.stat}
                   </motion.div>
-                  <div className="text-xl font-semibold text-gray-900 mt-2">{item.title}</div>
-                  <p className="mt-2 text-gray-600">{item.description}</p>
+                  <div className="text-lg sm:text-xl font-semibold text-gray-900 mt-2">{item.title}</div>
+                  <p className="mt-2 text-sm sm:text-base text-gray-600">{item.description}</p>
                 </div>
 
                 {/* Details Section (appears on hover) */}
                 <div 
-                  className="absolute top-full left-0 right-0 mt-2 p-6 rounded-xl bg-[#4361ee] text-white shadow-lg overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-200 transform origin-top scale-y-0 group-hover:scale-y-100"
+                  className="absolute top-full left-0 right-0 mt-2 p-4 sm:p-6 rounded-xl bg-[#4361ee] text-white shadow-lg overflow-hidden opacity-0 group-hover:opacity-100 transition-all duration-200 transform origin-top scale-y-0 group-hover:scale-y-100 z-10"
                   style={{ transformOrigin: 'top' }}
                 >
                   {index === 0 && (
@@ -291,144 +285,94 @@ const Home = () => {
       </div>
 
       {/* Features Section */}
-      <div className="pt-[50vh]">
-        {/* Features Section */}
-        <div className="py-24 bg-white">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-gray-900">Recruitment is Broken. Let's Fix It</h2>
-              <p className="mt-4 text-xl text-gray-600">
-                Technology is revolutionising how we hire. Are you ready to leave outdated practices behind?
-              </p>
-            </div>
+      <div className="bg-white py-16 sm:py-24">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Recruitment is Broken. Let's Fix It</h2>
+            <p className="mt-4 text-lg sm:text-xl text-gray-600">
+              Technology is revolutionising how we hire. Are you ready to leave outdated practices behind?
+            </p>
+          </div>
 
-            <div className="mt-20 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: Brain,
-                  title: "Smarter Decisions",
-                  description: "Our Algorithm analyzes real-time data to evaluate candidates based on skills, experience, and cultural fit"
-                },
-                {
-                  icon: UserCheck,
-                  title: "Skills over Keywords",
-                  description: "Focus on what candidates can do, not just the buzz words on their resumes"
-                },
-                {
-                  icon: Users,
-                  title: "Bias Elimination",
-                  description: "Never miss out on top talent, we'll let you know when a good hire is in front of you"
-                },
-                {
-                  icon: Globe2,
-                  title: "Dilute that hiring team",
-                  description: "Stop paying for a team of assistants to do a job that can be done by an algorithm"
-                },
-                {
-                  icon: BarChart2,
-                  title: "Time & Cost Savings",
-                  description: "Automate repetitive tasks and say goodbye to agencies prioritising their % cut over your long-term success"
-                },
-                {
-                  icon: Brain,
-                  title: "Make fact-based decisions",
-                  description: "Stop hiring based on gut feelings, let the data and facts guide your decisions"
-                }
-              ].map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="p-8 bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-[#4361ee]/10 flex items-center justify-center">
-                    <feature.icon className="w-6 h-6 text-[#4361ee]" />
-                  </div>
-                  <h3 className="mt-4 text-xl font-semibold text-gray-900">
-                    {feature.title}
-                  </h3>
-                  <p className="mt-2 text-gray-600">
-                    {feature.description}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
+          <div className="mt-12 sm:mt-16 grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {[
+              {
+                icon: Brain,
+                title: "Smarter Decisions",
+                description: "Our Algorithm analyzes real-time data to evaluate candidates based on skills, experience, and cultural fit"
+              },
+              {
+                icon: UserCheck,
+                title: "Skills over Keywords",
+                description: "Focus on what candidates can do, not just the buzz words on their resumes"
+              },
+              {
+                icon: Users,
+                title: "Bias Elimination",
+                description: "Never miss out on top talent, we'll let you know when a good hire is in front of you"
+              },
+              {
+                icon: Globe2,
+                title: "Dilute that hiring team",
+                description: "Stop paying for a team of assistants to do a job that can be done by an algorithm"
+              },
+              {
+                icon: BarChart2,
+                title: "Time & Cost Savings",
+                description: "Automate repetitive tasks and say goodbye to agencies prioritising their % cut over your long-term success"
+              },
+              {
+                icon: Brain,
+                title: "Make fact-based decisions",
+                description: "Stop hiring based on gut feelings, let the data and facts guide your decisions"
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="p-6 sm:p-8 bg-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-shadow border border-gray-100"
+              >
+                <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-[#4361ee]/10 flex items-center justify-center">
+                  <feature.icon className="w-5 sm:w-6 h-5 sm:h-6 text-[#4361ee]" />
+                </div>
+                <h3 className="mt-4 text-lg sm:text-xl font-semibold text-gray-900">
+                  {feature.title}
+                </h3>
+                <p className="mt-2 text-sm sm:text-base text-gray-600">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </div>
+      </div>
 
-        {/* How It Works */}
-        <div className="py-24 bg-gray-50">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-gray-900">4 Simple Steps to Smarter Hiring</h2>
-            </div>
-
-            <div className="mt-20 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {[
-                {
-                  icon: "📤",
-                  title: "Post Your Job",
-                  description: "Distribute to a variety of job boards with one click."
-                },
-                {
-                  icon: "🎙️",
-                  title: "Smart Interviews",
-                  description: "We assess skills, soft factors, and problem-solving abilities missed on resumes."
-                },
-                {
-                  icon: "🔍",
-                  title: "Intelligent Screening",
-                  description: "Our algorithm ranks candidates based on communication skills, technical expertise, and culture fit."
-                },
-                {
-                  icon: "✅",
-                  title: "Hire with Confidence",
-                  description: "Review a shortlist of top matches and make offers in days, not months!"
-                }
-              ].map((step, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="text-center p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow"
-                >
-                  <div className="text-4xl mb-4">{step.icon}</div>
-                  <h3 className="text-xl font-semibold text-gray-900">{step.title}</h3>
-                  <p className="mt-4 text-gray-600">{step.description}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="py-24 bg-[#1a1f37]">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto">
-              <h2 className="text-3xl font-bold text-white">
-                Ready to revolutionise your hiring process?
-              </h2>
-              <p className="mt-4 text-xl text-gray-300">
-                Join hundreds of companies already using Syft to transform their recruitment. Get started today and see the difference our solution can make.
-              </p>
-              <div className="mt-10 flex justify-center gap-4">
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white bg-[#4361ee] rounded-lg hover:bg-[#3651d4] transition-colors"
-                >
-                  Get Started
-                </Link>
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium text-white border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
-                >
-                  Talk to Sales
-                </Link>
-              </div>
+      {/* CTA Section */}
+      <div className="bg-[#1a1f37] py-16 sm:py-24">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white">
+              Ready to revolutionise your hiring process?
+            </h2>
+            <p className="mt-4 text-lg sm:text-xl text-gray-300">
+              Join hundreds of companies already using Syft to transform their recruitment. Get started today and see the difference our solution can make.
+            </p>
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row justify-center gap-4">
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg font-medium text-white bg-[#4361ee] rounded-lg hover:bg-[#3651d4] transition-colors"
+              >
+                Get Started
+              </Link>
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg font-medium text-white border border-white/20 rounded-lg hover:bg-white/10 transition-colors"
+              >
+                Talk to Sales
+              </Link>
             </div>
           </div>
         </div>

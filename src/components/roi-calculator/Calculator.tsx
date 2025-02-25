@@ -33,6 +33,7 @@ export function Calculator() {
     timeToHire: 0,
     hrTimePerHire: 0,
     hrHourlyRate: 0,
+    totalCostPerHire: 0,
     agencyFeesPerHire: 0,
     revenueLostPerDay: 0,
     internalTeam: {
@@ -56,6 +57,7 @@ export function Calculator() {
         timeToHire: 0,
         hrTimePerHire: 0,
         hrHourlyRate: 0,
+        totalCostPerHire: 0,
         agencyFeesPerHire: 0,
         revenueLostPerDay: 0,
         internalTeam: {
@@ -127,9 +129,14 @@ export function Calculator() {
         }
         return inputs.internalTeam.recruiters > 0;
       case 3:
+        if (inputs.recruitmentType === 'Agency') {
+          return inputs.hiresPerYear > 0 && 
+                 inputs.hrTimePerHire > 0 && 
+                 inputs.hrHourlyRate > 0;
+        }
         return inputs.hiresPerYear > 0 && 
                inputs.hrTimePerHire > 0 && 
-               inputs.hrHourlyRate > 0;
+               inputs.totalCostPerHire > 0;
       case 4:
         return inputs.timeToHire > 0 && 
                inputs.revenueLostPerDay > 0;
@@ -262,8 +269,8 @@ export function Calculator() {
                             transition={{ duration: 0.3 }}
                             className="overflow-hidden"
                           >
-                            <div className="bg-gray-50 rounded-xl p-6">
-                              <h3 className="text-sm font-medium text-gray-500 mb-4">
+                            <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6">
+                              <h3 className="text-sm font-medium text-gray-200 mb-4">
                                 Step 2: {inputs.recruitmentType === 'Agency' ? 'Agency Recruitment Details' : 'Internal Team Structure'}
                               </h3>
                               {inputs.recruitmentType === 'Agency' ? (
@@ -369,8 +376,8 @@ export function Calculator() {
                             transition={{ duration: 0.3 }}
                             className="overflow-hidden"
                           >
-                            <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6">
-                              <h3 className="text-sm font-medium text-gray-300 mb-4">Step 3: Hiring Metrics</h3>
+                            <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6">
+                              <h3 className="text-sm font-medium text-gray-200 mb-4">Step 3: Hiring Metrics</h3>
                               <div className="space-y-6">
                                 <InputSlider
                                   label="Number of Hires per Year"
@@ -394,18 +401,33 @@ export function Calculator() {
                                   tooltip={TOOLTIPS.hrTimePerHire}
                                   defaultValue={DEFAULT_VALUES.hrTimePerHire}
                                 />
-                                <InputSlider
-                                  label="HR Hourly Rate"
-                                  value={inputs.hrHourlyRate}
-                                  onChange={(value) => handleInputChange('hrHourlyRate', value)}
-                                  min={20}
-                                  max={100}
-                                  step={5}
-                                  format="currency"
-                                  icon={<DollarSign className="w-4 h-4" />}
-                                  tooltip={TOOLTIPS.hrHourlyRate}
-                                  defaultValue={DEFAULT_VALUES.hrHourlyRate}
-                                />
+                                {inputs.recruitmentType === 'Agency' ? (
+                                  <InputSlider
+                                    label="HR Hourly Rate"
+                                    value={inputs.hrHourlyRate}
+                                    onChange={(value) => handleInputChange('hrHourlyRate', value)}
+                                    min={20}
+                                    max={100}
+                                    step={5}
+                                    format="currency"
+                                    icon={<DollarSign className="w-4 h-4" />}
+                                    tooltip={TOOLTIPS.hrHourlyRate}
+                                    defaultValue={DEFAULT_VALUES.hrHourlyRate}
+                                  />
+                                ) : (
+                                  <InputSlider
+                                    label="Total Cost per Hire"
+                                    value={inputs.totalCostPerHire}
+                                    onChange={(value) => handleInputChange('totalCostPerHire', value)}
+                                    min={2000}
+                                    max={6000}
+                                    step={100}
+                                    format="currency"
+                                    icon={<DollarSign className="w-4 h-4" />}
+                                    tooltip={TOOLTIPS.totalCostPerHire}
+                                    defaultValue={DEFAULT_VALUES.totalCostPerHire}
+                                  />
+                                )}
                               </div>
                               {currentStep === 3 && isStepComplete(3) && (
                                 <motion.div
@@ -436,8 +458,8 @@ export function Calculator() {
                             transition={{ duration: 0.3 }}
                             className="overflow-hidden"
                           >
-                            <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6">
-                              <h3 className="text-sm font-medium text-gray-300 mb-4">Step 4: Time & Revenue Impact</h3>
+                            <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl p-6">
+                              <h3 className="text-sm font-medium text-gray-200 mb-4">Step 4: Time & Revenue Impact</h3>
                               <div className="space-y-6">
                                 <div className="bg-blue-900/50 backdrop-blur-sm rounded-xl p-4 mb-6">
                                   <div className="flex items-start gap-3">
@@ -446,7 +468,7 @@ export function Calculator() {
                                     </div>
                                     <div>
                                       <h4 className="text-sm font-medium text-blue-200">Why This Matters</h4>
-                                      <p className="text-sm text-blue-300 mt-1">
+                                      <p className="text-sm text-blue-400 mt-1">
                                         Time-to-hire and revenue impact are crucial metrics that directly affect your bottom line. 
                                         Faster hiring not only reduces costs but also minimizes lost revenue from vacant positions.
                                       </p>
@@ -480,9 +502,9 @@ export function Calculator() {
                                     defaultValue={DEFAULT_VALUES.revenueLostPerDay}
                                   />
                                   
-                                  <div className="mt-2 text-sm text-gray-400 italic">
+                                  <div className="mt-2 text-sm text-gray-100 italic">
                                     Estimated annual revenue impact: 
-                                    <span className="font-medium text-gray-200">
+                                    <span className="font-medium text-red-600">
                                       {' '}${(inputs.revenueLostPerDay * inputs.timeToHire * inputs.hiresPerYear).toLocaleString()}
                                     </span>
                                   </div>
@@ -502,7 +524,7 @@ export function Calculator() {
                                     Calculate ROI
                                     <ArrowRight className="w-4 h-4" />
                                   </button>
-                                  <p className="text-center text-sm text-gray-400 mt-2">
+                                  <p className="text-center text-sm text-gray-200 mt-2">
                                     We'll analyze your data and provide a detailed breakdown of potential savings.
                                   </p>
                                 </motion.div>
@@ -526,7 +548,10 @@ export function Calculator() {
                       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 py-6">
                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                           <div className="flex justify-between items-center">
-                            <h2 className="text-2xl font-bold text-white">ROI Analysis Preview</h2>
+                            <div>
+                              <h2 className="text-2xl font-bold text-white">Your ROI Analysis</h2>
+                              <p className="text-sm text-blue-100 mt-1">Based on your recruitment data</p>
+                            </div>
                             <button
                               onClick={() => {
                                 setShowResults(false);
@@ -542,48 +567,78 @@ export function Calculator() {
                       </div>
 
                       {/* Content */}
-                      <div className="flex-1 overflow-hidden">
-                        <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                          <div className="h-full grid grid-cols-12 gap-6">
-                            {/* Left column - Basic Info */}
-                            <div className="col-span-8 space-y-6">
-                              {/* Basic Metrics Preview */}
+                      <div className="flex-1 overflow-auto">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                          <div className="grid grid-cols-12 gap-6">
+                            {/* Left column - Key Metrics */}
+                            <div className="col-span-12 lg:col-span-8 space-y-6">
+                              {/* Time & Efficiency Gains */}
                               <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6">
-                                <h3 className="text-xl font-semibold text-white mb-6">Annual Savings Overview</h3>
+                                <h3 className="text-xl font-semibold text-white mb-6">Potential Efficiency Gains</h3>
                                 <div className="grid grid-cols-2 gap-6">
                                   <div>
-                                    <div className="text-sm text-gray-400">Current Cost</div>
-                                    <div className="text-2xl font-bold text-red-400">
-                                      ${metrics?.traditionalCost.toLocaleString()}
+                                    <div className="text-sm text-gray-400">Time-to-Hire Reduction</div>
+                                    <div className="text-2xl font-bold text-green-400">
+                                      {Math.round(metrics?.timeToHireReduction || 0)}% Faster
+                                    </div>
+                                    <div className="text-sm text-gray-500 mt-1">
+                                      {inputs.timeToHire} days → {Math.round(inputs.timeToHire * (1 - (metrics?.timeToHireReduction || 0) / 100))} days
                                     </div>
                                   </div>
                                   <div>
-                                    <div className="text-sm text-gray-400">Potential Savings</div>
+                                    <div className="text-sm text-gray-400">HR Hours Saved Annually</div>
                                     <div className="text-2xl font-bold text-green-400">
-                                      ${metrics?.savings.toLocaleString()}
+                                      {Math.round(metrics?.hrHoursSaved || 0)} Hours
+                                    </div>
+                                    <div className="text-sm text-gray-500 mt-1">
+                                      Per hire: {inputs.hrTimePerHire} → {Math.round(inputs.hrTimePerHire * 0.4)} hours
                                     </div>
                                   </div>
                                 </div>
                               </div>
 
-                              {/* Locked Preview */}
-                              <div className="bg-gray-800/30 backdrop-blur-sm rounded-2xl p-6 relative overflow-hidden">
-                                <div className="absolute inset-0 bg-gray-900/80 backdrop-blur-sm flex items-center justify-center z-10">
-                                  <div className="text-center">
-                                    <p className="text-lg font-semibold text-white mb-2">
-                                      Get Your Full ROI Analysis
-                                    </p>
-                                    <p className="text-sm text-gray-300 mb-4">
-                                      Download the complete report with detailed insights and projections
-                                    </p>
+                              {/* ROI Preview */}
+                              <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6">
+                                <div className="flex items-center justify-between mb-6">
+                                  <h3 className="text-xl font-semibold text-white">Estimated ROI Impact</h3>
+                                  <div className="text-sm text-gray-400">
+                                    Based on {inputs.hiresPerYear} hires/year
                                   </div>
                                 </div>
-                                <div className="h-[200px] bg-gray-800 rounded-lg" />
+                                <div className="relative">
+                                  <div className="absolute inset-0 bg-gray-900/80 backdrop-blur-sm flex items-center justify-center z-10">
+                                    <div className="text-center max-w-md">
+                                      <p className="text-lg font-semibold text-white mb-2">
+                                        Unlock Your Full ROI Analysis
+                                      </p>
+                                      <p className="text-sm text-gray-300">
+                                        Get a detailed breakdown of your potential savings and optimization opportunities
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="h-[200px] bg-gray-800/30 rounded-lg" />
+                                </div>
+                              </div>
+
+                              {/* Trust Indicators */}
+                              <div className="grid grid-cols-3 gap-4">
+                                <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-4 text-center">
+                                  <div className="text-2xl font-bold text-white mb-1">500+</div>
+                                  <div className="text-sm text-gray-400">Companies Using Syft</div>
+                                </div>
+                                <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-4 text-center">
+                                  <div className="text-2xl font-bold text-white mb-1">70%</div>
+                                  <div className="text-sm text-gray-400">Average Cost Reduction</div>
+                                </div>
+                                <div className="bg-gray-800/30 backdrop-blur-sm rounded-xl p-4 text-center">
+                                  <div className="text-2xl font-bold text-white mb-1">60%</div>
+                                  <div className="text-sm text-gray-400">Faster Time-to-Hire</div>
+                                </div>
                               </div>
                             </div>
 
                             {/* Right column - CTA */}
-                            <div className="col-span-4 space-y-6">
+                            <div className="col-span-12 lg:col-span-4 space-y-6">
                               <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6">
                                 <h3 className="text-lg font-semibold text-white mb-4">
                                   Your Full Report Includes:
@@ -593,7 +648,7 @@ export function Calculator() {
                                     <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
-                                    Detailed Cost Analysis
+                                    Complete Cost Analysis
                                   </li>
                                   <li className="flex items-center gap-2 text-sm text-gray-300">
                                     <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -605,13 +660,13 @@ export function Calculator() {
                                     <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
-                                    Time Savings Breakdown
+                                    Optimization Recommendations
                                   </li>
                                   <li className="flex items-center gap-2 text-sm text-gray-300">
                                     <svg className="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
-                                    Custom Recommendations
+                                    Industry Benchmarks
                                   </li>
                                 </ul>
                                 
@@ -631,7 +686,7 @@ export function Calculator() {
                               </div>
 
                               <div className="text-center text-sm text-gray-400">
-                                * All calculations are estimates based on industry averages.
+                                * Calculations based on industry benchmarks and your provided data
                               </div>
                             </div>
                           </div>

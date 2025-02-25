@@ -7,6 +7,8 @@ export const TOOLTIPS = {
   
   hrTimePerHire: "HR professionals spend an average of 30-40 hours per hire on recruitment activities, including sourcing, screening, interviewing, and onboarding.",
   
+  totalCostPerHire: "Total cost per hire includes:\n• Recruiter time (pro-rated salary)\n• Hiring manager time ($150-200/hr)\n• Onboarding & training ($1,000-2,000)\n• Admin costs (background checks, HR processing)\n• Job board fees ($300-500)\n• Lost productivity during ramp-up",
+  
   hrHourlyRate: "The average HR professional salary in Australia ranges from $65,000-$95,000 annually. At 40 hours per week, this translates to roughly $35-50 per hour.",
   
   revenueLostPerDay: "Revenue impact varies by role and industry. Sales positions might cost $1,000+ per day, while support roles might impact $200-500 per day in lost productivity.",
@@ -26,6 +28,7 @@ export const DEFAULT_VALUES = {
   timeToHire: 40,
   hrTimePerHire: 35,
   hrHourlyRate: 45,
+  totalCostPerHire: 4000,
   revenueLostPerDay: 500,
   recruiterSalary: 85000,
   coordinatorSalary: 60000

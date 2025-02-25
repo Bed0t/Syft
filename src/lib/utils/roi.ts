@@ -15,8 +15,12 @@ export function calculateROI(inputs: CalculatorInputs, paymentType: 'Monthly' | 
     const annualTeamCost = 
       (inputs.internalTeam.recruiters * inputs.internalTeam.recruiterSalary) +
       (inputs.internalTeam.coordinators * inputs.internalTeam.coordinatorSalary);
-    traditionalCostPerHire = annualTeamCost / inputs.hiresPerYear;
-    totalTraditionalCost = annualTeamCost;
+    
+    // Add total cost per hire
+    const totalHiringCosts = inputs.totalCostPerHire * inputs.hiresPerYear;
+    
+    traditionalCostPerHire = (annualTeamCost + totalHiringCosts) / inputs.hiresPerYear;
+    totalTraditionalCost = annualTeamCost + totalHiringCosts;
   }
 
   const revenueLostTraditional = inputs.revenueLostPerDay * inputs.timeToHire;

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Download } from 'lucide-react';
 import { ROIMetrics, CalculatorInputs } from '../../types/roi';
 import { generatePDFContent } from './PDFReport';
-import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
 interface LeadCaptureDialogProps {
@@ -21,34 +20,24 @@ export function LeadCaptureDialog({ metrics, inputs, onCaptureLead }: LeadCaptur
     setIsGenerating(true);
 
     try {
-      // Create a temporary container for the PDF content
-      const container = document.createElement('div');
-      container.innerHTML = generatePDFContent({ metrics, inputs });
-      container.style.position = 'absolute';
-      container.style.left = '-9999px';
-      document.body.appendChild(container);
-
-      // Generate PDF
       const pdf = new jsPDF('p', 'px', 'a4');
-      const element = container.firstElementChild as HTMLElement;
+      const content = generatePDFContent({ metrics, inputs });
       
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        logging: false
+      // Add content to PDF
+      pdf.html(content, {
+        callback: function (pdf) {
+          pdf.save('syft-roi-analysis.pdf');
+          onCaptureLead(email);
+          setIsOpen(false);
+        },
+        x: 0,
+        y: 0,
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          logging: false
+        }
       });
-
-      const imgData = canvas.toDataURL('image/png');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save('syft-roi-analysis.pdf');
-
-      // Cleanup
-      document.body.removeChild(container);
-      onCaptureLead(email);
-      setIsOpen(false);
     } catch (error) {
       console.error('Error generating PDF:', error);
     } finally {
@@ -63,9 +52,10 @@ export function LeadCaptureDialog({ metrics, inputs, onCaptureLead }: LeadCaptur
         className="w-full bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2"
       >
         <Download className="w-5 h-5" />
-        Download Full ROI Report
+        Download Full Report
       </button>
 
+      {/* Download Dialog */}
       {isOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4">
