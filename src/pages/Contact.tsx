@@ -86,12 +86,14 @@ const Contact = () => {
 
       if (dbError) throw dbError;
 
-      // Send email notification using Edge Function
-      const { error: emailError } = await supabase.functions.invoke('send-contact-notification', {
-        body: formData
-      });
-
-      if (emailError) throw emailError;
+      // Fire and forget email notification using Edge Function; log errors without blocking form submission
+      supabase.functions.invoke('send-contact-notification', { body: formData })
+        .then(response => {
+          if (response.error) {
+            console.error('Email notification error:', response.error);
+          }
+        })
+        .catch(err => console.error('Email notification error:', err));
 
       // Show success message
       setShowSuccess(true);
