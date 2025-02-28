@@ -128,9 +128,9 @@ const Contact = () => {
       // Fire email notification as a truly "fire and forget" operation
       console.log('Attempting to send email notification');
       try {
-        // Stringify the formData explicitly to ensure it's properly formatted JSON
+        // Revert back to the original approach that worked on Feb 15
         const response = await supabase.functions.invoke('send-contact-notification', { 
-          body: JSON.stringify(formData),
+          body: formData,  // Pass the object directly like before
           headers: { 'Content-Type': 'application/json' }
         });
         

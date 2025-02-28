@@ -31,39 +31,14 @@ serve(async (req) => {
 
   try {
     console.log('Request method:', req.method)
-    console.log('Request headers:', Object.fromEntries(req.headers.entries()))
     
-    // Safely parse request body
-    let body;
-    try {
-      // Clone the request first to avoid consuming it
-      const clonedReq = req.clone();
-      // Log the raw request
-      const rawBody = await clonedReq.text();
-      console.log('Raw request body (text):', rawBody);
-      
-      // Only try to parse if there's actual content
-      if (rawBody && rawBody.trim()) {
-        body = JSON.parse(rawBody);
-      } else {
-        throw new Error('Empty request body');
-      }
-    } catch (parseError) {
-      console.error('JSON parse error:', parseError);
-      return new Response(JSON.stringify({ 
-        error: 'Invalid JSON in request body',
-        details: parseError.message
-      }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-    
-    console.log('Parsed request body:', JSON.stringify(body, null, 2));
+    // Simpler approach to parsing that worked before
+    const body = await req.json();
+    console.log('Request body:', body);
     
     // Handle both wrapped and unwrapped formData
     const formData = body.formData || body;
-    console.log('Processed form data:', JSON.stringify(formData, null, 2));
+    console.log('Processed form data:', formData);
 
     // Validate required fields
     const requiredFields = ['firstName', 'lastName', 'email', 'company', 'message']
@@ -149,6 +124,7 @@ Message:
 ${message}
         `,
       };
+      
       console.log('Sending notification email...')
       await client.send(notificationEmail);
       console.log('Notification email sent successfully')
@@ -175,10 +151,11 @@ Best regards,
 The Syft Team
         `,
       };
+      
       console.log('Sending confirmation email...')
       await client.send(confirmationEmail);
       console.log('Confirmation email sent successfully')
-
+      
       console.log('Closing SMTP connection...')
       await client.close();
       
