@@ -141,20 +141,21 @@ const Contact = () => {
         if (response.error) {
           console.error('Email notification error:', {
             error: response.error,
-            data: response.data,
-            status: response?.status
+            data: response.data
           });
-          // Optionally log this to your monitoring system or database
-          try {
-            await supabase
-              .from('error_logs')
-              .insert({
-                error_type: 'email_notification',
-                error_details: JSON.stringify(response.error),
-                user_email: formData.email
-              });
-          } catch (logError) {
-            console.error('Failed to log error:', logError);
+          
+          // Log error to Supabase using the initialized client
+          const { error: logError } = await supabase
+            .from('error_logs')
+            .insert({
+              error_type: 'email_notification',
+              error_details: JSON.stringify(response.error),
+              user_email: formData.email,
+              status: 'new'
+            });
+            
+          if (logError) {
+            console.error('Failed to log error to database:', logError);
           }
         } else {
           console.log('Email notification sent successfully');
@@ -162,17 +163,19 @@ const Contact = () => {
       } catch (functionErr) {
         // Log but don't affect the form submission result
         console.error('Failed to invoke edge function:', functionErr);
-        // Try to log error to database
-        try {
-          await supabase
-            .from('error_logs')
-            .insert({
-              error_type: 'edge_function_invocation',
-              error_details: JSON.stringify(functionErr),
-              user_email: formData.email
-            });
-        } catch (logError) {
-          console.error('Failed to log error:', logError);
+        
+        // Log error to Supabase using the initialized client
+        const { error: logError } = await supabase
+          .from('error_logs')
+          .insert({
+            error_type: 'edge_function_invocation',
+            error_details: JSON.stringify(functionErr),
+            user_email: formData.email,
+            status: 'new'
+          });
+          
+        if (logError) {
+          console.error('Failed to log error to database:', logError);
         }
       }
 
