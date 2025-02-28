@@ -129,13 +129,12 @@ const Contact = () => {
       console.log('Attempting to send email notification');
       try {
         // Log the exact data being sent to the Edge Function
-        const requestData = {
-          body: formData,
-          headers: { 'Content-Type': 'application/json' }
-        };
-        console.log('Sending to Edge Function:', JSON.stringify(requestData, null, 2));
+        const requestBody = JSON.stringify(formData);
+        console.log('Request body:', requestBody);
         
-        const response = await supabase.functions.invoke('send-contact-notification', requestData);
+        const response = await supabase.functions.invoke('send-contact-notification', {
+          body: requestBody
+        });
         
         console.log('Edge function raw response:', JSON.stringify(response, null, 2));
         
