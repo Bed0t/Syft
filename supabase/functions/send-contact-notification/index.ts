@@ -33,12 +33,37 @@ serve(async (req) => {
     console.log('Request method:', req.method)
     console.log('Request headers:', Object.fromEntries(req.headers.entries()))
     
-    const body = await req.json()
-    console.log('Raw request body:', JSON.stringify(body, null, 2))
+    // Safely parse request body
+    let body;
+    try {
+      // Clone the request first to avoid consuming it
+      const clonedReq = req.clone();
+      // Log the raw request
+      const rawBody = await clonedReq.text();
+      console.log('Raw request body (text):', rawBody);
+      
+      // Only try to parse if there's actual content
+      if (rawBody && rawBody.trim()) {
+        body = JSON.parse(rawBody);
+      } else {
+        throw new Error('Empty request body');
+      }
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError);
+      return new Response(JSON.stringify({ 
+        error: 'Invalid JSON in request body',
+        details: parseError.message
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    
+    console.log('Parsed request body:', JSON.stringify(body, null, 2));
     
     // Handle both wrapped and unwrapped formData
-    const formData = body.formData || body
-    console.log('Processed form data:', JSON.stringify(formData, null, 2))
+    const formData = body.formData || body;
+    console.log('Processed form data:', JSON.stringify(formData, null, 2));
 
     // Validate required fields
     const requiredFields = ['firstName', 'lastName', 'email', 'company', 'message']
@@ -164,6 +189,14 @@ The Syft Team
       });
     } catch (emailError) {
       console.error('Email sending error:', emailError);
+      
+      // Make sure to close the SMTP client connection if there was an error
+      try {
+        await client.close();
+      } catch (closeError) {
+        console.error('Error closing SMTP client:', closeError);
+      }
+      
       throw new Error(`Failed to send email: ${emailError.message}`);
     }
 

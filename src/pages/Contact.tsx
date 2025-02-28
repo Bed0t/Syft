@@ -128,8 +128,9 @@ const Contact = () => {
       // Fire email notification as a truly "fire and forget" operation
       console.log('Attempting to send email notification');
       try {
+        // Stringify the formData explicitly to ensure it's properly formatted JSON
         const response = await supabase.functions.invoke('send-contact-notification', { 
-          body: formData,
+          body: JSON.stringify(formData),
           headers: { 'Content-Type': 'application/json' }
         });
         
@@ -137,10 +138,36 @@ const Contact = () => {
         if (response.error) {
           // Log but don't affect user experience
           console.error('Email notification error:', response.error);
+          // Optionally log this to your monitoring system or database
+          try {
+            await supabase
+              .from('error_logs')
+              .insert({
+                error_type: 'email_notification',
+                error_details: JSON.stringify(response.error),
+                user_email: formData.email
+              });
+          } catch (logError) {
+            console.error('Failed to log error:', logError);
+          }
+        } else {
+          console.log('Email notification sent successfully');
         }
       } catch (functionErr) {
         // Log but don't affect the form submission result
         console.error('Failed to invoke edge function:', functionErr);
+        // Try to log error to database
+        try {
+          await supabase
+            .from('error_logs')
+            .insert({
+              error_type: 'edge_function_invocation',
+              error_details: JSON.stringify(functionErr),
+              user_email: formData.email
+            });
+        } catch (logError) {
+          console.error('Failed to log error:', logError);
+        }
       }
 
       // Return early to ensure we don't hit any other code that might interfere
