@@ -143,8 +143,8 @@ const Contact = () => {
           body: requestBody,
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${supabaseAnonKey}`
-          }
+            'Authorization': `Bearer ${supabaseAnonKey}`,
+          },
         });
         
         console.log('Edge function raw response:', JSON.stringify(response, null, 2));
