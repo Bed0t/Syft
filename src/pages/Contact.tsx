@@ -63,6 +63,19 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Form validation
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.company || !formData.message) {
+      setError('Please fill in all required fields');
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+    
     // Prevent multiple submissions
     if (isSubmitting) {
       console.log('Form already submitting, preventing duplicate submission');
@@ -107,31 +120,27 @@ const Contact = () => {
       
       // Set up redirect (even before email notification)
       console.log('Setting timeout for redirect');
-      const redirectTimer = setTimeout(() => {
+      const redirectTimeout = setTimeout(() => {
         console.log('Navigating to thank-you page');
         navigate('/thank-you');
       }, 2000);
 
       // Fire email notification as a truly "fire and forget" operation
-      // Using a separate try/catch to completely isolate it
       console.log('Attempting to send email notification');
       try {
-        supabase.functions.invoke('send-contact-notification', { 
+        const response = await supabase.functions.invoke('send-contact-notification', { 
           body: formData,
           headers: { 'Content-Type': 'application/json' }
-        })
-        .then(response => {
-          console.log('Edge function response received:', response);
-          if (response.error) {
-            console.error('Email notification error:', response.error);
-          }
-        })
-        .catch(err => {
-          console.error('Email notification error:', err);
         });
+        
+        console.log('Edge function response received:', response);
+        if (response.error) {
+          // Log but don't affect user experience
+          console.error('Email notification error:', response.error);
+        }
       } catch (functionErr) {
+        // Log but don't affect the form submission result
         console.error('Failed to invoke edge function:', functionErr);
-        // Do not affect the form submission result
       }
 
       // Return early to ensure we don't hit any other code that might interfere
@@ -139,7 +148,11 @@ const Contact = () => {
 
     } catch (err: any) {
       console.error('Error submitting form:', err);
-      setError(err?.message || err?.error_description || 'Failed to submit form. Please try again or contact us directly.');
+      setError(
+        err?.message || 
+        err?.error_description || 
+        'Failed to submit form. Please try again or contact us directly at contact@usesyft.com'
+      );
     } finally {
       // Set submitting to false to allow retry
       setIsSubmitting(false);

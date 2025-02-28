@@ -1,15 +1,32 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
+// Define CORS headers for preflight requests and responses
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Max-Age': '86400',
+}
+
+// Helper to validate email format
+function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 }
 
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
+  }
+
+  // Only allow POST requests
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
   }
 
   try {
@@ -29,6 +46,11 @@ serve(async (req) => {
       if (!formData[field]) {
         throw new Error(`Missing required field: ${field}`)
       }
+    }
+    
+    // Validate email format
+    if (!isValidEmail(formData.email)) {
+      throw new Error('Invalid email format')
     }
 
     // Log environment variables (without showing actual values)
@@ -133,48 +155,27 @@ The Syft Team
       console.log('Confirmation email sent successfully')
 
       console.log('Closing SMTP connection...')
-      await client.close()
-      console.log('SMTP connection closed')
-
-      return new Response(
-        JSON.stringify({ success: true }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    } catch (smtpError) {
-      console.error('SMTP Error:', {
-        message: smtpError.message,
-        stack: smtpError.stack,
-        name: smtpError.name,
-        cause: smtpError.cause
-      })
-      throw new Error(`SMTP Error: ${smtpError.message}${smtpError.cause ? ` (Cause: ${smtpError.cause})` : ''}`)
-    } finally {
-      try {
-        console.log('Ensuring SMTP connection is closed...')
-        await client.close()
-        console.log('SMTP connection closed in finally block')
-      } catch (closeError) {
-        console.error('Error closing SMTP connection:', closeError)
-      }
+      await client.close();
+      
+      // Return success response with CORS headers
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    } catch (emailError) {
+      console.error('Email sending error:', emailError);
+      throw new Error(`Failed to send email: ${emailError.message}`);
     }
-  } catch (error) {
-    console.error('Function Error:', {
-      message: error.message,
-      stack: error.stack,
-      name: error.name,
-      cause: error.cause
-    })
-    return new Response(
-      JSON.stringify({ 
-        error: error.message,
-        details: error.stack,
-        type: error.constructor.name,
-        cause: error.cause
-      }),
-      { 
-        status: 500, 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-      }
-    )
+
+  } catch (err) {
+    console.error('Function error:', err);
+    
+    // Return error response with CORS headers
+    return new Response(JSON.stringify({
+      error: err.message || 'An unexpected error occurred'
+    }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
   }
 }) 
