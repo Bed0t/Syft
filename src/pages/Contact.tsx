@@ -129,25 +129,22 @@ const Contact = () => {
       console.log('Attempting to send email notification');
       try {
         // Log the exact data being sent to the Edge Function
-        console.log('Sending to Edge Function:', {
-          body: { formData },
+        const requestData = {
+          body: formData,
           headers: { 'Content-Type': 'application/json' }
-        });
+        };
+        console.log('Sending to Edge Function:', JSON.stringify(requestData, null, 2));
         
-        const response = await supabase.functions.invoke('send-contact-notification', { 
-          body: { formData },
-          headers: { 'Content-Type': 'application/json' }
-        });
+        const response = await supabase.functions.invoke('send-contact-notification', requestData);
         
-        console.log('Edge function raw response:', response);
-        console.log('Edge function response received:', {
-          data: response.data,
-          error: response.error
-        });
+        console.log('Edge function raw response:', JSON.stringify(response, null, 2));
         
         if (response.error) {
-          // Log but don't affect user experience
-          console.error('Email notification error:', response.error);
+          console.error('Email notification error:', {
+            error: response.error,
+            data: response.data,
+            status: response?.status
+          });
           // Optionally log this to your monitoring system or database
           try {
             await supabase
