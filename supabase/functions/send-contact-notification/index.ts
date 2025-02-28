@@ -4,6 +4,7 @@ import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
 serve(async (req) => {
@@ -16,7 +17,34 @@ serve(async (req) => {
     console.log('Request method:', req.method)
     console.log('Request headers:', Object.fromEntries(req.headers.entries()))
     
-    const body = await req.json()
+    // Check if there's a content-type header and it's JSON
+    const contentType = req.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      throw new Error(`Unsupported content type: ${contentType}. Expected application/json.`)
+    }
+    
+    // Check if the request has a body
+    const contentLength = req.headers.get('content-length');
+    if (!contentLength || parseInt(contentLength) === 0) {
+      throw new Error('Request body is empty')
+    }
+    
+    // Safely parse the JSON body
+    let body;
+    try {
+      const text = await req.text();
+      console.log('Raw request text:', text);
+      
+      if (!text || text.trim() === '') {
+        throw new Error('Empty request body');
+      }
+      
+      body = JSON.parse(text);
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError);
+      throw new Error(`Invalid JSON: ${parseError.message}`);
+    }
+    
     console.log('Raw request body:', JSON.stringify(body, null, 2))
     
     // Handle both wrapped and unwrapped formData
@@ -172,7 +200,7 @@ The Syft Team
         cause: error.cause
       }),
       { 
-        status: 500, 
+        status: 400, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
       }
     )
