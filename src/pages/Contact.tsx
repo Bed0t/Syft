@@ -62,6 +62,13 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Prevent multiple submissions
+    if (isSubmitting) {
+      console.log('Form already submitting, preventing duplicate submission');
+      return;
+    }
+    
     setIsSubmitting(true);
     setError('');
 
@@ -86,45 +93,55 @@ const Contact = () => {
           })
         });
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error('Supabase insert error:', dbError);
+        throw dbError;
+      }
       
       console.log('Supabase insert successful');
 
-      // Fire email notification using Edge Function, but don't wait for it to complete
-      // This prevents the form from hanging if the function is slow
+      // Show success message immediately after successful DB insert
+      // Don't wait for the edge function which might be causing the hang
+      console.log('Setting success state');
+      setShowSuccess(true);
+      
+      // Set up redirect (even before email notification)
+      console.log('Setting timeout for redirect');
+      const redirectTimer = setTimeout(() => {
+        console.log('Navigating to thank-you page');
+        navigate('/thank-you');
+      }, 2000);
+
+      // Fire email notification as a truly "fire and forget" operation
+      // Using a separate try/catch to completely isolate it
+      console.log('Attempting to send email notification');
       try {
         supabase.functions.invoke('send-contact-notification', { 
           body: formData,
-          // Add a timeout to prevent hanging
           headers: { 'Content-Type': 'application/json' }
         })
         .then(response => {
-          console.log('Edge function response received');
+          console.log('Edge function response received:', response);
           if (response.error) {
             console.error('Email notification error:', response.error);
           }
         })
-        .catch(err => console.error('Email notification error:', err));
+        .catch(err => {
+          console.error('Email notification error:', err);
+        });
       } catch (functionErr) {
-        // Log but don't prevent form completion if edge function fails
         console.error('Failed to invoke edge function:', functionErr);
+        // Do not affect the form submission result
       }
 
-      // Show success message
-      console.log('Setting success state');
-      setShowSuccess(true);
-      
-      // Redirect after 2 seconds
-      console.log('Setting timeout for redirect');
-      setTimeout(() => {
-        console.log('Navigating to thank-you page');
-        navigate('/thank-you');
-      }, 2000);
+      // Return early to ensure we don't hit any other code that might interfere
+      return;
 
     } catch (err: any) {
       console.error('Error submitting form:', err);
       setError(err?.message || err?.error_description || 'Failed to submit form. Please try again or contact us directly.');
     } finally {
+      // Set submitting to false to allow retry
       setIsSubmitting(false);
     }
   };
@@ -284,6 +301,7 @@ const Contact = () => {
                     <input
                       type="radio"
                       name="preferredContact"
+                      id="preferredContact-email"
                       value="email"
                       checked={formData.preferredContact === 'email'}
                       onChange={handleChange}
@@ -295,6 +313,7 @@ const Contact = () => {
                     <input
                       type="radio"
                       name="preferredContact"
+                      id="preferredContact-phone"
                       value="phone"
                       checked={formData.preferredContact === 'phone'}
                       onChange={handleChange}
@@ -344,6 +363,7 @@ const Contact = () => {
                   {plans.map((plan) => (
                     <label
                       key={plan.id}
+                      htmlFor={`plan-${plan.id}`}
                       className={`
                         relative rounded-lg border-2 p-4 flex cursor-pointer focus:outline-none transition-all duration-200
                         ${formData.selectedPlan === plan.id 
@@ -354,6 +374,7 @@ const Contact = () => {
                       <input
                         type="radio"
                         name="selectedPlan"
+                        id={`plan-${plan.id}`}
                         value={plan.id}
                         checked={formData.selectedPlan === plan.id}
                         onChange={handleChange}
