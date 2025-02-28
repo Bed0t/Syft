@@ -4,6 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { motion } from 'framer-motion';
 
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseAnonKey) {
+  console.error('Missing Supabase anon key');
+  throw new Error('Missing Supabase anon key');
+}
+
 const plans = [
   { id: 'essential', name: 'Essential Hire', description: 'Single role', icon: '👤' },
   { id: 'growth', name: 'Growth', description: '5-10 roles', icon: '🚀' },
@@ -133,7 +140,11 @@ const Contact = () => {
         console.log('Request body:', requestBody);
         
         const response = await supabase.functions.invoke('send-contact-notification', {
-          body: requestBody
+          body: requestBody,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${supabaseAnonKey}`
+          }
         });
         
         console.log('Edge function raw response:', JSON.stringify(response, null, 2));
