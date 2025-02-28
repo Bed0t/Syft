@@ -48,11 +48,11 @@ serve(async (req) => {
     console.log('Raw request body:', JSON.stringify(body, null, 2))
     
     // Handle both wrapped and unwrapped formData
-    const formData = body.formData || body
-    console.log('Processed form data:', JSON.stringify(formData, null, 2))
+    const formData = body.formData || body;
+    console.log('Processed form data:', JSON.stringify(formData, null, 2));
 
     // Validate required fields
-    const requiredFields = ['firstName', 'lastName', 'email', 'company', 'message']
+    const requiredFields = ['firstName', 'lastName', 'email', 'company', 'message'];
     for (const field of requiredFields) {
       if (!formData[field]) {
         throw new Error(`Missing required field: ${field}`)

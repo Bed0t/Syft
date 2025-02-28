@@ -87,6 +87,7 @@ const Contact = () => {
 
     try {
       console.log('Form submission started');
+      console.log('Form data being sent:', formData);
       
       // Store lead in Supabase
       const { error: dbError } = await supabase
@@ -114,7 +115,6 @@ const Contact = () => {
       console.log('Supabase insert successful');
 
       // Show success message immediately after successful DB insert
-      // Don't wait for the edge function which might be causing the hang
       console.log('Setting success state');
       setShowSuccess(true);
       
@@ -128,13 +128,23 @@ const Contact = () => {
       // Fire email notification as a truly "fire and forget" operation
       console.log('Attempting to send email notification');
       try {
-        // Revert back to the original approach that worked on Feb 15
-        const response = await supabase.functions.invoke('send-contact-notification', { 
-          body: formData,  // Pass the object directly like before
+        // Log the exact data being sent to the Edge Function
+        console.log('Sending to Edge Function:', {
+          body: { formData },
           headers: { 'Content-Type': 'application/json' }
         });
         
-        console.log('Edge function response received:', response);
+        const response = await supabase.functions.invoke('send-contact-notification', { 
+          body: { formData },
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        console.log('Edge function raw response:', response);
+        console.log('Edge function response received:', {
+          data: response.data,
+          error: response.error
+        });
+        
         if (response.error) {
           // Log but don't affect user experience
           console.error('Email notification error:', response.error);
